@@ -385,6 +385,11 @@ class IRGremlinSteps extends GremlinSteps[Seq[GremlinStep], GremlinPredicate] {
     this
   }
 
+  override def tree(): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
+    buf += Tree
+    this
+  }
+
   override def unfold(): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
     buf += Unfold
     this

@@ -455,6 +455,12 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
     }
 
     @Override
+    public GremlinSteps<Bytecode, P> tree() {
+        bytecode.addStep(Symbols.tree);
+        return this;
+    }
+
+    @Override
     public GremlinSteps<Bytecode, P> unfold() {
         bytecode.addStep(Symbols.unfold);
         return this;

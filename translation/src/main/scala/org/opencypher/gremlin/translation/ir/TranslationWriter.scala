@@ -209,6 +209,8 @@ sealed private[ir] class TranslationGenerator[T, P](translator: Translator[T, P]
           g.times(maxLoops)
         case To(toStepLabel) =>
           g.to(toStepLabel)
+        case Tree =>
+          g.tree()
         case Unfold =>
           g.unfold()
         case Union(unionTraversals @ _*) =>

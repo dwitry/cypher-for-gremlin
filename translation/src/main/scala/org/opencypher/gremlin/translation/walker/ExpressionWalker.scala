@@ -302,7 +302,7 @@ private class ExpressionWalker[T, P](context: StatementContext[T, P], g: Gremlin
     maybePredicate.foreach(WhereWalker.walk(contextWhere, select, _))
 
     if (projection.isInstanceOf[PathExpression]) {
-      select.path()
+      select.path() //todo
     }
 
     val name = contextWhere.generateName()

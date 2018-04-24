@@ -492,6 +492,12 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
+    public GremlinSteps<GraphTraversal, P> tree() {
+        g.tree();
+        return this;
+    }
+
+    @Override
     public GremlinSteps<GraphTraversal, P> unfold() {
         g.unfold();
         return this;

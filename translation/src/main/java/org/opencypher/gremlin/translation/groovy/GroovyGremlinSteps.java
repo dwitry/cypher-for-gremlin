@@ -463,6 +463,12 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     }
 
     @Override
+    public GremlinSteps<String, GroovyPredicate> tree() {
+        g.append(chain("tree"));
+        return this;
+    }
+
+    @Override
     public GremlinSteps<String, GroovyPredicate> unfold() {
         g.append(chain("unfold"));
         return this;

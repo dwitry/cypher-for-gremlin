@@ -269,6 +269,8 @@ case class Times(maxLoops: Int) extends GremlinStep
 
 case class To(toStepLabel: String) extends GremlinStep
 
+case object Tree extends GremlinStep
+
 case object Unfold extends GremlinStep
 
 case class Union(unionTraversals: Seq[GremlinStep]*) extends GremlinStep {

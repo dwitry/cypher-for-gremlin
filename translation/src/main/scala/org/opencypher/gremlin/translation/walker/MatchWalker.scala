@@ -85,7 +85,7 @@ private class MatchWalker[T, P](context: StatementContext[T, P], g: GremlinSteps
         foldPatternElement(None, patternElement)
       case NamedPatternPart(Variable(pathName), EveryPath(patternElement)) =>
         foldPatternElement(Some(pathName), patternElement)
-        g.path().as(pathName)
+        g.local(g.start().tree().by(g.start().valueMap(true))).as(pathName)
       case n =>
         context.unsupported("match pattern", n)
     }

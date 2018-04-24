@@ -187,6 +187,8 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> to(String toStepLabel);
 
+    GremlinSteps<T, P> tree();
+
     GremlinSteps<T, P> unfold();
 
     @SuppressWarnings("unchecked")
