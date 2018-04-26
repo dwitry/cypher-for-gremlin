@@ -56,10 +56,12 @@ class RelationshipPatternWalker[T, P](context: StatementContext[T, P], g: Gremli
     val addDirection: TraversalFunction = (g) =>
       maybeName match {
         case Some(pathName) =>
+          g.as(Tokens.PATH_START + pathName)
+
           direction match {
-            case BOTH     => addVariableName(g.bothE(typeNames: _*)).aggregate(Tokens.PATH_EDGE + pathName).otherV()
-            case INCOMING => addVariableName(g.inE(typeNames: _*)).aggregate(Tokens.PATH_EDGE + pathName).outV()
-            case OUTGOING => addVariableName(g.outE(typeNames: _*)).aggregate(Tokens.PATH_EDGE + pathName).inV()
+            case BOTH     => addVariableName(g.bothE(typeNames: _*)).otherV()
+            case INCOMING => addVariableName(g.inE(typeNames: _*)).outV()
+            case OUTGOING => addVariableName(g.outE(typeNames: _*)).inV()
           }
         case None =>
           direction match {

@@ -19,7 +19,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.Order
 import org.apache.tinkerpop.gremlin.structure.Column
 import org.neo4j.cypher.internal.frontend.v3_3.ast._
 import org.neo4j.cypher.internal.frontend.v3_3.symbols._
-import org.opencypher.gremlin.translation.GremlinSteps
+import org.opencypher.gremlin.translation.{GremlinSteps, Tokens}
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.StatementContext
 import org.opencypher.gremlin.translation.exception.SyntaxException
@@ -297,24 +297,16 @@ private class ProjectionWalker[T, P](context: StatementContext[T, P], g: Gremlin
           .by(__.outV().id())
           .fold()
       case Some(typ) if typ.isInstanceOf[PathType] =>
-        nullIfNull(
-          subTraversal,
-          __.project(PROJECTION_RELATIONSHIP, PROJECTION_ELEMENT)
-            .by(
-              __.select(PATH_EDGE + alias)
-                .unfold()
-                .project(PROJECTION_ID, PROJECTION_INV, PROJECTION_OUTV)
-                .by(__.id())
-                .by(__.inV().id())
-                .by(__.outV().id())
-                .fold()
-            )
-            .by(
-              __.unfold()
-                .is(p.neq(START))
-                .valueMap(true)
-                .fold())
-        )
+        __.path()
+          .by(__.valueMap(true))
+          .by(
+            __.project(PROJECTION_ELEMENT, PROJECTION_INV, PROJECTION_OUTV)
+              .by(__.valueMap(true))
+              .by(__.inV().id())
+              .by(__.outV().id()))
+          .from(Tokens.PATH_START + alias)
+          .to(Tokens.PATH_END + alias)
+          .local(__.unfold().identity().fold())
       case _ =>
         subTraversal
     }

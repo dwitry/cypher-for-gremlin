@@ -23,10 +23,8 @@ import static org.opencypher.gremlin.translation.ReturnProperties.OUTV;
 import static org.opencypher.gremlin.translation.ReturnProperties.RELATIONSHIP_TYPE;
 import static org.opencypher.gremlin.translation.ReturnProperties.TYPE;
 import static org.opencypher.gremlin.translation.Tokens.PROJECTION_ELEMENT;
-import static org.opencypher.gremlin.translation.Tokens.PROJECTION_ID;
 import static org.opencypher.gremlin.translation.Tokens.PROJECTION_INV;
 import static org.opencypher.gremlin.translation.Tokens.PROJECTION_OUTV;
-import static org.opencypher.gremlin.translation.Tokens.PROJECTION_RELATIONSHIP;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -102,7 +100,7 @@ public final class ReturnNormalizer {
         } else if (type instanceof RelationshipType) {
             return normalizeRelationship((Map<?, ?>) value);
         } else if (type instanceof PathType) {
-            return normalizePath((Map<?, ?>) value);
+            return normalizePath((List<Map<?, ?>>) value);
         } else if (type instanceof IntegerType) {
             return CustomFunction.convertToLong(value);
         } else if (type instanceof ListType) {
@@ -157,25 +155,14 @@ public final class ReturnNormalizer {
     }
 
     @SuppressWarnings("unchecked")
-    private Object normalizePath(Map<?, ?> value) {
-        List<Map<?, ?>> relationships = (List<Map<?, ?>>) value.get(PROJECTION_RELATIONSHIP);
-        List<Map<?, ?>> elements = (List<Map<?, ?>>) value.get(PROJECTION_ELEMENT);
-
-        HashMap<Object, Map<?, ?>> relationshipMap = new HashMap<>();
-        for (Map<?, ?> relationship : relationships) {
-            relationshipMap.put(relationship.get(PROJECTION_ID), relationship);
-        }
-
+    private Object normalizePath(List<Map<?, ?>> elements) {
         List<Object> result = new ArrayList<>();
         for (Map<?, ?> element : elements) {
-            Object id = getT(element, T.id);
-            boolean isRelationship = relationshipMap.containsKey(id);
+            boolean isRelationship = element.containsKey(PROJECTION_ELEMENT);
 
-            Map<Object, Object> normalized = normalizeElement(element, isRelationship ? RELATIONSHIP_TYPE : NODE_TYPE);
-            if (isRelationship) {
-                normalized.put(INV, relationshipMap.get(id).get(PROJECTION_INV));
-                normalized.put(OUTV, relationshipMap.get(id).get(PROJECTION_OUTV));
-            }
+            Map<Object, Object> normalized = isRelationship ?
+                normalizeRelationship(element) :
+                normalizeElement(element, NODE_TYPE);
 
             result.add(normalized);
         }
