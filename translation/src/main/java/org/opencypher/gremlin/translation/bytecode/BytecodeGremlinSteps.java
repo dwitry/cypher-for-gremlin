@@ -26,6 +26,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.Scope;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal.Symbols;
 import org.apache.tinkerpop.gremlin.structure.Column;
+import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality;
 import org.apache.tinkerpop.gremlin.util.function.Lambda;
 import org.opencypher.gremlin.translation.GremlinSteps;
 import org.opencypher.gremlin.traversal.CustomFunction;
@@ -415,6 +416,12 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
     @Override
     public GremlinSteps<Bytecode, P> property(String key, GremlinSteps<Bytecode, P> traversal) {
         bytecode.addStep(Symbols.property, key, traversal.current());
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<Bytecode, P> property(Cardinality cardinality, String key, Object value) {
+        bytecode.addStep(Symbols.property, cardinality, key, value);
         return this;
     }
 

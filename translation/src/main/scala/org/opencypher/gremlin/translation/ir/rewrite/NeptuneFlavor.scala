@@ -15,8 +15,10 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
+import org.apache.tinkerpop.gremlin.structure.Column
+import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality.single
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
-import org.opencypher.gremlin.translation.ir.model.{GremlinStep, _}
+import org.opencypher.gremlin.translation.ir.model.{GremlinStep, Vertex, _}
 
 /**
   * This is a set of rewrites to adapt the translation to AWS Neptune.
@@ -26,9 +28,56 @@ object NeptuneFlavor extends GremlinRewriter {
     Seq(
       injectWorkaround(_),
       deleteWorkaround(_),
-      limit0Workaround(_)
+      limit0Workaround(_),
+      setCardinalityForVertexProperties(_),
+      traversalRewriters(_)
     ).foldLeft(steps) { (steps, rewriter) =>
       rewriter(steps)
+    }
+  }
+
+  def isVertexStartStep(step: GremlinStep): Boolean = step match {
+    case Vertex | AddV | AddV(_) => true
+    case _                       => false
+  }
+
+  def isEdgeStartStep(step: GremlinStep): Boolean = step match {
+    case Edge | AddE(_) => true
+    case _              => false
+  }
+
+  private def setCardinalityForVertexProperties(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
+    splitBefore(step => isVertexStartStep(step) || isEdgeStartStep(step))(steps)
+      .flatMap(group => if (isVertexStartStep(group.head)) setSingleCardinality(group) else group)
+  }
+
+  private def traversalRewriters(topLevelRewrites: Seq[GremlinStep]) = {
+    Seq(
+      expandListProperties(_)
+    ).foldLeft(topLevelRewrites) { (steps, rewriter) =>
+      mapTraversals(rewriter)(steps)
+    }
+  }
+
+  private def setSingleCardinality(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
+    mapTraversals(replace({
+      case PropertyV(key, value) :: rest =>
+        PropertyVC(single, key, value) :: rest
+    }))(steps)
+  }
+
+  private def expandListProperties(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
+    replace({
+      case PropertyT(key, Project(_*) :: bySteps) :: rest => {
+        expandSub(key, bySteps) ++ rest
+      }
+    })(steps)
+  }
+
+  private def expandSub(key: String, bySteps: Seq[GremlinStep]): Seq[GremlinStep] = {
+    bySteps match {
+      case By(expr, None) :: rest        => PropertyT(key, expr) +: expandSub(key, rest)
+      case SelectC(Column.values) :: Nil => Nil
     }
   }
 

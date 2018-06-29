@@ -68,6 +68,9 @@ final class GroovyCypherGremlinClient implements CypherGremlinClient {
             return completedFuture(exceptional(e));
         }
 
+        //todo
+        System.out.println(">>" + gremlin);
+
         CompletableFuture<ResultSet> resultSetFuture = client.submitAsync(gremlin, normalizedParameters);
         ReturnNormalizer returnNormalizer = ReturnNormalizer.create(ast.getReturnTypes());
         return resultSetFuture

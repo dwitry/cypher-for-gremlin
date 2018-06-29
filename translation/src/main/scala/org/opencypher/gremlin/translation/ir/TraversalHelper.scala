@@ -132,4 +132,28 @@ object TraversalHelper {
 
     splitAfterAcc(Nil, Nil, steps)
   }
+
+  /**
+    * Works like [[org.opencypher.gremlin.translation.ir.TraversalHelper#splitAfter]], but matching step marks the start of a segment
+    */
+  def splitBefore(splitter: GremlinStep => Boolean)(steps: Seq[GremlinStep]): Seq[Seq[GremlinStep]] = {
+    @tailrec def splitBeforeAcc(
+        acc: Seq[Seq[GremlinStep]],
+        current: Seq[GremlinStep],
+        rest: Seq[GremlinStep]): Seq[Seq[GremlinStep]] = {
+      rest match {
+        case step :: _ =>
+          if (splitter(step)) {
+            val nextAcc = if (acc.isEmpty && current.isEmpty) Nil else acc :+ current
+            splitBeforeAcc(nextAcc, step :: Nil, rest.tail)
+          } else {
+            splitBeforeAcc(acc, current :+ step, rest.tail)
+          }
+        case Nil =>
+          if (current.nonEmpty) acc :+ current else acc
+      }
+    }
+
+    splitBeforeAcc(Nil, Nil, steps)
+  }
 }

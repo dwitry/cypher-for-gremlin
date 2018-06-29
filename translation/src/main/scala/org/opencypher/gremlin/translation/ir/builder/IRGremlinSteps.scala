@@ -16,7 +16,8 @@
 package org.opencypher.gremlin.translation.ir.builder
 
 import org.apache.tinkerpop.gremlin.process.traversal.{Scope, Order => TOrder}
-import org.apache.tinkerpop.gremlin.structure.Column
+import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality
+import org.apache.tinkerpop.gremlin.structure.{Column, VertexProperty}
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.ir.model._
 import org.opencypher.gremlin.traversal.CustomFunction
@@ -352,6 +353,14 @@ class IRGremlinSteps extends GremlinSteps[Seq[GremlinStep], GremlinPredicate] {
       key: String,
       traversal: GremlinSteps[Seq[GremlinStep], GremlinPredicate]): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
     buf += PropertyT(key, traversal.current())
+    this
+  }
+
+  override def property(
+      cardinality: Cardinality,
+      key: String,
+      value: Any): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
+    buf += PropertyVC(cardinality, key, value)
     this
   }
 

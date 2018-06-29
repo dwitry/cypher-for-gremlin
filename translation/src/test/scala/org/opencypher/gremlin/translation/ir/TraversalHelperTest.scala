@@ -112,4 +112,20 @@ class TraversalHelperTest {
       ))
   }
 
+  @Test
+  def splitBefore(): Unit = {
+    val seq = Vertex :: As("a") :: Edge :: As("b") :: PropertyV("k", "v") :: Vertex :: As("c") :: Nil
+    val segments = TraversalHelper.splitBefore({
+      case Vertex => true
+      case Edge   => true
+      case _      => false
+    })(seq)
+
+    assertThat(segments).isEqualTo(
+      Seq(
+        Vertex :: As("a") :: Nil,
+        Edge :: As("b") :: PropertyV("k", "v") :: Nil,
+        Vertex :: As("c") :: Nil
+      ))
+  }
 }

@@ -16,7 +16,8 @@
 package org.opencypher.gremlin.translation.ir.model
 
 import org.apache.tinkerpop.gremlin.process.traversal.{Scope, Order => TraversalOrder}
-import org.apache.tinkerpop.gremlin.structure.Column
+import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality
+import org.apache.tinkerpop.gremlin.structure.{Column, VertexProperty}
 import org.opencypher.gremlin.traversal.CustomFunction
 
 sealed trait GremlinStep {
@@ -246,6 +247,8 @@ case object Path extends GremlinStep
 case class Properties(propertyKeys: String*) extends GremlinStep
 
 case class PropertyV(key: String, value: Any) extends GremlinStep
+
+case class PropertyVC(cardinality: Cardinality, key: String, value: Any) extends GremlinStep
 
 case class PropertyT(key: String, traversal: Seq[GremlinStep]) extends GremlinStep {
   override def mapTraversals(f: Seq[GremlinStep] => Seq[GremlinStep]): GremlinStep = {
