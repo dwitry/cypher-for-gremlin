@@ -304,6 +304,12 @@ public class DeleteTest {
             .containsExactly(5L);
     }
 
+    @Test
+    public void unsupportedDeleteReturn() {
+        assertThatThrownBy(() -> submitAndGet("MATCH (n) DELETE n WITH collect(n) as a RETURN a"))
+            .hasMessageContaining("Unsupported query");
+    }
+
     private HashMap<String, Object> parameterMap(Object[] parameters) {
         HashMap<String, Object> result = new HashMap<>();
         for (int i = 0; i < parameters.length; i+=2) {

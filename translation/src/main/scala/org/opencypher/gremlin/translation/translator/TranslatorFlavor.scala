@@ -49,7 +49,7 @@ object TranslatorFlavor {
       RemoveIdentityReselect,
       RemoveUnusedAliases,
       SimplifyEdgeTraversal,
-      SimplifyDelete,
+      //SimplifyDelete,
       RemoveUnusedAliases,
       RemoveUselessSteps
     ),

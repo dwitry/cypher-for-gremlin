@@ -19,6 +19,7 @@ import org.opencypher.gremlin.translation._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.walker.NodeUtils._
 import org.opencypher.v9_0.ast._
+import org.opencypher.v9_0.util.{ASTNode, InputPosition}
 
 /**
   * AST walker that starts translation of the Cypher AST.
@@ -78,22 +79,40 @@ class StatementWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P])
       case Seq(callClause: UnresolvedCall) =>
         CallWalker.walkStandalone(context, g, callClause)
       case _ =>
-        val hasReturnClauses = clauses.exists(_.isInstanceOf[Return])
-        val hasDeleteClauses = clauses.exists(_.isInstanceOf[Delete])
-
-        clauses.foreach(walkClause)
-
-        if (!hasReturnClauses) {
-          g.barrier().limit(0)
-        }
-
-        if (hasDeleteClauses) {
-          DeleteWalker.deleteAggregated(context, g)
-        }
+        rewriteClauses(clauses).foreach(walkClause)
     }
   }
 
-  private def walkClause(node: Clause): Unit = {
+  def rewriteClauses(clauses: Seq[Clause]): Seq[ASTNode] = {
+    val hasReturnClauses = clauses.exists(_.isInstanceOf[Return])
+    val hasDeleteClauses = clauses.exists(_.isInstanceOf[Delete])
+
+    val maybeEmptyReturn = if (!hasReturnClauses) Seq(EmptyReturn()) else Nil
+    val maybeDeleteAggregated = if (hasReturnClauses && hasDeleteClauses) Seq(DeleteAggregated()) else Nil
+
+    if (hasReturnClauses && hasDeleteClauses &&
+        (clauses.indexWhere(_.isInstanceOf[Return]) != clauses.size - 1 ||
+        clauses.indexWhere(_.isInstanceOf[Delete]) != clauses.size - 2)) {
+      context.unsupported(
+        "query: When combined with RETURN, DELETE should be last statement before RETURN. Try to split query into two. Got",
+        clauses)
+    }
+
+    clauses.flatMap {
+      case deleteClause: Delete if !hasReturnClauses => Seq(deleteClause, DeleteAggregated())
+      case n                                         => Seq(n)
+    } ++ maybeDeleteAggregated ++ maybeEmptyReturn
+  }
+
+  case class EmptyReturn() extends ASTNode {
+    override def position: InputPosition = InputPosition.NONE
+  }
+
+  case class DeleteAggregated() extends ASTNode {
+    override def position: InputPosition = InputPosition.NONE
+  }
+
+  private def walkClause(node: ASTNode): Unit = {
     node match {
       case matchClause: Match =>
         MatchWalker.walkClause(context, g, matchClause)
@@ -105,14 +124,35 @@ class StatementWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P])
         MergeWalker.walkClause(context, g, mergeClause)
       case deleteClause: Delete =>
         DeleteWalker.walkClause(context, g, deleteClause)
+      case _: DeleteAggregated =>
+        DeleteWalker.deleteAggregated(context, g)
       case SetClause(_) | Remove(_) =>
         SetWalker.walkClause(context, g, node)
       case projectionClause: ProjectionClause =>
         ProjectionWalker.walk(context, g, projectionClause)
       case callClause: UnresolvedCall =>
         CallWalker.walk(context, g, callClause)
+      case _: EmptyReturn =>
+        g.barrier().limit(0)
       case _ =>
         context.unsupported("clause", node)
     }
+  }
+
+  private def validate(clauses: Seq[Clause]) = {
+    val returnPos = clauses.indexWhere(_.isInstanceOf[Return])
+    val deletePos = clauses.indexWhere(_.isInstanceOf[Delete])
+
+//    if (returnPos > -1 && deletePos > -1 &&
+//         (returnPos != clauses.size -1 || deletePos != clauses.size - 2)) {
+//       context.unsupported(INVALID_DELETE_QUERY, clauses)
+//    }
+//
+//    if (returnPos == -1 && deletePos > -1 &&
+//         (deletePos != clauses.size -1)) {
+//      context.unsupported(INVALID_DELETE_QUERY, clauses)
+//    }
+
+    (returnPos > -1, deletePos > -1)
   }
 }
