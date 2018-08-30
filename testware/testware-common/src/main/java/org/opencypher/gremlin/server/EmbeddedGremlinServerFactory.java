@@ -47,4 +47,13 @@ public final class EmbeddedGremlinServerFactory {
             .serializer(GryoMessageSerializerV3d0.class, singletonList(TinkerIoRegistryV3d0.class))
             .build();
     }
+
+    public static EmbeddedGremlinServer neo4j() {
+        return EmbeddedGremlinServer.builder()
+            .port(0)
+            .propertiesPath("graph","../testware-common/src/main/resources/neo4j-modern.properties")
+            .scriptPath("../testware-common/src/main/resources/generate-modern-neo4j.groovy")
+            .serializer(GryoMessageSerializerV3d0.class, singletonList(TinkerIoRegistryV3d0.class))
+            .build();
+    }
 }

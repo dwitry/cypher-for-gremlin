@@ -123,6 +123,8 @@ public final class EmbeddedGremlinServer {
             gremlinGroovy.plugins.put("org.apache.tinkerpop.gremlin.server.jsr223.GremlinServerGremlinPlugin", emptyMap());
             gremlinGroovy.plugins.put("org.apache.tinkerpop.gremlin.tinkergraph.jsr223.TinkerGraphGremlinPlugin", emptyMap());
             gremlinGroovy.plugins.put("org.opencypher.gremlin.server.jsr223.CypherPlugin", emptyMap());
+            //todo make this configurable
+            gremlinGroovy.plugins.put("org.apache.tinkerpop.gremlin.neo4j.jsr223.Neo4jGremlinPlugin", emptyMap());
             gremlinGroovy.plugins.put("org.apache.tinkerpop.gremlin.jsr223.ScriptFileGremlinPlugin", singletonMap("files", singletonList(scriptPath)));
             gremlinGroovy.staticImports.add("java.lang.Math.PI");
 

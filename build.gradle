@@ -224,6 +224,8 @@ project(':testware:integration-tests') {
 
         testCompile 'com.github.stefanbirkner:system-rules:1.17.1'
         testCompile 'org.awaitility:awaitility:3.0.0'
+        testCompile "org.apache.tinkerpop:neo4j-gremlin:${tinkerpopVersion}"
+        testCompile 'org.neo4j:neo4j-tinkerpop-api-impl:0.6-3.2.2' //todo add version and exclude SLF4J
     }
 
     test {
