@@ -169,6 +169,17 @@ public class WhereTest {
             .containsExactlyInAnyOrder("marko", "josh", "peter");
     }
 
+    @Test
+    public void reversePatternInTheMiddle() {
+        List<Map<String, Object>> results = submitAndGet(
+            "MATCH (m:software) WHERE ()-[:created]->(m)<-[:created]-() RETURN m.name"
+        );
+
+        assertThat(results)
+            .extracting("m.name")
+            .containsExactlyInAnyOrder("lop");
+    }
+
     /**
      * Custom predicate deserialization is not implemented
      */

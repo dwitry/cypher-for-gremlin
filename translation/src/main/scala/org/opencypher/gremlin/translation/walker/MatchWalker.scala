@@ -66,9 +66,9 @@ private class MatchWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
   def walkPatternParts(patternParts: Seq[PatternPart], whereOption: Option[Where]): Unit = {
     patternParts.foreach {
       case EveryPath(patternElement) =>
-        PatternWalker.walk(context, g, patternElement)
+        PatternWalker.walk(context, g, patternElement, None, true)
       case NamedPatternPart(Variable(pathName), EveryPath(patternElement)) =>
-        PatternWalker.walk(context, g, patternElement, Some(pathName))
+        PatternWalker.walk(context, g, patternElement, Some(pathName), true)
         g.as(MATCH_END + pathName).path().from(Tokens.MATCH_START + pathName).as(pathName)
       case n =>
         context.unsupported("match pattern", n)

@@ -49,7 +49,7 @@ private class CreateWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T
         walkPattern(n)
       case p @ NamedPatternPart(_, EveryPath(n: PatternElement)) =>
         walkPattern(n)
-        MatchWalker.walkPatternParts(context, g, Seq(p), None)
+        MatchWalker.walkPatternParts(context, g, Seq(p), None) //todo
       case n =>
         context.unsupported("create pattern", n)
     }

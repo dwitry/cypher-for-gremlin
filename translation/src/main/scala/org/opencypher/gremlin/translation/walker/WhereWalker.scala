@@ -151,7 +151,7 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
 
       case PatternExpression(RelationshipsPattern(relationshipChain)) =>
         val traversal = g.start()
-        PatternWalker.walk(context, traversal, relationshipChain)
+        PatternWalker.walk(context, traversal, relationshipChain, None, false)
         traversal
 
       case l: Literal =>

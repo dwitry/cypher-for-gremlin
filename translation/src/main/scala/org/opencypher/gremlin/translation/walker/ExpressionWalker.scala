@@ -256,7 +256,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
       case PatternComprehension(_, RelationshipsPattern(relationshipChain), maybePredicate, PathExpression(_), _) =>
         val select = __
         val contextWhere = context.copy()
-        PatternWalker.walk(contextWhere, select, relationshipChain, maybeAlias)
+        PatternWalker.walk(contextWhere, select, relationshipChain, maybeAlias, false)
         maybePredicate.foreach(WhereWalker.walk(contextWhere, select, _))
 
         val pathName = maybeAlias.getOrElse(context.unsupported("unnamed path comprehension", expression))
@@ -275,7 +275,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           _) =>
         val traversal = __
         val contextWhere = context.copy()
-        PatternWalker.walk(contextWhere, traversal, relationshipChain)
+        PatternWalker.walk(contextWhere, traversal, relationshipChain, None, false)
         maybePredicate.foreach(WhereWalker.walk(contextWhere, traversal, _))
 
         val functionT = walkLocal(projection, maybeAlias)
@@ -290,7 +290,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
 
       case PatternExpression(RelationshipsPattern(relationshipChain)) =>
         val traversal = g.start()
-        PatternWalker.walk(context, traversal, relationshipChain)
+        PatternWalker.walk(context, traversal, relationshipChain, None, false)
         traversal
 
       case ListLiteral(expressions @ _ :: _) =>

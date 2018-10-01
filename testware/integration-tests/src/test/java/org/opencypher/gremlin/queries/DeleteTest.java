@@ -410,6 +410,12 @@ public class DeleteTest {
     }
 
     @Test
+    public void d() {
+        submitAndGet("CREATE p = (a)-[:KNOWS]->(c) RETURN p");
+    }
+
+
+    @Test
     public void dontFailOnUnrelatedPropertyAccess() {
         List<Map<String, Object>> beforeDelete = submitAndGet("MATCH (n) RETURN count(*)");
 

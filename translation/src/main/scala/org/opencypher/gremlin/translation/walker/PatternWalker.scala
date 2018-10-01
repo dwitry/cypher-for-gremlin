@@ -34,20 +34,28 @@ object PatternWalker {
       context: WalkerContext[T, P],
       g: GremlinSteps[T, P],
       node: PatternElement,
-      pathName: Option[String] = None): Unit = {
-    new PatternWalker(context, g).walk(node, pathName)
+      pathName: Option[String] = None,
+      startNew: Boolean): Unit = {
+    new PatternWalker(context, g).walk(node, pathName, startNew)
   }
 }
 
 class PatternWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P]) {
-  def walk(node: PatternElement, pathName: Option[String]): Unit = {
-    context.markFirstStatement()
-    g.V()
-
-    pathName.foreach(name => g.as(MATCH_START + name))
-
+  def walk(node: PatternElement, pathName: Option[String], startNew: Boolean): Unit = {
     val chain = flattenRelationshipChain(node)
     val (namedChain, aliases) = ensurePatternsHasNames(chain)
+
+    if (!startNew && node.variable.isDefined &&
+        Set(node.variable.get) == node.allVariables) {
+
+      val Some(Variable(name)) = node.variable
+      g.select(name)
+    } else {
+      context.markFirstStatement()
+      g.V()
+    }
+
+    pathName.foreach(name => g.as(MATCH_START + name))
 
     namedChain.foreach {
       case node: NodePattern =>
