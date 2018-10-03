@@ -66,12 +66,15 @@ class GroupStepFiltersTest {
       """.stripMargin))
       .withFlavor(flavor)
       .rewritingWith(GroupStepFilters)
-      .removes(
-        __.where(
-          __.and(
-            __.select("n").values("p").is(P.isEq("n")),
-            __.constant(1).is(P.neq(2))
-          )))
+      .removes(__.where(__.and(
+        __.select("n")
+          .choose(__.values("p"), __.values("p"), __.constant("  cypher.null"))
+          .choose(P.neq("  cypher.null"), __.is(P.isEq("n")), __.constant("  cypher.null"))
+          .is(P.neq("  cypher.null")),
+        __.constant(1)
+          .choose(P.neq("  cypher.null"), __.is(P.neq(2)), __.constant("  cypher.null"))
+          .is(P.neq("  cypher.null"))
+      )))
       .adds(
         __.has("p", P.isEq("n"))
           .where(__.constant(1).is(P.neq(2)))

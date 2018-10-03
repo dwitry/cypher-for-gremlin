@@ -63,4 +63,64 @@ public class NullTest {
             .extracting("a")
             .containsExactly((Object) null);
     }
+
+    @Test
+    public void returnNull() {
+        submitAndGet("CREATE (a)");
+
+        List<Map<String, Object>> results = submitAndGet(
+            "MATCH (a)\n" +
+                "WHERE a.name CONTAINS 'b'\n" +
+                "RETURN count(a) as cnt"
+        );
+
+        assertThat(results)
+            .extracting("cnt")
+            .containsExactly(0L);
+    }
+
+    @Test
+    public void predicateOnNull() {
+        submitAndGet("CREATE (a)");
+
+        List<Map<String, Object>> results = submitAndGet(
+            "MATCH (a)\n" +
+                "WHERE a.name CONTAINS 'b'\n" +
+                "RETURN count(a) as cnt"
+        );
+
+        assertThat(results)
+            .extracting("cnt")
+            .containsExactly(0L);
+    }
+
+    @Test
+    public void negationOfPredicateOnNull() {
+        submitAndGet("CREATE (a)");
+
+        List<Map<String, Object>> results = submitAndGet(
+            "MATCH (a)\n" +
+                "WHERE NOT a.name CONTAINS 'b'\n" +
+                "RETURN count(a) as cnt"
+        );
+
+        assertThat(results)
+            .extracting("cnt")
+            .containsExactly(0L);
+    }
+
+    @Test
+    public void negationOfPredicateOnNull2() {
+        submitAndGet("CREATE ({name: 'a'})");
+
+        List<Map<String, Object>> results = submitAndGet(
+            "MATCH (a)\n" +
+                "WHERE NOT a.name CONTAINS null\n" +
+                "RETURN count(a) as cnt"
+        );
+
+        assertThat(results)
+            .extracting("cnt")
+            .containsExactly(0L);
+    }
 }

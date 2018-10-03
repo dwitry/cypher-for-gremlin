@@ -64,7 +64,8 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
   }
 
   def walk(expression: Expression): Unit = {
-    g.where(walkBooleanExpression(expression))
+    val p = context.dsl.predicates()
+    g.where(walkBooleanExpression(expression).is(p.neq(NULL)))
   }
 
   private def walkBooleanExpression(node: Expression): GremlinSteps[T, P] = {
@@ -92,9 +93,9 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
       case Property(expr, PropertyKeyName(keyName: String)) =>
         val typ = context.expressionTypes.getOrElse(expr, AnyType.instance)
         val maybeExtractStep: Option[String => GremlinSteps[T, P]] = typ match {
-          case NodeType.instance         => Some(__.values(_))
-          case RelationshipType.instance => Some(__.values(_))
-          case MapType.instance          => Some(__.select(_))
+          case NodeType.instance         => Some(v => __.flatMap(NodeUtils.emptyToNull(__.values(v), context)))
+          case RelationshipType.instance => Some(v => __.flatMap(NodeUtils.emptyToNull(__.values(v), context)))
+          case MapType.instance          => Some(v => __.flatMap(NodeUtils.emptyToNull(__.select(v), context)))
           case _                         => None
         }
         maybeExtractStep.map { extractStep =>
@@ -123,7 +124,7 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
           case Property(propertyExpr, PropertyKeyName(keyName: String)) =>
             walkExpression(propertyExpr).hasNot(keyName)
           case _ =>
-            walkExpression(expr).is(p.isEq(NULL))
+            walkExpression(expr).is(p.isEq(NULL)).constant(true)
         }
       case IsNotNull(expr) =>
         expr match {
@@ -145,8 +146,8 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
       case In(lhs, rhs)                 => walkPredicate(lhs, rhs, p.within(_))
       case Not(In(lhs, rhs))            => walkPredicate(lhs, rhs, p.without(_))
 
-      case Ands(ands) => __.and(ands.map(walkBooleanExpression).toSeq: _*)
-      case Ors(ors)   => __.or(ors.map(walkBooleanExpression).toSeq: _*)
+      case Ands(ands) => __.and(ands.map(walkBooleanExpression(_).is(p.neq(NULL))).toSeq: _*)
+      case Ors(ors)   => __.or(ors.map(walkBooleanExpression(_).is(p.neq(NULL))).toSeq: _*)
       case Not(rhs)   => __.not(walkBooleanExpression(rhs))
 
       case PatternExpression(RelationshipsPattern(relationshipChain)) =>
@@ -168,9 +169,11 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
     rhs match {
       case Variable(varName) =>
         lhsT.where(predicate(freshIds.getOrElse(varName, varName)))
+      case _: Null =>
+        __.constant(NULL)
       case _: Literal | _: Null =>
         val rhsV = expressionValue(rhs, context)
-        lhsT.is(predicate(rhsV))
+        lhsT.flatMap(NodeUtils.notNull(__.is(predicate(rhsV)), context))
       case _ =>
         val rhsName = context.generateName()
         val rhsT = walkExpression(rhs)

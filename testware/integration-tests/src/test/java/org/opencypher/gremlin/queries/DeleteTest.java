@@ -368,6 +368,24 @@ public class DeleteTest {
     }
 
     @Test
+    public void deleteConnectedNodeAndRelationship2() {
+        List<Map<String, Object>> beforeDelete = submitAndGet(
+            "MATCH (n) RETURN n.prop > 'x' as r"
+        );
+
+        System.out.println(beforeDelete);
+    }
+
+    @Test
+    public void deleteConnectedNodeAndRelationship3() {
+        List<Map<String, Object>> beforeDelete = submitAndGet(
+            "MATCH (n) RETURN n.prop STARTS WITH 'x' as r"
+        );
+
+        System.out.println(beforeDelete);
+    }
+
+    @Test
     public void deleteConnectedNodeAndRelationship() {
         List<Map<String, Object>> beforeDelete = submitAndGet(
             "MATCH (n) RETURN count(*)"

@@ -15,6 +15,7 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
+import org.opencypher.gremlin.translation.Tokens.NULL
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
 
@@ -91,9 +92,12 @@ object GroupStepFilters extends GremlinRewriter {
   // Extracts "has" steps from a list of WHERE expressions
   private def whereExtractor(traversals: Seq[Seq[GremlinStep]]): Seq[(String, GremlinStep)] = {
     traversals.flatMap {
-      case SelectK(stepLabel) :: Values(propertyKey) :: Is(predicate) :: Nil =>
+      case SelectK(stepLabel) :: ChooseT(Values(propertyKey) :: Nil, Values(_) :: Nil, Constant(NULL) :: Nil) :: ChooseP(
+            Neq(NULL),
+            Is(predicate) :: Nil,
+            Constant(NULL) :: Nil) :: Is(Neq(NULL)) :: Nil =>
         (stepLabel, HasP(propertyKey, predicate)) :: Nil
-      case SelectK(stepLabel) :: rest if rest.forall(_.isInstanceOf[HasLabel]) =>
+      case SelectK(stepLabel) :: rest if rest.dropRight(1).forall(_.isInstanceOf[HasLabel]) =>
         rest.map((stepLabel, _))
       case _ =>
         Nil
@@ -105,7 +109,7 @@ object GroupStepFilters extends GremlinRewriter {
     val newTraversals = traversals.flatMap {
       case SelectK(alias) :: Values(_) :: Is(_) :: Nil if aliases.contains(alias) =>
         None
-      case SelectK(alias) :: rest if aliases.contains(alias) && rest.forall(_.isInstanceOf[HasLabel]) =>
+      case SelectK(alias) :: rest if aliases.contains(alias) && rest.dropRight(1).forall(_.isInstanceOf[HasLabel]) =>
         None
       case other =>
         Some(other)

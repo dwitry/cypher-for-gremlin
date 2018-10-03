@@ -21,15 +21,13 @@ import org.apache.tinkerpop.gremlin.structure.{Column, Vertex}
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
-import org.opencypher.gremlin.translation.exception.SyntaxException
+import org.opencypher.gremlin.translation.exception.CypherExceptions.INVALID_RANGE
+import org.opencypher.gremlin.translation.exception.{ArgumentException, SyntaxException}
 import org.opencypher.gremlin.translation.walker.NodeUtils._
 import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.InputPosition
 import org.opencypher.v9_0.util.symbols._
-
-import scala.collection.JavaConverters._
-import scala.collection.immutable.NumericRange
 
 /**
   * AST walker that handles translation
@@ -102,7 +100,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
       case LessThanOrEqual(lhs, rhs)    => comparison(lhs, rhs, p.lte)
       case GreaterThan(lhs, rhs)        => comparison(lhs, rhs, p.gt)
       case GreaterThanOrEqual(lhs, rhs) => comparison(lhs, rhs, p.gte)
-      case StartsWith(lhs, rhs)         => comparison(lhs, rhs, p.startsWith)
+      case StartsWith(lhs, rhs)         => comparison2(lhs, rhs, p.isString, p.startsWith)
       case EndsWith(lhs, rhs)           => comparison(lhs, rhs, p.endsWith)
       case Contains(lhs, rhs)           => comparison(lhs, rhs, p.contains)
 
@@ -349,11 +347,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
     traversal.select(Column.values)
   }
 
-  private def bothNotNull(
-      lhs: Expression,
-      rhs: Expression,
-      ifTrue: GremlinSteps[T, P],
-      rhsName: String): GremlinSteps[T, P] = {
+  def bothNotNull(lhs: Expression, rhs: Expression, ifTrue: GremlinSteps[T, P], rhsName: String): GremlinSteps[T, P] = {
     val p = context.dsl.predicates()
 
     val lhsT = walkLocal(lhs)
@@ -373,6 +367,41 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
     val rhsName = context.generateName()
     val traversal = anyMatch(__.where(predicate(rhsName)))
     bothNotNull(lhs, rhs, traversal, rhsName)
+  }
+
+  private def comparison2(
+      lhs: Expression,
+      rhs: Expression,
+      typePredicate: P,
+      predicate: String => P): GremlinSteps[T, P] = {
+    val rhsName = context.generateName()
+    val traversal = anyMatch(__.where(predicate(rhsName)))
+    bothNotNull2(lhs, rhs, traversal, rhsName, typePredicate)
+  }
+
+  private def bothNotNull2(
+      lhs: Expression,
+      rhs: Expression,
+      ifTrue: GremlinSteps[T, P],
+      rhsName: String,
+      typePredicate: P): GremlinSteps[T, P] = {
+    val p = context.dsl.predicates()
+
+    val lhsT = walkLocal(lhs)
+    val rhsT = walkLocal(rhs)
+
+    rhsT
+      .as(rhsName)
+      .flatMap(lhsT)
+      .choose(
+        __.or(
+          __.is(p.isEq(NULL)),
+          __.not(__.is(typePredicate)),
+          __.select(rhsName).is(p.isEq(NULL)),
+          __.not(__.select(rhsName).is(typePredicate))),
+        __.constant(NULL),
+        ifTrue
+      )
   }
 
   private def membership(lhs: Expression, rhs: Expression): GremlinSteps[T, P] = {
@@ -405,10 +434,13 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
   }
 
   private def math(lhs: Expression, rhs: Expression, op: String): GremlinSteps[T, P] = {
-    val rhsName = context.generateName().replace(" ", "_") // name limited by MathStep#VARIABLE_PATTERN
+    val rhsName = generateMathName
     val traversal = __.math(s"_ $op $rhsName")
     bothNotNull(lhs, rhs, traversal, rhsName)
   }
+
+  // name limited by MathStep#VARIABLE_PATTERN
+  private def generateMathName = context.generateName().replace(" ", "_")
 
   private def listConcat(lhs: Expression, rhs: Expression) = {
     val rhsName = context.generateName()
@@ -460,32 +492,86 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
   private val injectHardLimit = 10000
 
   private def range(rangeArgs: Seq[Expression]): GremlinSteps[T, P] = {
-    val range: NumericRange[Long] = rangeArgs match {
-      case Seq(start: IntegerLiteral, end: IntegerLiteral) =>
-        NumericRange.inclusive(start.value, end.value, 1)
-      case Seq(start: IntegerLiteral, end: IntegerLiteral, step: IntegerLiteral) =>
-        NumericRange.inclusive(start.value, end.value, step.value)
+    def overflow(rangeStart: Any, rangeEnd: Long): Boolean =
+      rangeStart match {
+        case startVal: Number => (rangeEnd - startVal.longValue()) > injectHardLimit
+        case _                => false //unable to validate
+      }
+
+    val p = context.dsl.predicates()
+
+    val rangeTraversal = __
+    val aggregationTraversal = __.loops()
+    val untilCondition = __.loops()
+
+    val rangeLabel = context.generateName()
+
+    val rangeStart = rangeArgs.head match {
+      case rangeStart: IntegerLiteral if rangeStart.value < 0 =>
+        context.unsupported("negative range start", rangeStart)
+      case rangeStart: IntegerLiteral if rangeStart.value == 0 =>
+        0L
+      case rangeStart: IntegerLiteral =>
+        aggregationTraversal.is(p.gte(rangeStart.value))
+        rangeStart.value
+      case e: Expression =>
+        val rangeStartLabel = generateMathName
+        rangeTraversal
+          .flatMap(walkLocal(e))
+          .as(rangeStartLabel)
+          .flatMap(runtimeValidation(__.is(p.lt(0)), INVALID_RANGE, context))
+        aggregationTraversal.where(p.gte(rangeStartLabel))
+        rangeStartLabel
     }
 
-    context.precondition(
-      range.length <= injectHardLimit,
-      s"Range is too big (must be less than or equal to $injectHardLimit)",
-      range
-    )
-
-    if (range.step == 1) {
-      val rangeLabel = context.generateName()
-      __.repeat(__.start().loops().aggregate(rangeLabel))
-        .times((range.end + 1).toInt)
-        .cap(rangeLabel)
-        .unfold()
-        .skip(range.start)
-        .limit(range.end - range.start + 1)
-        .fold()
-    } else {
-      val numbers = range.asInstanceOf[Seq[Object]]
-      __.constant(numbers.asJava)
+    val rangeEnd = rangeArgs(1) match {
+      case rangeEnd: IntegerLiteral if rangeEnd.value < 0 =>
+        context.unsupported("negative range end", rangeEnd)
+      case rangeEnd: IntegerLiteral if overflow(rangeStart, rangeEnd.value) =>
+        context.unsupported(s"Range is too big (must be less than or equal to $injectHardLimit)", rangeEnd)
+      case rangeEnd: IntegerLiteral =>
+        untilCondition.is(p.gt(rangeEnd.value))
+        rangeEnd.value
+      case e: Expression =>
+        val rangeEndLabel = generateMathName
+        rangeTraversal
+          .flatMap(walkLocal(e))
+          .as(rangeEndLabel)
+          .flatMap(runtimeValidation(__.is(p.lt(0)), INVALID_RANGE, context))
+        untilCondition.where(p.gt(rangeEndLabel))
+        rangeEndLabel
     }
+
+    if (!rangeStart.isInstanceOf[Number] || !rangeEnd.isInstanceOf[Number]) {
+      rangeTraversal.flatMap(
+        runtimeValidation(__.math(s"$rangeEnd - $rangeStart").is(p.gt(injectHardLimit)), INVALID_RANGE, context))
+    }
+
+    if (rangeArgs.size > 2) rangeArgs.last match {
+      case rangeStep: IntegerLiteral if rangeStep.value < 0 =>
+        context.unsupported("negative range steps", rangeStep)
+      case rangeStep: IntegerLiteral if rangeStep.value == 0 =>
+        throw new ArgumentException("Step argument to range() cannot be zero")
+      case rangeStep: IntegerLiteral =>
+        val value = rangeStep.value
+        aggregationTraversal.where(__.math(s"(_ - $rangeStart) % $value").is(p.isEq(0)))
+      case e: Expression =>
+        val rangeStepLabel = generateMathName
+        rangeTraversal
+          .flatMap(walkLocal(e))
+          .as(rangeStepLabel)
+          .flatMap(runtimeValidation(__.is(p.lt(0)), INVALID_RANGE, context))
+        aggregationTraversal.where(__.math(s"(_ - $rangeStart) % $rangeStepLabel").is(p.isEq(0)))
+    }
+
+    rangeTraversal
+      .repeat(
+        __.sideEffect(
+          aggregationTraversal.aggregate(rangeLabel)
+        )
+      )
+      .until(untilCondition)
+      .cap(rangeLabel)
   }
 
   private def size(args: Seq[Expression]): GremlinSteps[T, P] = {
