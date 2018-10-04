@@ -18,7 +18,7 @@ package org.opencypher.gremlin.translation.walker
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.Tokens.NULL
 import org.opencypher.gremlin.translation.context.WalkerContext
-import org.opencypher.gremlin.translation.walker.NodeUtils.{inlineExpressionValue, notNull, toLiteral}
+import org.opencypher.gremlin.translation.walker.NodeUtils.{inlineExpressionValue, nullGuard, toLiteral}
 import org.opencypher.v9_0.ast._
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.symbols.{AnyType, CypherType}
@@ -95,7 +95,7 @@ private class SetWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P
 
   private def setProperty(cypherType: CypherType, variable: String, key: String, value: Expression): Unit = {
     val traversal = ExpressionWalker.walkProperty(context, g.start(), cypherType, key, value)
-    g.select(variable).flatMap(notNull(traversal, context))
+    g.select(variable).flatMap(nullGuard(value, traversal, context))
   }
 
   private def typeOf(expr: Expression): CypherType = {

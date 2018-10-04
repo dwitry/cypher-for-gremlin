@@ -18,7 +18,9 @@ package org.opencypher.gremlin.queries;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.ClassRule;
@@ -32,6 +34,10 @@ public class FunctionTest {
 
     private List<Map<String, Object>> submitAndGet(String cypher) {
         return gremlinServer.cypherGremlinClient().submit(cypher).all();
+    }
+
+    private List<Map<String, Object>> submitAndGet(String cypher, Object... parameters) {
+        return gremlinServer.cypherGremlinClient().submit(cypher, parameterMap(parameters)).all();
     }
 
     @Test
@@ -299,5 +305,34 @@ public class FunctionTest {
             .extracting("n.name")
             .containsExactly("marko", "josh");
 
+    }
+
+    @Test
+    public void propertiesOnNode() {
+        List<Map<String, Object>> results = submitAndGet(
+            "MATCH (n {name:'marko'}) RETURN properties(n) as r");
+
+        assertThat(results)
+            .extracting("r")
+            .containsExactly(ImmutableMap.of("age", 29L, "name", "marko"));
+    }
+
+    @Test
+    public void propertiesOnNull() {
+        List<Map<String, Object>> results = submitAndGet(
+            "RETURN properties($param) as r",
+            "param", null);
+
+        assertThat(results)
+            .extracting("r")
+            .containsExactly((Object) null);
+    }
+
+    private HashMap<String, Object> parameterMap(Object[] parameters) {
+        HashMap<String, Object> result = new HashMap<>();
+        for (int i = 0; i < parameters.length; i+=2) {
+            result.put(String.valueOf(parameters[i]), parameters[i+1]);
+        }
+        return result;
     }
 }

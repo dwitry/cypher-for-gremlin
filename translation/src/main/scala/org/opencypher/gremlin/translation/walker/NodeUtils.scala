@@ -122,10 +122,19 @@ object NodeUtils {
     }
   }
 
-  def notNull[T, P](traversal: GremlinSteps[T, P], context: WalkerContext[T, P]): GremlinSteps[T, P] = {
-    val g = context.dsl.steps()
-    val p = context.dsl.predicates()
-    g.start().choose(p.neq(NULL), traversal)
+  def nullGuard[T, P](
+      expression: Expression,
+      traversal: GremlinSteps[T, P],
+      context: WalkerContext[T, P]): GremlinSteps[T, P] = {
+    val defined = context.nullables.contains(expression)
+
+    if (defined) {
+      traversal
+    } else {
+      val g = context.dsl.steps()
+      val p = context.dsl.predicates()
+      g.start().choose(p.neq(NULL), traversal)
+    }
   }
 
   def emptyToNull[T, P](traversal: GremlinSteps[T, P], context: WalkerContext[T, P]): GremlinSteps[T, P] = {

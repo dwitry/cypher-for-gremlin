@@ -57,6 +57,7 @@ class CypherAst private (
     parameters: Map[String, Any],
     expressionTypes: Map[Expression, CypherType],
     returnTypes: Map[String, CypherType],
+    nullables: Seq[Expression],
     options: Seq[PreParserOption]) {
 
   /**
@@ -78,7 +79,7 @@ class CypherAst private (
       .enableMultipleLabels()
       .build()
 
-    val context = WalkerContext(dsl, expressionTypes, procedures, parameters)
+    val context = WalkerContext(dsl, expressionTypes, nullables, procedures, parameters)
     StatementWalker.walk(context, statement)
     val ir = dsl.translate()
 
@@ -226,8 +227,9 @@ object CypherAst {
     val statement = state.statement()
     val expressionTypes = getExpressionTypes(state)
     val returnTypes = getReturnTypes(expressionTypes, statement, procedures)
+    val nullables = getNullables(statement, expressionTypes)
 
-    new CypherAst(statement, parameters, expressionTypes, returnTypes, options)
+    new CypherAst(statement, parameters, expressionTypes, returnTypes, nullables, options)
   }
 
   private def getExpressionTypes(state: BaseState): Map[Expression, CypherType] = {
@@ -288,6 +290,24 @@ object CypherAst {
 
     ListMap(items: _*)
   }
+
+  private def getNullables(statement: Statement, expressions: Map[Expression, CypherType]) =
+    statement match {
+      case Query(_, part) =>
+        part match {
+          case SingleQuery(clauses) =>
+            clauses.flatMap {
+              case Match(false, pattern, _, _) =>
+                pattern.patternParts.flatMap(_.element.allVariables)
+              case Create(pattern) =>
+                pattern.patternParts.flatMap(_.element.allVariables)
+              case Merge(pattern, _, _) =>
+                pattern.patternParts.flatMap(_.element.allVariables)
+              case _ => Seq()
+            }
+          case _ => Seq()
+        }
+    }
 
   private def bindingType(typ: CypherBindingType): CypherType = {
     typ match {

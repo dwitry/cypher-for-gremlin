@@ -86,7 +86,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
         }
         maybeExtractStep.map { extractStep =>
           walkLocal(expr, maybeAlias)
-            .flatMap(notNull(emptyToNull(extractStep(keyName), context), context))
+            .flatMap(nullGuard(expr, emptyToNull(extractStep(keyName), context), context))
         }.getOrElse {
           val key = StringLiteral(keyName)(InputPosition.NONE)
           asList(expr, key).map(CustomFunction.cypherContainerIndex())
@@ -94,7 +94,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
 
       case HasLabels(expr, List(LabelName(label))) =>
         walkLocal(expr, maybeAlias)
-          .flatMap(notNull(anyMatch(__.hasLabel(label)), context))
+          .flatMap(nullGuard(expr, anyMatch(__.hasLabel(label)), context))
 
       case Equals(lhs, rhs)             => comparison(lhs, rhs, p.isEq)
       case Not(Equals(lhs, rhs))        => comparison(lhs, rhs, p.neq)
@@ -219,25 +219,26 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case "abs"              => traversals.head.math("abs(_)")
           case "coalesce"         => __.coalesce(traversals.init.map(_.is(p.neq(NULL))) :+ traversals.last: _*)
           case "exists"           => traversals.head.flatMap(anyMatch(__.is(p.neq(NULL))))
-          case "head"             => traversals.head.flatMap(notNull(emptyToNull(__.limit(Scope.local, 1), context), context))
-          case "id"               => traversals.head.flatMap(notNull(__.id(), context))
+          case "head"             => traversals.head.flatMap(emptyToNull(__.limit(Scope.local, 1), context))
+          case "id"               => traversals.head.flatMap(nullGuard(args.head, __.id(), context))
           case "keys" if onEntity => traversals.head.properties().key().fold()
           case "keys"             => traversals.head.select(Column.keys)
           case "labels"           => traversals.head.label().is(p.neq(Vertex.DEFAULT_LABEL)).fold()
           case "length"           => traversals.head.count(Scope.local).math("(_-1)/2")
-          case "last"             => traversals.head.flatMap(notNull(emptyToNull(__.tail(Scope.local, 1), context), context))
+          case "last"             => traversals.head.flatMap(emptyToNull(__.tail(Scope.local, 1), context))
           case "nodes"            => traversals.head.flatMap(filterElements(args, includeNodes = true))
           case "properties"       => traversals.head.flatMap(properties(args))
           case "range"            => range(args)
           case "relationships"    => traversals.head.flatMap(filterElements(args, includeRelationships = true))
           case "size"             => traversals.head.flatMap(size(args))
           case "sqrt"             => traversals.head.math("sqrt(_)")
-          case "tail"             => traversals.head.flatMap(notNull(__.range(Scope.local, 1, -1), context))
-          case "type"             => traversals.head.flatMap(notNull(__.label().is(p.neq(Vertex.DEFAULT_LABEL)), context))
-          case "toboolean"        => traversals.head.map(CustomFunction.cypherToBoolean())
-          case "tofloat"          => traversals.head.map(CustomFunction.cypherToFloat())
-          case "tointeger"        => traversals.head.map(CustomFunction.cypherToInteger())
-          case "tostring"         => traversals.head.map(CustomFunction.cypherToString())
+          case "tail"             => traversals.head.flatMap(__.range(Scope.local, 1, -1))
+          case "type" =>
+            traversals.head.flatMap(nullGuard(args.head, __.label().is(p.neq(Vertex.DEFAULT_LABEL)), context))
+          case "toboolean" => traversals.head.map(CustomFunction.cypherToBoolean())
+          case "tofloat"   => traversals.head.map(CustomFunction.cypherToFloat())
+          case "tointeger" => traversals.head.map(CustomFunction.cypherToInteger())
+          case "tostring"  => traversals.head.map(CustomFunction.cypherToString())
           case _ =>
             throw new SyntaxException(s"Unknown function '$fnName'")
         }
@@ -454,7 +455,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
       case _: MapType          => __.identity()
       case _                   => __.map(CustomFunction.cypherProperties())
     }
-    notNull(traversal, context)
+    nullGuard(args.head, traversal, context)
   }
 
   private val injectHardLimit = 10000

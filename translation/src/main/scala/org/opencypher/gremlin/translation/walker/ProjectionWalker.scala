@@ -269,10 +269,6 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
     dependencyNames.distinct
   }
 
-  private def notNull(traversal: GremlinSteps[T, P]): GremlinSteps[T, P] = {
-    NodeUtils.notNull(traversal, context)
-  }
-
   private def subTraversal(alias: String, expression: Expression): (ReturnFunctionType, GremlinSteps[T, P]) = {
     if (expression.containsAggregate) {
       aggregation(alias, expression)
@@ -314,9 +310,13 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
             .valueMap(true)
             .fold())
 
+    def nullGuard(traversal: GremlinSteps[T, P]): GremlinSteps[T, P] = {
+      NodeUtils.nullGuard(expression, traversal, context)
+    }
+
     qualifiedType(expression) match {
       case (_: NodeType, _) =>
-        subTraversal.flatMap(notNull(finalizeNode))
+        subTraversal.flatMap(nullGuard(finalizeNode))
       case (_: ListType, _: NodeType) =>
         __.flatMap(subTraversal)
           .unfold()
@@ -324,18 +324,18 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           .flatMap(finalizeNode)
           .fold()
       case (_: RelationshipType, _) =>
-        subTraversal.flatMap(notNull(finalizeRelationship))
+        subTraversal.flatMap(nullGuard(finalizeRelationship))
       case (_: ListType, _: RelationshipType) =>
         subTraversal.flatMap(
-          notNull(
+          nullGuard(
             __.unfold()
               .flatMap(finalizeRelationship)
               .fold()))
       case (_: PathType, _) =>
-        subTraversal.flatMap(notNull(finalizePath))
+        subTraversal.flatMap(nullGuard(finalizePath))
       case (_: ListType, _: PathType) =>
         subTraversal.flatMap(
-          notNull(
+          nullGuard(
             __.flatMap(finalizePath)
               .fold()))
       case _ =>
