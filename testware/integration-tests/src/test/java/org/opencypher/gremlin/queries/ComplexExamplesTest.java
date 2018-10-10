@@ -345,4 +345,22 @@ public class ComplexExamplesTest {
             .extracting("x")
             .containsExactly(0L);
     }
+
+    @Test
+    public void patternComprehension() throws Exception {
+        submitAndGet("CREATE (a:A)\n" +
+            "CREATE (a)-[:T]->(:B),\n" +
+            "       (a)-[:T]->(:C)");
+
+        List<Map<String, Object>> results = submitAndGet(
+            "MATCH p=(n)-->(b) RETURN p"
+        );
+
+
+        System.out.println(results);
+
+//        assertThat(results)
+//            .extracting("p")
+//            .containsExactly(0L);
+    }
 }

@@ -23,6 +23,7 @@ import org.opencypher.gremlin.translation.CypherAst
 import org.opencypher.gremlin.translation.ReturnProperties._
 import org.opencypher.gremlin.translation.exception.{ConstraintException, SyntaxException, TypeException}
 import org.opencypher.gremlin.traversal.ProcedureContext
+import org.opencypher.tools.tck.ListAccessor
 import org.opencypher.tools.tck.api.{CypherValueRecords, ExecutionFailed}
 import org.opencypher.tools.tck.constants.TCKErrorPhases.RUNTIME
 import org.opencypher.tools.tck.values._
@@ -153,9 +154,10 @@ object TckGremlinCypherValueConverter {
   private def toCypherList(gremlinList: util.List[_]): CypherValue = {
     val list = gremlinList.asScala
       .map(e => toCypherValue(e))
+      .sorted
       .toList
 
-    CypherOrderedList(list)
+    ListAccessor.unorderedList(list)
   }
 
   def toCypherRelationship(e: util.Map[_, _]): CypherRelationship = {

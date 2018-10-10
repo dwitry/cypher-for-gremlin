@@ -25,8 +25,8 @@ import org.opencypher.gremlin.translation.exception.CypherExceptions
 import org.opencypher.gremlin.translation.{GremlinSteps, Tokens}
 import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.expressions._
+import org.opencypher.v9_0.util._
 import org.opencypher.v9_0.util.symbols.{CypherType, NodeType, RelationshipType}
-import org.opencypher.v9_0.util.{ASTNode, InputPosition}
 
 import scala.collection.JavaConverters._
 

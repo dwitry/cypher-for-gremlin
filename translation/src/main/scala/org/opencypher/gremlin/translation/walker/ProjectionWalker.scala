@@ -247,6 +247,7 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
     val needsFinalization = aliasToExpression.exists(n =>
       qualifiedType(n._2) match {
         case (_: NodeType, _)                   => true
+        case (_: ListType, _: ListType)         => true
         case (_: ListType, _: NodeType)         => true
         case (_: RelationshipType, _)           => true
         case (_: ListType, _: RelationshipType) => true
@@ -325,6 +326,18 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
               .flatMap(finalizeNode)
               .fold()
           )
+      case (_: ListType, _: ListType) =>
+        __.flatMap(subTraversal)
+          .local(
+            __.unfold()
+              .local(
+                __.unfold()
+                  .is(p.neq(NULL))
+                  .flatMap(finalizeNode)
+                  .fold()
+              )
+              .fold()
+          )
       case (_: RelationshipType, _) =>
         subTraversal.flatMap(notNull(finalizeRelationship))
       case (_: ListType, _: RelationshipType) =>
@@ -337,10 +350,7 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
       case (_: PathType, _) =>
         subTraversal.flatMap(notNull(finalizePath))
       case (_: ListType, _: PathType) =>
-        subTraversal.flatMap(
-          notNull(
-            __.flatMap(finalizePath)
-              .fold()))
+        subTraversal.flatMap(notNull(__.local(__.unfold().flatMap(finalizePath).fold())))
       case _ =>
         subTraversal
     }

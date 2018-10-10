@@ -268,11 +268,13 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
 
         val pathName = maybeAlias.getOrElse(context.unsupported("unnamed path comprehension", expression))
         reselectProjection(expression.dependencies.toSeq, context)
-          .coalesce(
-            select
-              .path()
-              .from(MATCH_START + pathName),
-            __.constant(UNUSED))
+          .map(
+            __.coalesce(
+                select
+                  .path()
+                  .from(MATCH_START + pathName),
+                __.constant(UNUSED))
+              .fold())
 
       case PatternComprehension(
           _,
