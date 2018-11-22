@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.opencypher.gremlin.groups.SkipWithCosmosDB;
 import org.opencypher.gremlin.groups.UsesExtensions;
 import org.opencypher.gremlin.rules.GremlinServerExternalResource;
 
@@ -266,6 +267,7 @@ public class ComplexExamplesTest {
     }
 
     @Test
+    @Category(SkipWithCosmosDB.Truncate4096.class)
     public void matchAndReverseOptionalMatch() throws Exception {
         submitAndGet("CREATE (:A {name: 'A'})-[:T {name: 'T'}]->(:B {name: 'B'})");
         List<Map<String, Object>> results = submitAndGet(

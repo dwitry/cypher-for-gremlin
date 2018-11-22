@@ -31,15 +31,16 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.tinkerpop.gremlin.driver.Result;
 import org.apache.tinkerpop.gremlin.driver.exception.ResponseException;
-import org.apache.tinkerpop.gremlin.process.traversal.Traverser;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.opencypher.gremlin.groups.SkipWithCosmosDB;
 import org.opencypher.gremlin.groups.UsesCollectionsInProperties;
 import org.opencypher.gremlin.rules.GremlinServerExternalResource;
+import org.opencypher.gremlin.translation.groovy.GroovyGremlinSteps;
 
 public class CreateTest {
 
@@ -285,17 +286,19 @@ public class CreateTest {
             .extracting("r.foo")
             .containsExactly("bar");
 
-        List<? extends Map<String, ?>> properties = gremlinServer.gremlinClient().alias("g").submit(
+        GroovyGremlinSteps __ = new GroovyGremlinSteps();
+
+        List<Object> properties = gremlinServer.gremlinClient().submit(
             __.V()
                 .outE()
                 .as("E")
                 .properties()
                 .project("key", "value")
-                .by(__.key())
-                .by(__.value())
+                .by(__.start().key())
+                .by(__.start().value())
+                .current()
         ).all().join().stream()
-            .map(r -> (Traverser<Map<String, ?>>) r.getObject())
-            .map(Traverser::get)
+            .map(Result::getObject)
             .collect(toList());
 
         assertThat(properties)
@@ -328,6 +331,7 @@ public class CreateTest {
     }
 
     @Test
+    @Category(SkipWithCosmosDB.TraversalInProperty.class)
     public void withCreate() throws Exception {
         List<Map<String, Object>> results = submitAndGet(
             "WITH 42 AS i " +
@@ -341,6 +345,7 @@ public class CreateTest {
     }
 
     @Test
+    @Category(SkipWithCosmosDB.TraversalInProperty.class)
     public void unwindCreate() throws Exception {
         List<Map<String, Object>> results = submitAndGet(
             "UNWIND [3, 7, 11] AS i " +
@@ -354,6 +359,7 @@ public class CreateTest {
     }
 
     @Test
+    @Category(SkipWithCosmosDB.TraversalInProperty.class)
     public void unwindRangeCreate() throws Exception {
         List<Map<String, Object>> results = submitAndGet(
             "UNWIND range(3, 7) AS i " +
@@ -367,6 +373,7 @@ public class CreateTest {
     }
 
     @Test
+    @Category(SkipWithCosmosDB.TraversalInProperty.class)
     public void unwindRangeStepCreate() throws Exception {
         List<Map<String, Object>> results = submitAndGet(
             "UNWIND range(3, 12, 4) AS i " +
