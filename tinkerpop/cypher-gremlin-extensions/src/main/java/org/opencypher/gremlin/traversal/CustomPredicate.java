@@ -15,7 +15,10 @@
  */
 package org.opencypher.gremlin.traversal;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -56,6 +59,12 @@ public enum CustomPredicate implements BiPredicate<Object, Object> {
             return a instanceof Edge;
         }
     };
+
+    public static List<String> NAMES = Arrays.stream(values()).map(Enum::name).collect(Collectors.toList());
+
+    public static P<Object> byName(String name, final Object value) {
+        return new P<>(valueOf(name), value);
+    }
 
     public static P<Object> cypherStartsWith(final Object prefix) {
         return new P<>(CustomPredicate.cypherStartsWith, prefix);
