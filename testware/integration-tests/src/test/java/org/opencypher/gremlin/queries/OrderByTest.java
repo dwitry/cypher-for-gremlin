@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.opencypher.gremlin.groups.SkipWithCosmosDB;
 import org.opencypher.gremlin.rules.GremlinServerExternalResource;
 import org.opencypher.gremlin.test.TestCommons;
 
@@ -94,6 +96,7 @@ public class OrderByTest {
     }
 
     @Test
+    @Category(SkipWithCosmosDB.RealiasingCreatesCollection.class)
     public void projections() throws Exception {
         List<Map<String, Object>> results = submitAndGet(
             "MATCH (p:person) " +
@@ -102,8 +105,9 @@ public class OrderByTest {
                 "ORDER BY relevance, p.age"
         );
 
-        //todo
-        System.out.println(results);
+        assertThat(results)
+            .extracting("age")
+            .containsExactly(27L, 29L, 32L, 35L);
     }
 
     @Test
@@ -124,6 +128,7 @@ public class OrderByTest {
     }
 
     @Test
+    @Category(SkipWithCosmosDB.IsNeqOnDifferentTypes.class)
     public void doubleAggregation() {
         List<Map<String, Object>> results = submitAndGet(
             "MATCH (p:person)" +
