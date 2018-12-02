@@ -53,7 +53,7 @@ public class ParameterTest {
     }
 
     @Test
-    @Category(WithCustomPredicates.class)
+    @Category(WithCustomPredicates.class) //todo
     public void whereIn() throws Exception {
         List<Map<String, Object>> results = submitAndGet(
             "MATCH (n:person) " +

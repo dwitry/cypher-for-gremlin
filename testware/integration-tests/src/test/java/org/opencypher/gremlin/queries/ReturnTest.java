@@ -375,6 +375,21 @@ public class ReturnTest {
 
     @Test
     @Category(WithCustomPredicates.class)
+    public void test() throws Exception {
+        String cypher = "MATCH (n:person)\n" +
+            "RETURN n.name STARTS WITH 'ma', toString(n.age)";
+        List<Map<String, Object>> results = submitAndGet(cypher);
+
+        assertThat(results)
+            .extracting("r")
+            .containsExactlyInAnyOrder(
+                asList(g.MARKO, g.VADAS),
+                asList(g.MARKO, g.JOSH)
+            );
+    }
+
+    @Test
+    @Category(WithCustomPredicates.class)
     public void nodesFunctionKeepsTraversalHistory() throws Exception {
         String cypher = "MATCH p = (first:person)-[:knows]->(:person)\n" +
             "RETURN nodes(p) as r, first.name as n";
