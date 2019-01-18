@@ -235,6 +235,11 @@ class IRGremlinSteps extends GremlinSteps[Seq[GremlinStep], GremlinPredicate] {
     this
   }
 
+  override def index(): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
+    buf += Index
+    this
+  }
+
   override def inject(injections: AnyRef*): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
     buf += Inject(injections: _*)
     this
@@ -508,6 +513,11 @@ class IRGremlinSteps extends GremlinSteps[Seq[GremlinStep], GremlinPredicate] {
 
   override def where(predicate: GremlinPredicate): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
     buf += WhereP(predicate)
+    this
+  }
+
+  override def `with`(name: String, value: Object): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
+    buf += With(name, value)
     this
   }
 }

@@ -279,6 +279,12 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     }
 
     @Override
+    public GremlinSteps<String, GroovyPredicate> index() {
+        g.append(chain("index"));
+        return this;
+    }
+
+    @Override
     public GremlinSteps<String, GroovyPredicate> inV() {
         g.append(chain("inV"));
         return this;
@@ -592,6 +598,12 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     @Override
     public GremlinSteps<String, GroovyPredicate> where(GroovyPredicate predicate) {
         g.append(chain("where", predicate));
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<String, GroovyPredicate> with(String name, Object value) {
+        g.append(chain("with", name, value));
         return this;
     }
 

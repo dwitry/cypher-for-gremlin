@@ -179,6 +179,8 @@ case class InE(edgeLabels: String*) extends GremlinStep
 
 case object InV extends GremlinStep
 
+case object Index extends GremlinStep
+
 case class Inject(injections: Any*) extends GremlinStep
 
 case class Is(predicate: GremlinPredicate) extends GremlinStep
@@ -384,3 +386,5 @@ case class WhereT(whereTraversal: Seq[GremlinStep]) extends GremlinStep {
 }
 
 case class WhereP(predicate: GremlinPredicate) extends GremlinStep
+
+case class With(name: String, value: Object) extends GremlinStep

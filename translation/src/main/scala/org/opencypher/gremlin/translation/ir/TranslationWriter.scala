@@ -144,6 +144,8 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
           g.inE(edgeLabels: _*)
         case InV =>
           g.inV()
+        case Index =>
+          g.index()
         case Inject(injections @ _*) =>
           g.inject(injections.map(writeValue): _*)
         case Is(predicate) =>
@@ -246,6 +248,8 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
           g.where(writeLocalSteps(whereTraversal))
         case WhereP(predicate) =>
           g.where(writePredicate(predicate))
+        case With(name, value) =>
+          g.`with`(name, value)
       }
     }
     g

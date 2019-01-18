@@ -277,6 +277,12 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
     }
 
     @Override
+    public GremlinSteps<Bytecode, P> index() {
+        bytecode.addStep(Symbols.index);
+        return this;
+    }
+
+    @Override
     public GremlinSteps<Bytecode, P> inject(Object... injections) {
         bytecode.addStep(Symbols.inject, (Object[]) injections);
         return this;
@@ -581,6 +587,12 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
     @Override
     public GremlinSteps<Bytecode, P> where(P predicate) {
         bytecode.addStep(Symbols.where, predicate);
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<Bytecode, P> with(String name, Object value) {
+        bytecode.addStep(Symbols.with, name, value);
         return this;
     }
 

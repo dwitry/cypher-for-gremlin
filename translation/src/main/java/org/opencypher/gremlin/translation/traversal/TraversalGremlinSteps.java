@@ -316,6 +316,12 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
+    public GremlinSteps<GraphTraversal, P> index() {
+        g.index();
+        return this;
+    }
+
+    @Override
     public GremlinSteps<GraphTraversal, P> inject(Object... injections) {
         g.inject(injections);
         return this;
@@ -627,6 +633,12 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     @Override
     public GremlinSteps<GraphTraversal, P> where(P predicate) {
         g.where(predicate);
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<GraphTraversal, P> with(String name, Object value) {
+        g.with(name, value);
         return this;
     }
 
