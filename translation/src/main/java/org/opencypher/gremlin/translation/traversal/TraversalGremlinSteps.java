@@ -393,6 +393,13 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
         return this;
     }
 
+
+    @Override
+    public GremlinSteps<GraphTraversal, P> max(Scope scope) {
+        g.max(scope);
+        return this;
+    }
+
     @Override
     public GremlinSteps<GraphTraversal, P> mean() {
         g.mean();
@@ -400,8 +407,20 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
+    public GremlinSteps<GraphTraversal, P> mean(Scope scope) {
+        g.mean(scope);
+        return this;
+    }
+
+    @Override
     public GremlinSteps<GraphTraversal, P> min() {
         g.min();
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<GraphTraversal, P> min(Scope scope) {
+        g.min(scope);
         return this;
     }
 
