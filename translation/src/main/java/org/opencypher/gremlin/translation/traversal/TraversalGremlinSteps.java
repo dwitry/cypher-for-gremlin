@@ -626,6 +626,7 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
+    @SuppressWarnings( "deprecation" )
     public GremlinSteps<GraphTraversal, P> valueMap(boolean includeTokens) {
         g.valueMap(includeTokens);
         return this;
