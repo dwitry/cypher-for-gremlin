@@ -25,7 +25,6 @@ import org.junit.jupiter.api.{DynamicTest, TestFactory}
 import org.opencypher.gremlin.rules.GremlinServerExternalResource
 import org.opencypher.gremlin.tck.GremlinQueries._
 import org.opencypher.gremlin.tck.TckGremlinCypherValueConverter._
-import org.opencypher.gremlin.tck.reports.CucumberReportAdapter
 import org.opencypher.gremlin.traversal.PredefinedProcedureRegistry
 import org.opencypher.tools.tck.api._
 import org.opencypher.tools.tck.values.CypherValue
@@ -72,7 +71,7 @@ object TinkerGraphServerEmbeddedGraph extends Graph with ProcedureSupport {
   }
 }
 
-@ExtendWith(Array(classOf[CucumberReportAdapter]))
+@ExtendWith(Array(classOf[org.opencypher.tools.tck.reporting.CucumberReportAdapter]))
 class TckTest {
   @TestFactory
   def testTck(): util.Collection[DynamicTest] = {
