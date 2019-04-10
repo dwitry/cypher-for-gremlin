@@ -183,8 +183,8 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
       case Modulo(lhs, rhs)   => math(lhs, rhs, "%")
 
       case ContainerIndex(expr, idx) =>
-        (typeOf(expr), idx) match {
-          case (_: ListType, l: IntegerLiteral) if l.value >= 0 =>
+        idx match {
+          case l: IntegerLiteral if l.value >= 0 =>
             walkLocal(expr, maybeAlias).flatMap(
               emptyToNull(
                 __.range(Scope.local, l.value, l.value + 1),

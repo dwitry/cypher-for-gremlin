@@ -16,11 +16,12 @@
 package org.opencypher.gremlin.translation.ir.rewrite
 
 import org.apache.tinkerpop.gremlin.process.traversal.Scope.local
+import org.apache.tinkerpop.gremlin.structure.Column
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.exception.CypherExceptions
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
-import org.opencypher.gremlin.traversal.CustomFunction.{cypherException, cypherPlus, cypherProperties, cypherSize}
+import org.opencypher.gremlin.traversal.CustomFunction._
 
 /**
   * Replaces Custom Functions with "The Best We Could Do" Gremlin native alternatives
@@ -45,6 +46,16 @@ object CustomFunctionFallback extends GremlinRewriter {
 
       case MapF(function) :: rest if function.getName == cypherProperties().getName =>
         Local(Properties() :: Group :: By(Key :: Nil, None) :: By(MapT(Value :: Nil) :: Nil, None) :: Nil) :: rest
+
+//project('  GENERATED2', '  GENERATED3').
+//                by(__.identity()).
+//                by(__.choose(__.constant('value'), __.constant('value'), __.constant('  cypher.null'))).
+//                select(values).
+//                map(cypherContainerIndex()))
+
+      case Project(_*) :: By(e, None) :: By(ChooseT3(Constant(GremlinBinding(k)) :: Nil, _, _) :: Nil, None) :: SelectC(
+            Column.values) :: MapF(function) :: rest if function.getName == cypherContainerIndex().getName =>
+        FlatMapT(e) :: SelectK(k) :: rest
 
       case SelectK(pathName) :: FlatMapT(MapT(Unfold :: Is(IsNode()) :: Fold :: Nil) :: Nil) :: rest =>
         SelectK(pathName) :: Path :: From(MATCH_START + pathName) :: To(MATCH_END + pathName) :: By(Identity :: Nil) :: By(

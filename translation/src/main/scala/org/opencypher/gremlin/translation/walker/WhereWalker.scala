@@ -106,9 +106,8 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
         }
 
       case ContainerIndex(expr, idx) =>
-        val typ = context.expressionTypes.getOrElse(expr, AnyType.instance)
-        (typ, idx) match {
-          case (_: ListType, l: IntegerLiteral) if l.value >= 0 =>
+        idx match {
+          case l: IntegerLiteral if l.value >= 0 =>
             walkExpression(expr).range(Scope.local, l.value, l.value + 1)
           case _ =>
             asList(expr, idx).map(CustomFunction.cypherContainerIndex()).is(p.neq(NULL))

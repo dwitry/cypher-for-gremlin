@@ -15,6 +15,7 @@
  */
 package org.opencypher.gremlin.queries;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
@@ -236,5 +237,29 @@ public class ContainerIndexTest {
         assertThat(results)
             .extracting("r")
             .containsExactly("baz");
+    }
+
+    @Test
+    @Category(SkipExtensions.CustomFunctions.class)
+    public void myTest() throws Exception {
+        List<Map<String, Object>> results = submitAndGet(
+            "WITH $param AS list " +
+                "RETURN list[2] AS r",
+            ImmutableMap.of("param", asList("a", "b", "c"))
+        );
+
+        System.out.println(results);
+    }
+
+    @Test
+    @Category(SkipExtensions.CustomFunctions.class)
+    public void myTest2() throws Exception {
+        List<Map<String, Object>> results = submitAndGet(
+            "WITH $param AS list " +
+                "RETURN list[$lkey] AS r",
+            ImmutableMap.of("param", ImmutableMap.of("value", "malue"), "lkey", "value")
+        );
+
+        System.out.println(results);
     }
 }
