@@ -20,15 +20,16 @@ import static org.opencypher.gremlin.translation.groovy.StringTranslationUtils.a
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.tinkerpop.gremlin.process.traversal.Bytecode;
-import org.apache.tinkerpop.gremlin.process.traversal.Order;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
-import org.apache.tinkerpop.gremlin.process.traversal.Pop;
-import org.apache.tinkerpop.gremlin.process.traversal.Scope;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal.Symbols;
-import org.apache.tinkerpop.gremlin.structure.Column;
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality;
 import org.apache.tinkerpop.gremlin.util.function.Lambda;
 import org.opencypher.gremlin.translation.GremlinSteps;
+import org.opencypher.gremlin.translation.ir.model.Cardinality;
+import org.opencypher.gremlin.translation.ir.model.Column;
+import org.opencypher.gremlin.translation.ir.model.GremlinToken;
+import org.opencypher.gremlin.translation.ir.model.Pop;
+import org.opencypher.gremlin.translation.ir.model.Scope;
+import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
 import org.opencypher.gremlin.traversal.CustomFunction;
 
 @SuppressWarnings("unchecked")
@@ -117,7 +118,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
     }
 
     @Override
-    public GremlinSteps<Bytecode, P> by(GremlinSteps<Bytecode, P> traversal, Order order) {
+    public GremlinSteps<Bytecode, P> by(GremlinSteps<Bytecode, P> traversal, TraversalOrder order) {
         bytecode.addStep(Symbols.by, traversal.current(), order);
         return this;
     }
@@ -461,7 +462,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
     }
 
     @Override
-    public GremlinSteps<Bytecode, P> property(org.apache.tinkerpop.gremlin.structure.T token, Object value) {
+    public GremlinSteps<Bytecode, P> property(GremlinToken token, Object value) {
         bytecode.addStep(Symbols.property, token, value);
         return this;
     }

@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencypher.gremlin.translation.traversal;
+package org.opencypher.gremlin.translation;
 
-import org.apache.tinkerpop.gremlin.process.traversal.Order;
+/**
+ * todo
+ */
+public interface GremlinTokens<S,C> {
+    interface Scope<S> {
+        S local();
+        S global();
+    }
+    Scope<S> scope();
 
-@SuppressWarnings("deprecation")
-public class DeprecatedOrderAccessor {
-    public static Order incr = Order.incr;
-    public static Order decr = Order.decr;
+    interface Column<C> {
+        C values();
+        C keys();
+    }
+    Column<C> column();
+
 }

@@ -15,12 +15,12 @@
  */
 package org.opencypher.gremlin.translation;
 
-import org.apache.tinkerpop.gremlin.process.traversal.Order;
-import org.apache.tinkerpop.gremlin.process.traversal.Pop;
-import org.apache.tinkerpop.gremlin.process.traversal.Scope;
-import org.apache.tinkerpop.gremlin.structure.Column;
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality;
-import org.opencypher.gremlin.translation.translator.Translator;
+import org.opencypher.gremlin.translation.ir.model.Cardinality;
+import org.opencypher.gremlin.translation.ir.model.Column;
+import org.opencypher.gremlin.translation.ir.model.GremlinToken;
+import org.opencypher.gremlin.translation.ir.model.Pop;
+import org.opencypher.gremlin.translation.ir.model.Scope;
+import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
 import org.opencypher.gremlin.traversal.CustomFunction;
 
 /**
@@ -75,7 +75,7 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> by(GremlinSteps<T, P> traversal);
 
-    GremlinSteps<T, P> by(GremlinSteps<T, P> traversal, Order order);
+    GremlinSteps<T, P> by(GremlinSteps<T, P> traversal, TraversalOrder order);
 
     GremlinSteps<T, P> cap(String sideEffectKey);
 
@@ -192,7 +192,7 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> properties(String... propertyKeys);
 
-    GremlinSteps<T, P> property(org.apache.tinkerpop.gremlin.structure.T token, Object value);
+    GremlinSteps<T, P> property(GremlinToken token, Object value);
 
     GremlinSteps<T, P> property(String key, Object value);
 

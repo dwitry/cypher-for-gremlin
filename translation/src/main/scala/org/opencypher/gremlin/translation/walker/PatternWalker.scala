@@ -15,10 +15,10 @@
  */
 package org.opencypher.gremlin.translation.walker
 
-import org.apache.tinkerpop.gremlin.process.traversal.Scope
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
+import org.opencypher.gremlin.translation.ir.model.Scope
 import org.opencypher.gremlin.translation.walker.NodeUtils._
 import org.opencypher.v9_0.expressions.SemanticDirection._
 import org.opencypher.v9_0.expressions.{UnsignedDecimalIntegerLiteral => UDIL, _}

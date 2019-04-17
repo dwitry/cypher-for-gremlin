@@ -25,10 +25,10 @@ import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.SyntaxException
 import org.opencypher.gremlin.translation.ir.TranslationWriter
 import org.opencypher.gremlin.translation.ir.builder.{IRGremlinBindings, IRGremlinPredicates, IRGremlinSteps}
-import org.opencypher.gremlin.translation.ir.model.GremlinStep
+import org.opencypher.gremlin.translation.ir.model.{GremlinPredicate, GremlinStep}
 import org.opencypher.gremlin.translation.preparser._
 import org.opencypher.gremlin.translation.translator.TranslatorFeature.{CYPHER_EXTENSIONS, MULTIPLE_LABELS}
-import org.opencypher.gremlin.translation.translator.{Translator, TranslatorFeature, TranslatorFlavor}
+import org.opencypher.gremlin.translation.translator.{TheTranslator, TranslatorFeature, TranslatorFlavor}
 import org.opencypher.gremlin.translation.walker.StatementWalker
 import org.opencypher.gremlin.traversal.ProcedureContext
 import org.opencypher.v9_0.ast._
@@ -76,15 +76,14 @@ class CypherAst private (
       flavor: TranslatorFlavor,
       features: Seq[TranslatorFeature],
       procedures: ProcedureContext): Seq[GremlinStep] = {
-    val dslBuilder = Translator
-      .builder()
-      .custom(
-        new IRGremlinSteps,
-        new IRGremlinPredicates,
-        new IRGremlinBindings
-      )
-    features.foreach(dslBuilder.enable)
-    val dsl = dslBuilder.build()
+
+    val dsl = new TheTranslator[Seq[GremlinStep], GremlinPredicate](
+      new IRGremlinSteps,
+      new IRGremlinPredicates,
+      new IRGremlinBindings,
+      features.toSet.asJava,
+      TranslatorFlavor.empty
+    )
 
     val context = WalkerContext(dsl, expressionTypes, procedures, parameters)
     StatementWalker.walk(context, statement)
@@ -107,7 +106,7 @@ class CypherAst private (
     * @tparam P predicate target type
     * @return to-Gremlin translation
     */
-  def buildTranslation[T, P](dsl: Translator[T, P]): T = {
+  def buildTranslation[T, P](dsl: TheTranslator[T, P]): T = {
     val ir = translate(dsl.flavor(), dsl.features().asScala.toSeq, ProcedureContext.empty())
     TranslationWriter.write(ir, dsl, parameters)
   }

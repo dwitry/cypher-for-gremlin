@@ -17,13 +17,12 @@ package org.opencypher.gremlin.traversal;
 
 import java.util.Objects;
 import java.util.function.Function;
-import org.apache.tinkerpop.gremlin.process.traversal.Traverser;
 
 public class CustomFunction {
     private final String name;
-    private final Function<Traverser, Object> implementation;
+    private final Function implementation;
 
-    CustomFunction(String name, Function<Traverser, Object> implementation) {
+    CustomFunction(String name, Function implementation) {
         this.name = name;
         this.implementation = implementation;
     }
@@ -32,119 +31,119 @@ public class CustomFunction {
         return name;
     }
 
-    public Function<Traverser, Object> getImplementation() {
+    public Function getImplementation() {
         return implementation;
     }
 
     public static CustomFunction cypherRound() {
         return new CustomFunction(
             "cypherRound",
-            CustomFunctions.cypherRound()
+            null //CustomFunctions.cypherRound()
         );
     }
 
     public static CustomFunction cypherToString() {
         return new CustomFunction(
             "cypherToString",
-            CustomFunctions.cypherToString()
+            null // CustomFunctions.cypherToString()
         );
     }
 
     public static CustomFunction cypherToBoolean() {
         return new CustomFunction(
             "cypherToBoolean",
-            CustomFunctions.cypherToBoolean()
+            null //CustomFunctions.cypherToBoolean()
         );
     }
 
     public static CustomFunction cypherToInteger() {
         return new CustomFunction(
             "cypherToInteger",
-            CustomFunctions.cypherToInteger()
+            null //CustomFunctions.cypherToInteger()
         );
     }
 
     public static CustomFunction cypherToFloat() {
         return new CustomFunction(
             "cypherToFloat",
-            CustomFunctions.cypherToFloat()
+            null //CustomFunctions.cypherToFloat()
         );
     }
 
     public static CustomFunction cypherProperties() {
         return new CustomFunction(
             "cypherProperties",
-            CustomFunctions.cypherProperties()
+            null //CustomFunctions.cypherProperties()
         );
     }
 
     public static CustomFunction cypherContainerIndex() {
         return new CustomFunction(
             "cypherContainerIndex",
-            CustomFunctions.cypherContainerIndex()
+            null //CustomFunctions.cypherContainerIndex()
         );
     }
 
     public static CustomFunction cypherListSlice() {
         return new CustomFunction(
             "cypherListSlice",
-            CustomFunctions.cypherListSlice()
+            null //CustomFunctions.cypherListSlice()
         );
     }
 
     public static CustomFunction cypherPercentileCont() {
         return new CustomFunction(
             "cypherPercentileCont",
-            CustomFunctions.cypherPercentileCont()
+            null //CustomFunctions.cypherPercentileCont()
         );
     }
 
     public static CustomFunction cypherPercentileDisc() {
         return new CustomFunction(
             "cypherPercentileDisc",
-            CustomFunctions.cypherPercentileDisc()
+            null //CustomFunctions.cypherPercentileDisc()
         );
     }
 
     public static CustomFunction cypherSize() {
         return new CustomFunction(
             "cypherSize",
-            CustomFunctions.cypherSize()
+            null //CustomFunctions.cypherSize()
         );
     }
 
     public static CustomFunction cypherPlus() {
         return new CustomFunction(
             "cypherPlus",
-            CustomFunctions.cypherPlus()
+            null //CustomFunctions.cypherPlus()
         );
     }
 
     public static CustomFunction cypherException() {
         return new CustomFunction(
             "cypherException",
-            CustomFunctions.cypherException()
+            null //CustomFunctions.cypherException()
         );
     }
 
     public static CustomFunction cypherSplit() {
         return new CustomFunction(
             "cypherSplit",
-            CustomFunctions.cypherSplit()
+            null // CustomFunctions.cypherSplit()
         );
     }
 
     public static CustomFunction cypherReverse() {
         return new CustomFunction(
             "cypherReverse",
-            CustomFunctions.cypherReverse()
+            null // CustomFunctions.cypherReverse()
         );
     }
 
     public static CustomFunction cypherSubstring() {
         return new CustomFunction(
             "cypherSubstring",
-            CustomFunctions.cypherSubstring()
+            null // CustomFunctions.cypherSubstring()
         );
     }
 
@@ -152,35 +151,35 @@ public class CustomFunction {
     public static CustomFunction cypherTrim() {
         return new CustomFunction(
             "cypherTrim",
-            CustomFunctions.cypherTrim()
+            null //CustomFunctions.cypherTrim()
         );
     }
 
     public static CustomFunction cypherToLower() {
         return new CustomFunction(
             "cypherToLower",
-            CustomFunctions.cypherToLower()
+            null //CustomFunctions.cypherToLower()
         );
     }
 
     public static CustomFunction cypherToUpper() {
         return new CustomFunction(
             "cypherToUpper",
-            CustomFunctions.cypherToUpper()
+            null //CustomFunctions.cypherToUpper()
         );
     }
 
     public static CustomFunction cypherReplace() {
         return new CustomFunction(
             "cypherReplace",
-            CustomFunctions.cypherReplace()
+            null //CustomFunctions.cypherReplace()
         );
     }
 
     public static CustomFunction cypherCopyProperties() {
         return new CustomFunction(
             "cypherCopyProperties",
-            CustomFunctions.cypherCopyProperties()
+            null //CustomFunctions.cypherCopyProperties()
         );
     }
 
