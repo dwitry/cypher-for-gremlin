@@ -15,10 +15,10 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.process.traversal.Scope.local
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.exception.CypherExceptions
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
+import org.opencypher.gremlin.translation.ir.model.Scope.local
 import org.opencypher.gremlin.translation.ir.model._
 import org.opencypher.gremlin.traversal.CustomFunction.{cypherException, cypherPlus, cypherProperties, cypherSize}
 

@@ -16,8 +16,6 @@
 package org.opencypher.gremlin.translation.translator;
 
 
-import org.apache.tinkerpop.gremlin.structure.Edge;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 /**
  * Translator features are additional behaviors that can be allowed in translation.

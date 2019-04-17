@@ -113,7 +113,7 @@ project(':translation') {
     sourceSets.test.java.srcDirs = []
 
     dependencies {
-        compile project(':tinkerpop:cypher-gremlin-extensions')
+//        compile project(':tinkerpop:cypher-gremlin-extensions')
 
         compile "org.scala-lang:scala-library:${scalaVersion}.${scalaPatchVersion}"
         compile "org.scala-lang.modules:scala-java8-compat_${scalaVersion}:0.8.0"
@@ -145,7 +145,7 @@ project(':tinkerpop:cypher-gremlin-server-client') {
     description 'Gremlin Server client wrapper that can send Cypher queries to a Cypher-enabled Gremlin Server'
 
     dependencies {
-        compile project(':translation')
+        compile project(':tinkerpop:tinkerpop-bindings')
 
         compile "org.apache.tinkerpop:gremlin-driver:${tinkerpopVersion}"
     }
@@ -159,7 +159,7 @@ project(':tinkerpop:cypher-gremlin-server-plugin') {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     dependencies {
-        compile (project(':translation')) {
+        compile (project(':tinkerpop:tinkerpop-bindings')) {
             exclude group: 'org.apache.tinkerpop'
         }
 
@@ -200,6 +200,13 @@ project(':tinkerpop:cypher-gremlin-neo4j-driver') {
         compile 'org.neo4j.driver:neo4j-java-driver:1.4.4'
 
         testCompile "org.apache.tinkerpop:tinkergraph-gremlin:${tinkerpopVersion}"
+    }
+}
+
+project(':tinkerpop:tinkerpop-bindings') {
+    dependencies {
+        compile project(':translation')
+        compile project(':tinkerpop:cypher-gremlin-extensions')
     }
 }
 

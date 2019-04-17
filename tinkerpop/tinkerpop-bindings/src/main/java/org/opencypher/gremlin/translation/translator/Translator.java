@@ -15,8 +15,6 @@
  */
 package org.opencypher.gremlin.translation.translator;
 
-
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import org.apache.tinkerpop.gremlin.process.traversal.Bytecode;
@@ -37,108 +35,9 @@ import org.opencypher.gremlin.translation.traversal.TraversalGremlinBindings;
 import org.opencypher.gremlin.translation.traversal.TraversalGremlinPredicates;
 import org.opencypher.gremlin.translation.traversal.TraversalGremlinSteps;
 
-/**
- * Abstraction over the process of building a translation
- * for different targets.
- * <p>
- * Translator instances are not reusable.
- */
-public final class Translator<T, P> {
-    private final GremlinSteps<T, P> steps;
-    private final GremlinPredicates<P> predicates;
-    private final GremlinBindings bindings;
-    private final Set<TranslatorFeature> features;
-    private final TranslatorFlavor flavor;
-
-    private Translator(GremlinSteps<T, P> steps,
-                       GremlinPredicates<P> predicates,
-                       GremlinBindings bindings,
-                       Set<TranslatorFeature> features,
-                       TranslatorFlavor flavor) {
-        this.steps = steps;
-        this.predicates = predicates;
-        this.bindings = bindings;
-        this.features = features;
-        this.flavor = flavor;
-    }
-
-    /**
-     * Provides access to the traversal DSL.
-     *
-     * @return traversal DSL
-     * @see #predicates()
-     * @see #bindings()
-     */
-    public GremlinSteps<T, P> steps() {
-        return steps;
-    }
-
-    /**
-     * Returns a factory for traversal predicates for use with the traversal DSL.
-     *
-     * @return factory for traversal predicates
-     * @see #steps()
-     * @see #bindings()
-     */
-    public GremlinPredicates<P> predicates() {
-        return predicates;
-    }
-
-    /**
-     * Returns a strategy for working with query bindings.
-     *
-     * @return strategy for query bindings
-     * @see #steps()
-     * @see #predicates()
-     */
-    public GremlinBindings bindings() {
-        return bindings;
-    }
-
-    /**
-     * Returns true if a given feature is enabled in this translator.
-     *
-     * @param feature the feature
-     * @return true, if the feature is enabled, false otherwise
-     */
-    public boolean isEnabled(TranslatorFeature feature) {
-        return features.contains(feature);
-    }
-
-    /**
-     * Returns set of translator features
-     *
-     * @return set of {@link TranslatorFeature}
-     */
-    public Set<TranslatorFeature> features() {
-        return Collections.unmodifiableSet(features);
-    }
-
-    /**
-     * Returns the flavor of this translation.
-     *
-     * @return translation flavor
-     */
-    public TranslatorFlavor flavor() {
-        return flavor;
-    }
-
-    /**
-     * Creates a translation for the configured target.
-     *
-     * @return translation
-     */
-    public T translate() {
-        return steps.current();
-    }
-
-    /**
-     * Starts to build a translator.
-     *
-     * @return translator builder
-     */
-    public static Builder builder() {
-        return new Builder();
+public class Translator<T, P> extends TheTranslator<T, P> {
+    public Translator(GremlinSteps<T, P> steps, GremlinPredicates<P> predicates, GremlinBindings bindings, Set<TranslatorFeature> features, TranslatorFlavor flavor) {
+        super(steps, predicates, bindings, features, flavor);
     }
 
     public static final class Builder {
@@ -381,5 +280,14 @@ public final class Translator<T, P> {
         public FlavorBuilder<T, P> inlineParameters() {
             return super.inlineParameters();
         }
+    }
+
+    /**
+     * Starts to build a translator.
+     *
+     * @return translator builder
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 }

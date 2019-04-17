@@ -15,17 +15,13 @@
  */
 package org.opencypher.gremlin.translation.walker
 
-import org.apache.tinkerpop.gremlin.process.traversal.Scope
-import org.apache.tinkerpop.gremlin.process.traversal.step.TraversalOptionParent.Pick
-import org.apache.tinkerpop.gremlin.structure.Column.keys
-import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions.INVALID_RANGE
 import org.opencypher.gremlin.translation.exception.{ArgumentException, SyntaxException}
-import org.opencypher.gremlin.translation.ir.{GremlinParser, TranslationWriter}
-import org.opencypher.gremlin.translation.translator.TranslatorFeature
+import org.opencypher.gremlin.translation.ir.model.Column.keys
+import org.opencypher.gremlin.translation.ir.model.{Scope, Vertex2}
 import org.opencypher.gremlin.translation.walker.NodeUtils._
 import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.expressions._
@@ -227,7 +223,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case "id"               => traversals.head.flatMap(notNull(__.id(), context))
           case "keys" if onEntity => traversals.head.map(__.properties().key().fold())
           case "keys"             => traversals.head.select(keys)
-          case "labels"           => traversals.head.map(__.label().is(p.neq(Vertex.DEFAULT_LABEL)).fold())
+          case "labels"           => traversals.head.map(__.label().is(p.neq(Vertex2.DEFAULT_LABEL)).fold())
           case "length"           => traversals.head.count(Scope.local).math("(_-1)/2")
           case "last"             => traversals.head.flatMap(emptyToNull(__.tail(Scope.local, 1), context))
           case "nodes"            => traversals.head.flatMap(filterElements(args, includeNodes = true))
@@ -240,7 +236,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case "round"            => traversals.head.map(CustomFunction.cypherRound())
           case "sqrt"             => traversals.head.math("sqrt(_)")
           case "tail"             => traversals.head.flatMap(__.range(Scope.local, 1, -1))
-          case "type"             => traversals.head.flatMap(notNull(__.label().is(p.neq(Vertex.DEFAULT_LABEL)), context))
+          case "type"             => traversals.head.flatMap(notNull(__.label().is(p.neq(Vertex2.DEFAULT_LABEL)), context))
           case "reverse"          => traversals.head.map(CustomFunction.cypherReverse())
           case "split"            => asList(args(0), args(1)).map(CustomFunction.cypherSplit())
           case "substring" if a3  => asList(args(0), args(1), args(2)).map(CustomFunction.cypherSubstring())
@@ -252,7 +248,6 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case "tofloat"          => traversals.head.map(CustomFunction.cypherToFloat())
           case "tointeger"        => traversals.head.map(CustomFunction.cypherToInteger())
           case "tostring"         => traversals.head.map(CustomFunction.cypherToString())
-          case "gremlin"          => injectGremlin(args)
           case _ =>
             throw new SyntaxException(s"Unknown function '$fnName'")
         }
@@ -606,7 +601,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
         )
       }
 
-      choose.option(Pick.none, defaultValue)
+      choose.option(Vertex2.none, defaultValue)
     }
 
     val tokensContainsExpressions =
@@ -621,21 +616,5 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
       case None =>
         nestedChoose(__.is(p.isEq(true)))
     }
-  }
-
-  def injectGremlin(args: Seq[Expression]): GremlinSteps[T, P] = {
-    if (!context.dsl.isEnabled(TranslatorFeature.EXPERIMENTAL_GREMLIN_FUNCTION)) {
-      context.unsupported(
-        "`gremlin` function. `TranslatorFeature#EXPERIMENTAL_GREMLIN_FUNCTION` needs to be explicitly enabled.",
-        args.head)
-    }
-
-    val steps = g.start()
-
-    val gremlin = inlineExpressionValue(args.head, context, classOf[String])
-    val ir = GremlinParser.parse(gremlin)
-    TranslationWriter.writeTo(ir, steps, context.dsl, Map[String, Any]())
-
-    g.start().map(steps)
   }
 }

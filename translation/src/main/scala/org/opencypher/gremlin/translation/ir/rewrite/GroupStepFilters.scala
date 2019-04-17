@@ -15,7 +15,6 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.structure.T
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model.{Id, _}
 
@@ -95,10 +94,10 @@ object GroupStepFilters extends GremlinRewriter {
       case SelectK(stepLabel) :: Values(propertyKey) :: Is(predicate) :: Nil =>
         (stepLabel, HasP(propertyKey, predicate)) :: Nil
       case SelectK(stepLabel) :: ChooseP2(_, Id :: Nil) :: Is(_) :: Is(predicate) :: Nil =>
-        (stepLabel, HasP(T.id.getAccessor, predicate)) :: Nil
+        (stepLabel, HasP(GremlinToken.id, predicate)) :: Nil
       case ChooseT3(Seq(Constant(value)), _, _) :: Is(_) :: As(_) :: SelectK(stepLabel) :: ChooseP2(_, Seq(Id)) :: Is(_) :: WhereP(
             _: Eq) :: Nil =>
-        (stepLabel, HasP(T.id.getAccessor, Eq(value))) :: Nil
+        (stepLabel, HasP(GremlinToken.id, Eq(value))) :: Nil
       case SelectK(stepLabel) :: rest if rest.forall(_.isInstanceOf[HasLabel]) =>
         rest.map((stepLabel, _))
       case _ =>

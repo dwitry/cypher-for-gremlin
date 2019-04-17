@@ -15,7 +15,7 @@
  */
 package org.opencypher.gremlin.translation.context
 
-import org.opencypher.gremlin.translation.translator.Translator
+import org.opencypher.gremlin.translation.translator.TheTranslator
 import org.opencypher.gremlin.traversal.ProcedureContext
 import org.opencypher.v9_0.expressions.Expression
 import org.opencypher.v9_0.util.symbols.CypherType
@@ -24,7 +24,7 @@ import scala.collection.mutable
 
 object WalkerContext {
   def apply[T, P](
-      dsl: Translator[T, P],
+      dsl: TheTranslator[T, P],
       expressionTypes: Map[Expression, CypherType],
       procedures: ProcedureContext,
       parameters: Map[String, Any]): WalkerContext[T, P] = {
@@ -41,7 +41,7 @@ object WalkerContext {
   * @param parameters      Cypher query parameters
   */
 sealed class WalkerContext[T, P](
-    val dsl: Translator[T, P],
+    val dsl: TheTranslator[T, P],
     val expressionTypes: Map[Expression, CypherType],
     val procedures: ProcedureContext,
     private val parameters: Map[String, Any]) {

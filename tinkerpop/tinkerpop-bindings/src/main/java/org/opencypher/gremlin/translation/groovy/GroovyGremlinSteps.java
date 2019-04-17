@@ -19,12 +19,13 @@ import static org.opencypher.gremlin.translation.groovy.StringTranslationUtils.a
 import static org.opencypher.gremlin.translation.groovy.StringTranslationUtils.chain;
 
 import java.util.stream.Stream;
-import org.apache.tinkerpop.gremlin.process.traversal.Order;
-import org.apache.tinkerpop.gremlin.process.traversal.Pop;
-import org.apache.tinkerpop.gremlin.process.traversal.Scope;
-import org.apache.tinkerpop.gremlin.structure.Column;
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality;
 import org.opencypher.gremlin.translation.GremlinSteps;
+import org.opencypher.gremlin.translation.ir.model.Cardinality;
+import org.opencypher.gremlin.translation.ir.model.Column;
+import org.opencypher.gremlin.translation.ir.model.GremlinToken;
+import org.opencypher.gremlin.translation.ir.model.Pop;
+import org.opencypher.gremlin.translation.ir.model.Scope;
+import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
 import org.opencypher.gremlin.traversal.CustomFunction;
 
 public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate> {
@@ -122,8 +123,7 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> by(GremlinSteps<String, GroovyPredicate> traversal,
-                                                    Order order) {
+    public GremlinSteps<String, GroovyPredicate> by(GremlinSteps<String, GroovyPredicate> traversal, TraversalOrder order) {
         g.append(chain("by", traversal(traversal), order));
         return this;
     }
@@ -470,7 +470,7 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> property(org.apache.tinkerpop.gremlin.structure.T token, Object value) {
+    public GremlinSteps<String, GroovyPredicate> property(GremlinToken token, Object value) {
         g.append(chain("property", token, value));
         return this;
     }

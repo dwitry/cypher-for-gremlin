@@ -16,7 +16,6 @@
 package org.opencypher.gremlin.translation;
 
 import org.opencypher.gremlin.translation.translator.Translator;
-import org.opencypher.gremlin.traversal.CustomPredicate;
 
 /**
  * Gremlin {@link org.apache.tinkerpop.gremlin.process.traversal.P} predicate abstraction.

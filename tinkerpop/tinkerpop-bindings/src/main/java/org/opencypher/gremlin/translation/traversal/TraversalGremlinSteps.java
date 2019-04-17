@@ -16,21 +16,17 @@
 package org.opencypher.gremlin.translation.traversal;
 
 import java.util.stream.Stream;
-import org.apache.tinkerpop.gremlin.process.traversal.Order;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
-import org.apache.tinkerpop.gremlin.process.traversal.Pop;
-import org.apache.tinkerpop.gremlin.process.traversal.Scope;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal.Symbols;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.AddVertexStartStep;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.GraphStep;
-import org.apache.tinkerpop.gremlin.structure.Column;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality;
 import org.apache.tinkerpop.gremlin.structure.util.empty.EmptyGraph;
 import org.opencypher.gremlin.translation.GremlinSteps;
+import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
 import org.opencypher.gremlin.traversal.CustomFunction;
 
 @SuppressWarnings("unchecked")
@@ -40,6 +36,11 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
 
     public TraversalGremlinSteps(GraphTraversal g) {
         this.g = g;
+    }
+
+    public <T> T unapply(Object unapply) {
+
+        return null;
     }
 
     @Override
@@ -146,8 +147,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> by(GremlinSteps<GraphTraversal, P> traversal, Order order) {
-        g.by(traversal.current(), order);
+    public GremlinSteps<GraphTraversal, P> by(GremlinSteps<GraphTraversal, P> traversal, TraversalOrder order) {
+        g.by(traversal.current(), unapply(order));
         return this;
     }
 
@@ -217,8 +218,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> count(Scope scope) {
-        g.count(scope);
+    public GremlinSteps<GraphTraversal, P> count(org.opencypher.gremlin.translation.ir.model.Scope  scope) {
+        g.count(unapply(scope));
         return this;
     }
 
@@ -365,8 +366,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> limit(Scope scope, long limit) {
-        g.limit(scope, limit);
+    public GremlinSteps<GraphTraversal, P> limit(org.opencypher.gremlin.translation.ir.model.Scope scope, long limit) {
+        g.limit(unapply(scope), limit);
         return this;
     }
 
@@ -408,8 +409,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
 
 
     @Override
-    public GremlinSteps<GraphTraversal, P> max(Scope scope) {
-        g.max(scope);
+    public GremlinSteps<GraphTraversal, P> max(org.opencypher.gremlin.translation.ir.model.Scope scope) {
+        g.max(unapply(scope));
         return this;
     }
 
@@ -420,8 +421,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> mean(Scope scope) {
-        g.mean(scope);
+    public GremlinSteps<GraphTraversal, P> mean(org.opencypher.gremlin.translation.ir.model.Scope scope) {
+        g.mean(unapply(scope));
         return this;
     }
 
@@ -432,8 +433,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> min(Scope scope) {
-        g.min(scope);
+    public GremlinSteps<GraphTraversal, P> min(org.opencypher.gremlin.translation.ir.model.Scope scope) {
+        g.min(unapply(scope));
         return this;
     }
 
@@ -498,8 +499,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> property(org.apache.tinkerpop.gremlin.structure.T token, Object value) {
-        g.property(token, value);
+    public GremlinSteps<GraphTraversal, P> property(org.opencypher.gremlin.translation.ir.model.GremlinToken token, Object value) {
+        g.property(unapply(token), value);
         return this;
     }
 
@@ -510,8 +511,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> property(Cardinality cardinality, String key, Object value) {
-        g.property(cardinality, key, value);
+    public GremlinSteps<GraphTraversal, P> property(org.opencypher.gremlin.translation.ir.model.Cardinality cardinality, String key, Object value) {
+        g.property(unapply(cardinality), key, value);
         return this;
     }
 
@@ -521,8 +522,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> property(Cardinality cardinality, String key, GremlinSteps<GraphTraversal, P> traversal) {
-        g.property(cardinality, key, traversal.current());
+    public GremlinSteps<GraphTraversal, P> property(org.opencypher.gremlin.translation.ir.model.Cardinality cardinality, String key, GremlinSteps<GraphTraversal, P> traversal) {
+        g.property(unapply(cardinality), key, traversal.current());
         return this;
     }
 
@@ -537,8 +538,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> range(Scope scope, long low, long high) {
-        g.range(scope, low, high);
+    public GremlinSteps<GraphTraversal, P> range(org.opencypher.gremlin.translation.ir.model.Scope scope, long low, long high) {
+        g.range(unapply(scope), low, high);
         return this;
     }
 
@@ -549,8 +550,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> select(final Pop pop, String selectKey) {
-        g.select(pop, selectKey);
+    public GremlinSteps<GraphTraversal, P> select(final org.opencypher.gremlin.translation.ir.model.Pop pop, String selectKey) {
+        g.select(unapply(pop), selectKey);
         return this;
     }
 
@@ -567,8 +568,8 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> select(Column column) {
-        g.select(column);
+    public GremlinSteps<GraphTraversal, P> select(org.opencypher.gremlin.translation.ir.model.Column column) {
+        g.select((String) unapply(column));
         return this;
     }
 
@@ -597,14 +598,14 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> sum(Scope scope) {
-        g.sum(scope);
+    public GremlinSteps<GraphTraversal, P> sum(org.opencypher.gremlin.translation.ir.model.Scope scope) {
+        g.sum(unapply(scope));
         return this;
     }
 
     @Override
-    public GremlinSteps<GraphTraversal, P> tail(Scope scope, long limit) {
-        g.tail(scope, limit);
+    public GremlinSteps<GraphTraversal, P> tail(org.opencypher.gremlin.translation.ir.model.Scope scope, long limit) {
+        g.tail(unapply(scope), limit);
         return this;
     }
 
