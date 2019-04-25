@@ -343,6 +343,12 @@ class IRGremlinSteps extends GremlinSteps[Seq[GremlinStep], GremlinPredicate] {
     this
   }
 
+  override def option(pickToken: Pick, traversalOption: GremlinSteps[Seq[GremlinStep], GremlinPredicate])
+    : GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
+    buf += OptionPT(pickToken, traversalOption.current())
+    this
+  }
+
   override def option(pickToken: Object, traversalOption: GremlinSteps[Seq[GremlinStep], GremlinPredicate])
     : GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
     buf += OptionT(pickToken, traversalOption.current())

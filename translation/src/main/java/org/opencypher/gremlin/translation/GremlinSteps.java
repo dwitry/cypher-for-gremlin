@@ -19,6 +19,7 @@ import org.opencypher.gremlin.translation.ir.model.Cardinality;
 import org.opencypher.gremlin.translation.ir.model.Column;
 import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 import org.opencypher.gremlin.translation.ir.model.GremlinToken;
+import org.opencypher.gremlin.translation.ir.model.Pick;
 import org.opencypher.gremlin.translation.ir.model.Pop;
 import org.opencypher.gremlin.translation.ir.model.Scope;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
@@ -172,6 +173,8 @@ public interface GremlinSteps<T, P> {
     GremlinSteps<T, P> min(Scope scope);
 
     GremlinSteps<T, P> not(GremlinSteps<T, P> notTraversal);
+
+    GremlinSteps<T, P> option(Pick pickToken, GremlinSteps<T, P> traversalOption);
 
     GremlinSteps<T, P> option(Object pickToken, GremlinSteps<T, P> traversalOption);
 

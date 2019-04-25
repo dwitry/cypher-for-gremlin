@@ -197,6 +197,8 @@ sealed class TranslationWriter[T, P] private (translator: TheTranslator[T, P], p
           g.not(writeLocalSteps(notTraversal))
         case OptionT(pickToken, optionalTraversal) =>
           g.option(pickToken, writeLocalSteps(optionalTraversal))
+        case OptionPT(pickToken, optionalTraversal) =>
+          g.option(pickToken, writeLocalSteps(optionalTraversal))
         case Optional(optionalTraversal) =>
           g.optional(writeLocalSteps(optionalTraversal))
         case Or(orTraversals @ _*) =>

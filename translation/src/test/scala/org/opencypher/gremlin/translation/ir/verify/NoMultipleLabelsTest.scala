@@ -25,7 +25,7 @@ class NoMultipleLabelsTest {
       NoMultipleLabels
     )
   )
-
+//todo
 //  @Test
 //  def functionsAndPredicates(): Unit = {
 //    val ast = CypherAst.parse("""

@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.util.List;
 import java.util.Map;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.opencypher.gremlin.client.CypherGremlinClient;
@@ -35,6 +36,7 @@ import org.opencypher.gremlin.test.TestCommons;
  * Run this test with `-Dtranslate=gremlin+cfog_server_extensions+experimental_gremlin_function` or
  * `-Dtranslate=bytecode+cfog_server_extensions+experimental_gremlin_function`
  */
+@Ignore //todo
 @Category(SkipWithPlugin.class)
 public class GremlinFunctionTest {
 

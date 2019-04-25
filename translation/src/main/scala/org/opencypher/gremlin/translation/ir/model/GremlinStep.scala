@@ -266,6 +266,16 @@ case class OptionT(pickToken: Object, traversalOption: Seq[GremlinStep]) extends
   }
 }
 
+case class OptionPT(pickToken: Pick, traversalOption: Seq[GremlinStep]) extends GremlinStep {
+  override def mapTraversals(f: Seq[GremlinStep] => Seq[GremlinStep]): GremlinStep = {
+    OptionPT(pickToken, f(traversalOption))
+  }
+
+  override def foldTraversals[R](z: R)(op: (R, Seq[GremlinStep]) => R): R = {
+    op(z, traversalOption)
+  }
+}
+
 case class Optional(optionalTraversal: Seq[GremlinStep]) extends GremlinStep {
   override def mapTraversals(f: Seq[GremlinStep] => Seq[GremlinStep]): GremlinStep = {
     Optional(f(optionalTraversal))
