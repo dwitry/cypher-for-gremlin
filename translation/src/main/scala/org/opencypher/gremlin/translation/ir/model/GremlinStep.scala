@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.opencypher.gremlin.translation.ir.model
+import java.util
 
 sealed trait GremlinStep {
 
@@ -220,7 +221,9 @@ case class Local(traversal: Seq[GremlinStep]) extends GremlinStep {
 
 case object Loops extends GremlinStep
 
-case class MapF(function: CustomFunction) extends GremlinStep
+case class MapF(function: java.util.function.Function[util.Collection[_], AnyRef]) extends GremlinStep
+
+case class MapC(function: CustomFunction) extends GremlinStep
 
 case class MapT(traversal: Seq[GremlinStep]) extends GremlinStep {
   override def mapTraversals(f: Seq[GremlinStep] => Seq[GremlinStep]): GremlinStep = {

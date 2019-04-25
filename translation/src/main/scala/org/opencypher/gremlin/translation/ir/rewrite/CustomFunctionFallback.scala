@@ -32,17 +32,17 @@ object CustomFunctionFallback extends GremlinRewriter {
   override def apply(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
 
     mapTraversals(replace({
-      case Constant(typ) :: MapF(CustomFunction.cypherException) :: rest =>
+      case Constant(typ) :: MapC(CustomFunction.cypherException) :: rest =>
         val text = CypherExceptions.messageByName(typ)
         Path :: From(text) :: rest
 
-      case SelectC(values) :: MapF(CustomFunction.cypherPlus) :: rest =>
+      case SelectC(values) :: MapC(CustomFunction.cypherPlus) :: rest =>
         SelectC(values) :: Local(Unfold :: ChooseP2(Neq(NULL), Sum :: Nil) :: Nil) :: rest
 
-      case MapF(CustomFunction.cypherSize) :: rest =>
+      case MapC(CustomFunction.cypherSize) :: rest =>
         CountS(local) :: rest
 
-      case MapF(CustomFunction.cypherProperties) :: rest =>
+      case MapC(CustomFunction.cypherProperties) :: rest =>
         Local(Properties() :: Group :: By(Key :: Nil, None) :: By(MapT(Value :: Nil) :: Nil, None) :: Nil) :: rest
 
       case SelectK(pathName) :: FlatMapT(MapT(Unfold :: Is(IsNode()) :: Fold :: Nil) :: Nil) :: rest =>

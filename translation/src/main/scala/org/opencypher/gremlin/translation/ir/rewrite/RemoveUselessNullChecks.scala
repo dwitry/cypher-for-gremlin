@@ -51,7 +51,7 @@ object RemoveUselessNullChecks extends GremlinRewriter {
   private def rewriteSegment(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
     val mapsToNull = foldTraversals(false)({ (acc, steps) =>
       acc || steps.exists {
-        case MapF(_)        => true
+        case MapC(_)        => true
         case Constant(NULL) => true
         case _              => false
       }

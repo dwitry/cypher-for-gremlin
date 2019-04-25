@@ -177,6 +177,8 @@ sealed class TranslationWriter[T, P] private (translator: TheTranslator[T, P], p
           g.loops()
         case MapF(function) =>
           g.map(function)
+        case MapC(function) =>
+          g.map(function)
         case MapT(traversal) =>
           g.map(writeLocalSteps(traversal))
         case Math(expression) =>

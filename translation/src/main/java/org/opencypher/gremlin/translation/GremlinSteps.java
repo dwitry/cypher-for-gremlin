@@ -15,6 +15,8 @@
  */
 package org.opencypher.gremlin.translation;
 
+import java.util.Collection;
+import java.util.function.Function;
 import org.opencypher.gremlin.translation.ir.model.Cardinality;
 import org.opencypher.gremlin.translation.ir.model.Column;
 import org.opencypher.gremlin.translation.ir.model.CustomFunction;
@@ -153,6 +155,8 @@ public interface GremlinSteps<T, P> {
     GremlinSteps<T, P> local(GremlinSteps<T, P> localTraversal);
 
     GremlinSteps<T, P> loops();
+
+    GremlinSteps<T, P> map(Function<Collection<?>, Object> function);
 
     GremlinSteps<T, P> map(CustomFunction function);
 

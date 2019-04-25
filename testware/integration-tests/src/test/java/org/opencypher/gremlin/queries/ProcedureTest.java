@@ -28,7 +28,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTrav
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.opencypher.gremlin.extension.TestProcedures;
@@ -39,7 +38,7 @@ import org.opencypher.gremlin.translation.ir.TranslationWriter;
 import org.opencypher.gremlin.translation.ir.model.GremlinStep;
 import org.opencypher.gremlin.translation.translator.Translator;
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor;
-import org.opencypher.gremlin.traversal.ProcedureContext;
+import org.opencypher.gremlin.traversal.GremlinProcedureContext;
 import org.opencypher.gremlin.traversal.ReturnNormalizer;
 import scala.collection.Seq;
 
@@ -50,11 +49,10 @@ import scala.collection.Seq;
     SkipWithBytecode.class,
     SkipWithGremlinGroovy.class
 })
-@Ignore //todo
 public class ProcedureTest {
 
     private GraphTraversalSource gts = TinkerGraph.open().traversal();
-    private ProcedureContext procedureContext = new ProcedureContext(new TestProcedures().get());
+    private GremlinProcedureContext procedureContext = new GremlinProcedureContext(new TestProcedures().get());
     private TranslatorFlavor flavor = TranslatorFlavor.gremlinServer();
 
     private List<Map<String, Object>> submitAndGet(String cypher) {

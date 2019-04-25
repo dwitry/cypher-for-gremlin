@@ -15,6 +15,8 @@
  */
 package org.opencypher.gremlin.translation.traversal;
 
+import java.util.Collection;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
@@ -378,6 +380,12 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     @Override
     public GremlinSteps<GraphTraversal, P> loops() {
         g.loops();
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<GraphTraversal, P> map(Function<Collection<?>, Object> function) {
+        g.map(converter.convert(function));
         return this;
     }
 
