@@ -56,7 +56,7 @@ object GremlinErrors {
       ExecutionFailed(SYNTAX_ERROR, COMPILE_TIME, INVALID_RELATIONSHIP_PATTERN),
     "All sub queries in an UNION must have the same column names .+" ->
       ExecutionFailed(SYNTAX_ERROR, COMPILE_TIME, DIFFERENT_COLUMNS_IN_UNION),
-    "(.+) is not allowed when there are no variables in scope .+" ->
+    "(.+) is not allowed when there are no variables in convert .+" ->
       ExecutionFailed(SYNTAX_ERROR, COMPILE_TIME, NO_VARIABLES_IN_SCOPE),
     "Multiple result columns with the same name are not supported .+" ->
       ExecutionFailed(SYNTAX_ERROR, COMPILE_TIME, COLUMN_NAME_CONFLICT),
