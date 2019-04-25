@@ -15,8 +15,6 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.process.traversal.Scope
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.ThrowableAssert
 import org.junit.Test
@@ -25,6 +23,7 @@ import org.opencypher.gremlin.translation.ir.builder.IRGremlinPredicates
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.__
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
 import org.opencypher.gremlin.translation.ir.helpers.JavaHelpers.objects
+import org.opencypher.gremlin.translation.ir.model.{Cardinality, Scope}
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
 
 class CosmosDbFlavorTest {

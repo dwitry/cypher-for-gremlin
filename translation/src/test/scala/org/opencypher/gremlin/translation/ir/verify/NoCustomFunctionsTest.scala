@@ -15,37 +15,37 @@
  */
 package org.opencypher.gremlin.translation.ir.verify
 
-import org.junit.Test
-import org.opencypher.gremlin.translation.CypherAst
-import org.opencypher.gremlin.translation.ir.helpers.JavaHelpers.assertThatThrownBy
-import org.opencypher.gremlin.translation.translator.{Translator, TranslatorFlavor}
+//import org.junit.Test
+//import org.opencypher.gremlin.translation.CypherAst
+//import org.opencypher.gremlin.translation.ir.helpers.JavaHelpers.assertThatThrownBy
+//import org.opencypher.gremlin.translation.translator.{Translator, TranslatorFlavor}
 
 class NoCustomFunctionsTest {
-
-  val flavor = new TranslatorFlavor(
-    rewriters = Nil,
-    postConditions = Seq(
-      NoCustomFunctions
-    )
-  )
-
-  @Test
-  def predicates(): Unit = {
-    val ast = CypherAst.parse("""MATCH (u:User)
-                                |WITH {key: u} AS nodes
-                                |DELETE nodes.key""".stripMargin)
-    val translator = Translator.builder.gremlinGroovy.build(flavor)
-
-    assertThatThrownBy(() => ast.buildTranslation(translator))
-      .hasMessageContaining("cypherIsNode")
-  }
-
-  @Test
-  def functions(): Unit = {
-    val ast = CypherAst.parse("RETURN toString(1)")
-    val translator = Translator.builder.gremlinGroovy.build(flavor)
-
-    assertThatThrownBy(() => ast.buildTranslation(translator))
-      .hasMessageContaining("cypherToString")
-  }
+//
+//  val flavor = new TranslatorFlavor(
+//    rewriters = Nil,
+//    postConditions = Seq(
+//      NoCustomFunctions
+//    )
+//  )
+//
+//  @Test
+//  def predicates(): Unit = {
+//    val ast = CypherAst.parse("""MATCH (u:User)
+//                                |WITH {key: u} AS nodes
+//                                |DELETE nodes.key""".stripMargin)
+//    val translator = Translator.builder.gremlinGroovy.build(flavor)
+//
+//    assertThatThrownBy(() => ast.buildTranslation(translator))
+//      .hasMessageContaining("cypherIsNode")
+//  }
+//
+//  @Test
+//  def functions(): Unit = {
+//    val ast = CypherAst.parse("RETURN toString(1)")
+//    val translator = Translator.builder.gremlinGroovy.build(flavor)
+//
+//    assertThatThrownBy(() => ast.buildTranslation(translator))
+//      .hasMessageContaining("cypherToString")
+//  }
 }

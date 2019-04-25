@@ -21,9 +21,8 @@ import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions
 import org.opencypher.gremlin.translation.ir.model.Cardinality.single
-import org.opencypher.gremlin.translation.ir.model.Column
+import org.opencypher.gremlin.translation.ir.model.{Column, CustomFunction}
 import org.opencypher.gremlin.translation.{GremlinSteps, Tokens}
-import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.symbols.{AnyType, CypherType, ListType, NodeType, RelationshipType}
 import org.opencypher.v9_0.util.{ASTNode, InputPosition}
@@ -222,7 +221,7 @@ object NodeUtils {
       .sideEffect(
         throwIfTrue
           .constant(exception.toString)
-          .map(CustomFunction.cypherException())
+          .map(CustomFunction.cypherException)
       )
 
   def isElement[T, P](expression: Expression, context: WalkerContext[T, P]): Boolean = {

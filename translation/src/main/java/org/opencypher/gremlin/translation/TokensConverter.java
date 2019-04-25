@@ -17,6 +17,7 @@ package org.opencypher.gremlin.translation;
 
 import org.opencypher.gremlin.translation.ir.model.Cardinality;
 import org.opencypher.gremlin.translation.ir.model.Column;
+import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 import org.opencypher.gremlin.translation.ir.model.Pop;
 import org.opencypher.gremlin.translation.ir.model.Scope;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
@@ -31,4 +32,6 @@ public interface TokensConverter<PR, FN, SC, CO, OR, WI, PO, CA, TO> {
     CO convert(Column scope);
 
     OR convert(TraversalOrder scope);
+
+    FN convert(CustomFunction function);
 }

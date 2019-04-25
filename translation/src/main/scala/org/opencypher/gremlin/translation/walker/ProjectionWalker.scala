@@ -20,10 +20,9 @@ import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.SyntaxException
 import org.opencypher.gremlin.translation.ir.model.Scope.local
-import org.opencypher.gremlin.translation.ir.model.{Column, TraversalOrder, WithOptions}
+import org.opencypher.gremlin.translation.ir.model.{Column, CustomFunction, TraversalOrder, WithOptions}
 import org.opencypher.gremlin.translation.translator.TranslatorFeature.RETURN_GREMLIN_ELEMENTS
 import org.opencypher.gremlin.translation.walker.NodeUtils._
-import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.ast._
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.symbols._
@@ -367,9 +366,9 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case "min" =>
             (Aggregation, traversal.fold().coalesce(__.min(local), __.constant(NULL)))
           case "percentilecont" =>
-            (Aggregation, aggregateWithArguments(args, alias).map(CustomFunction.cypherPercentileCont()))
+            (Aggregation, aggregateWithArguments(args, alias).map(CustomFunction.cypherPercentileCont))
           case "percentiledisc" =>
-            (Aggregation, aggregateWithArguments(args, alias).map(CustomFunction.cypherPercentileDisc()))
+            (Aggregation, aggregateWithArguments(args, alias).map(CustomFunction.cypherPercentileDisc))
           case "sum" =>
             (Aggregation, traversal.fold().coalesce(__.sum(local), __.constant(NULL)))
           case _ =>

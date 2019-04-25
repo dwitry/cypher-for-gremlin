@@ -16,10 +16,8 @@
 package org.opencypher.gremlin.translation.ir.helpers
 
 import org.assertj.core.api.Fail.fail
-import org.opencypher.gremlin.translation.ir.TranslationWriter
 import org.opencypher.gremlin.translation.ir.helpers.TraversalMatcher.containsSteps
 import org.opencypher.gremlin.translation.ir.model.GremlinStep
-import org.opencypher.gremlin.translation.translator.Translator
 
 object TraversalAssertions {
 
@@ -42,14 +40,15 @@ object TraversalAssertions {
   }
 
   def print(traversal: Seq[GremlinStep]): String = {
-    val translator = Translator
-      .builder()
-      .gremlinGroovy()
-      .enableCypherExtensions()
-      .enableMultipleLabels()
-      .build()
-    TranslationWriter
-      .write(traversal, translator, Map.empty[String, Any])
-      .replace("'", "\"")
+    "Todo" //todo
+//    val translator = TheTranslator
+//      .builder()
+//      .gremlinGroovy()
+//      .enableCypherExtensions()
+//      .enableMultipleLabels()
+//      .build()
+//    TranslationWriter
+//      .write(traversal, translator, Map.empty[String, Any])
+//      .replace("'", "\"")
   }
 }

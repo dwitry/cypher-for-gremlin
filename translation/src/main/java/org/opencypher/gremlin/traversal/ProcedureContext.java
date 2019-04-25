@@ -32,6 +32,7 @@ import org.opencypher.gremlin.extension.CypherBindingType;
 import org.opencypher.gremlin.extension.CypherProcedure;
 import org.opencypher.gremlin.extension.CypherProcedureDefinition;
 import org.opencypher.gremlin.extension.CypherProcedureSignature;
+import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 
 public final class ProcedureContext {
 
@@ -95,14 +96,15 @@ public final class ProcedureContext {
     }
 
     public CustomFunction procedureCall(String name) {
-        return new CustomFunction(
-            "procedureCall",
-            traverser -> {
-                //Collection<?> arguments = (Collection<?>) traverser.get();
-                //return call(name, arguments);
-                return  null;
-            }
-        );
+        return null;
+//        return new CustomFunction(
+//            "procedureCall",
+//            traverser -> {
+//                //Collection<?> arguments = (Collection<?>) traverser.get();
+//                //return call(name, arguments);
+//                return  null;
+//            }
+//        );
     }
 
     private Object call(String name, Collection<?> arguments) {

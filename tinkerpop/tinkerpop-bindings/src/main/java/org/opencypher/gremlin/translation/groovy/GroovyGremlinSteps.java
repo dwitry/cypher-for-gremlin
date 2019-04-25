@@ -22,11 +22,11 @@ import java.util.stream.Stream;
 import org.opencypher.gremlin.translation.GremlinSteps;
 import org.opencypher.gremlin.translation.ir.model.Cardinality;
 import org.opencypher.gremlin.translation.ir.model.Column;
+import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 import org.opencypher.gremlin.translation.ir.model.GremlinToken;
 import org.opencypher.gremlin.translation.ir.model.Pop;
 import org.opencypher.gremlin.translation.ir.model.Scope;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
-import org.opencypher.gremlin.traversal.CustomFunction;
 
 public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate> {
 
@@ -355,7 +355,7 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     public GremlinSteps<String, GroovyPredicate> map(CustomFunction function) {
         g.append(chain(
             "map",
-            Verbatim.of(apply(function.getName()))
+            Verbatim.of(apply(function.name()))
         ));
         return this;
     }

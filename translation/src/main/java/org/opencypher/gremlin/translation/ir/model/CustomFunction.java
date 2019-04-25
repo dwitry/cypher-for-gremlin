@@ -15,6 +15,27 @@
  */
 package org.opencypher.gremlin.translation.ir.model;
 
-public interface WithOptions {
-    String tokens = "~tinkerpop.valueMap.tokens";
+
+public enum CustomFunction {
+    cypherRound,
+    cypherToString,
+    cypherToBoolean,
+    cypherToInteger,
+    cypherToFloat,
+    cypherProperties,
+    cypherContainerIndex,
+    cypherListSlice,
+    cypherPercentileCont,
+    cypherPercentileDisc,
+    cypherSize,
+    cypherPlus,
+    cypherException,
+    cypherSplit,
+    cypherReverse,
+    cypherSubstring,
+    cypherTrim,
+    cypherToLower,
+    cypherToUpper,
+    cypherReplace,
+    cypherCopyProperties
 }

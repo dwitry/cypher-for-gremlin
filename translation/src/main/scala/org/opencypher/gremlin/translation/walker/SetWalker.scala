@@ -18,8 +18,8 @@ package org.opencypher.gremlin.translation.walker
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.Tokens.NULL
 import org.opencypher.gremlin.translation.context.WalkerContext
+import org.opencypher.gremlin.translation.ir.model.CustomFunction
 import org.opencypher.gremlin.translation.walker.NodeUtils._
-import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.ast._
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.symbols.{AnyType, CypherType}
@@ -62,7 +62,7 @@ private class SetWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P
         }
       case SetExactPropertiesFromMapItem(to @ Variable(toName), from: Variable) if isElement(from, context) =>
         g.select(toName).sideEffect(g.start().is(p.neq(NULL)).properties().drop())
-        g.flatMap(asList(Seq(to, from), context)).map(CustomFunction.cypherCopyProperties())
+        g.flatMap(asList(Seq(to, from), context)).map(CustomFunction.cypherCopyProperties)
       case SetExactPropertiesFromMapItem(v @ Variable(variable), expression) =>
         g.select(variable).sideEffect(g.start().is(p.neq(NULL)).properties().drop())
         asMap(expression).foreach {

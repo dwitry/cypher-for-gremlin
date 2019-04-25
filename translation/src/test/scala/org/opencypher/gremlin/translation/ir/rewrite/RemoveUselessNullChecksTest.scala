@@ -15,12 +15,12 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.process.traversal.step.util.WithOptions
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert._
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
+import org.opencypher.gremlin.translation.ir.model.WithOptions
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
 
 class RemoveUselessNullChecksTest {

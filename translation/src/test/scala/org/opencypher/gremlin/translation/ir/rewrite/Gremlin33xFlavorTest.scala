@@ -15,15 +15,14 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.process.traversal.step.util.WithOptions
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
 import org.opencypher.gremlin.translation.Tokens.NULL
 import org.opencypher.gremlin.translation.ir.builder.IRGremlinPredicates
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.__
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
+import org.opencypher.gremlin.translation.ir.model.{TraversalOrder, WithOptions}
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
-import org.opencypher.gremlin.translation.traversal.DeprecatedOrderAccessor.{decr, incr}
 
 class Gremlin33xFlavorTest {
 
@@ -51,7 +50,7 @@ class Gremlin33xFlavorTest {
         __.by(
           __.select("n")
             .choose(P.neq(NULL), __.choose(__.values("name"), __.values("name"), __.constant(NULL))),
-          incr))
+          TraversalOrder.incr))
   }
 
   @Test
@@ -63,7 +62,7 @@ class Gremlin33xFlavorTest {
         __.by(
           __.select("n")
             .choose(P.neq(NULL), __.choose(__.values("name"), __.values("name"), __.constant(NULL))),
-          decr))
+          TraversalOrder.decr))
   }
 
 }

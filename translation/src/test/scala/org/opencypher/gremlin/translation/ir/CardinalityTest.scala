@@ -15,11 +15,11 @@
  */
 package org.opencypher.gremlin.translation.ir
 
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality.single
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.__
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions
+import org.opencypher.gremlin.translation.ir.model.Cardinality.single
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
 
 class CardinalityTest {

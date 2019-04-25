@@ -15,15 +15,14 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.structure.T
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality.single
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
 import org.opencypher.gremlin.translation.Tokens
 import org.opencypher.gremlin.translation.Tokens.{GENERATED, NULL, UNNAMED}
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.{P, __}
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
-import org.opencypher.gremlin.translation.ir.model.GremlinBinding
+import org.opencypher.gremlin.translation.ir.model.Cardinality.single
+import org.opencypher.gremlin.translation.ir.model.{GremlinBinding, GremlinToken}
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
 
 import scala.collection.JavaConverters._
@@ -96,7 +95,7 @@ class GroupStepFiltersTest {
         __.where(__.select("n").choose(P.neq(Tokens.NULL), __.id()).is(P.neq(Tokens.NULL)).is(P.isEq(1)))
       )
       .adds(
-        __.has(T.id.getAccessor, P.isEq(1))
+        __.has(GremlinToken.id, P.isEq(1))
       )
   }
 
@@ -116,7 +115,7 @@ class GroupStepFiltersTest {
             .is(P.neq(NULL))
             .is(P.within(1.asInstanceOf[AnyRef])))
       )
-      .adds(__.has(T.id.getAccessor, P.within(1.asInstanceOf[AnyRef])))
+      .adds(__.has(GremlinToken.id, P.within(1.asInstanceOf[AnyRef])))
   }
 
   @Test
@@ -135,7 +134,7 @@ class GroupStepFiltersTest {
             .is(P.neq(NULL))
             .is(P.within(1.asInstanceOf[AnyRef], 2.asInstanceOf[AnyRef]))
         ))
-      .adds(__.has(T.id.getAccessor, P.within(1.asInstanceOf[AnyRef], 2.asInstanceOf[AnyRef])))
+      .adds(__.has(GremlinToken.id, P.within(1.asInstanceOf[AnyRef], 2.asInstanceOf[AnyRef])))
   }
 
   @Test
@@ -161,7 +160,7 @@ class GroupStepFiltersTest {
             .choose(P.neq(NULL), __.id())
             .is(P.neq(NULL))
             .where(P.isEq(GENERATED + 1))))
-      .adds(__.has(T.id.getAccessor, P.isEq(GremlinBinding("nID"))))
+      .adds(__.has(GremlinToken.id, P.isEq(GremlinBinding("nID"))))
   }
 
   @Test
@@ -185,7 +184,7 @@ class GroupStepFiltersTest {
             .is(P.neq(NULL))
             .is(P.within(GremlinBinding("nID"))))
       )
-      .adds(__.has(T.id.getAccessor, P.within(GremlinBinding("nID"))))
+      .adds(__.has(GremlinToken.id, P.within(GremlinBinding("nID"))))
   }
   @Test
   def multiplePatterns(): Unit = {
