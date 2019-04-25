@@ -15,7 +15,6 @@
  */
 package org.opencypher.gremlin.translation.ir.model;
 
-//todo move to appropriate package
 public enum Pop {
-    all
+    all, first
 }

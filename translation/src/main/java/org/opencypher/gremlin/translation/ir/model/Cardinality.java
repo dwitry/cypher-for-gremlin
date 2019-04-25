@@ -16,5 +16,5 @@
 package org.opencypher.gremlin.translation.ir.model;
 
 public enum Cardinality {
-    single
+    single, list
 }

@@ -25,7 +25,7 @@ import org.opencypher.gremlin.translation.ir.model.Pop;
 import org.opencypher.gremlin.translation.ir.model.Scope;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
 
-public interface TokensConverter<PR, FN, SC, CO, OR, WI, PO, CA, TO> {
+public interface TokensConverter<FN, SC, CO, OR, PO, CA, TO> {
     PO convert(Pop pop);
 
     SC convert(Scope scope);

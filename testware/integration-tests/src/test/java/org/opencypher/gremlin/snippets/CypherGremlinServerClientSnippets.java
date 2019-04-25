@@ -39,7 +39,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerFactory;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opencypher.gremlin.client.CypherGremlinClient;
 import org.opencypher.gremlin.client.CypherResultSet;
@@ -256,7 +255,6 @@ public class CypherGremlinServerClientSnippets {
     }
 
     @Test
-    @Ignore //todo
     public void translatorEnableExperimental() throws Exception {
         Client gremlinClient = GremlinClientFactory.create(gremlinServer.getPort());
 
