@@ -15,6 +15,10 @@
  */
 package org.opencypher.gremlin.translation.ir.verify
 
+import org.junit.Test
+import org.opencypher.gremlin.translation.CypherAst
+import org.opencypher.gremlin.translation.ir.helpers.JavaHelpers.assertThatThrownBy
+import org.opencypher.gremlin.translation.ir.helpers.TraversalAssertions
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
 
 class NoMultipleLabelsTest {
@@ -25,18 +29,18 @@ class NoMultipleLabelsTest {
       NoMultipleLabels
     )
   )
-//todo
-//  @Test
-//  def functionsAndPredicates(): Unit = {
-//    val ast = CypherAst.parse("""
-//        |CREATE (n:A:B:C)
-//        |WITH n
-//        |MATCH (n:D:E:F)
-//        |RETURN n
-//    """.stripMargin)
-//    val translator = TheTranslator.builder.gremlinGroovy.build(flavor)
-//
-//    assertThatThrownBy(() => ast.buildTranslation(translator))
-//      .hasMessageContaining("A::B::C, D::E::F")
-//  }
+
+  @Test
+  def functionsAndPredicates(): Unit = {
+    val ast = CypherAst.parse("""
+        |CREATE (n:A:B:C)
+        |WITH n
+        |MATCH (n:D:E:F)
+        |RETURN n
+    """.stripMargin)
+    val translator = TraversalAssertions.translator(flavor)
+
+    assertThatThrownBy(() => ast.buildTranslation(translator))
+      .hasMessageContaining("A::B::C, D::E::F")
+  }
 }

@@ -16,5 +16,5 @@
 package org.opencypher.gremlin.translation.ir.model;
 
 public interface GremlinToken {
-    String id = "id";
+    String id = "~id";
 }

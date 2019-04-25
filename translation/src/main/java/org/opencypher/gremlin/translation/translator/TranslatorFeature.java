@@ -19,7 +19,8 @@ package org.opencypher.gremlin.translation.translator;
 
 /**
  * Translator features are additional behaviors that can be allowed in translation.
- * These need to be enabled individually when creating a {@link Translator}.
+ * These need to be enabled individually when creating a {@link TheTranslator}.
+ * todo fix JavaDoc references
  */
 public enum TranslatorFeature {
     /**

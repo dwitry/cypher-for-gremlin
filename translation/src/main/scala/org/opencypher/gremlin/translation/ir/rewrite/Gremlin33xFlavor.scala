@@ -19,7 +19,7 @@ import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
 
 /**
-
+  * This is a set of rewrites to adapt the translation to TinkerPop 3.3.x.
   */
 object Gremlin33xFlavor extends GremlinRewriter {
   override def apply(steps: Seq[GremlinStep]): Seq[GremlinStep] = {

@@ -37,7 +37,7 @@ object NoCustomFunctions extends GremlinPostCondition {
 
   private def extractFunctionNames(steps: Seq[GremlinStep]): Seq[String] = {
     val functions = extract({
-      case MapC(function) :: _ => function.toString
+      case MapC(function) :: _ => function.name
     })(steps)
 
     val predicates = extract({

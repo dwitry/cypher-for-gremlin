@@ -28,7 +28,7 @@ import org.opencypher.gremlin.translation.GremlinSteps;
  * <p>
  * Translator instances are not reusable.
  */
-public class TheTranslator<T, P> {
+public class TheTranslator<T, P> { //todo improve api
     private final GremlinSteps<T, P> steps;
     private final GremlinPredicates<P> predicates;
     private final GremlinBindings bindings;

@@ -101,7 +101,7 @@ class CypherAst private (
   /**
     * Creates a translation to Gremlin.
     *
-    * @param dsl instance of [[Translator]]
+    * @param dsl instance of [[TheTranslator]]
     * @tparam T translation target type
     * @tparam P predicate target type
     * @return to-Gremlin translation

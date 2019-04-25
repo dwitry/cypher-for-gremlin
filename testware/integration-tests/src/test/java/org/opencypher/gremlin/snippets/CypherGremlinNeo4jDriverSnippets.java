@@ -26,7 +26,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerFactory;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.Session;
@@ -141,7 +140,6 @@ public class CypherGremlinNeo4jDriverSnippets {
 
 
     @Test
-    @Ignore //todo
     public void originalIds() throws ExecutionException, InterruptedException {
         String uri = "//localhost:" + gremlinServer.getPort();
         String uuid = "ef8b80c9-f8f9-40b6-bad2-ee4757d5bb33";

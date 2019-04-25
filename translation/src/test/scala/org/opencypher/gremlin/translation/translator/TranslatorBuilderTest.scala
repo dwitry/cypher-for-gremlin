@@ -17,7 +17,28 @@ package org.opencypher.gremlin.translation.translator
 
 class TranslatorBuilderTest {
 
-//todo
+//todo move to bindings
+//  @Test
+//  def enableCypherExtensions(): Unit = {
+//    val translator = Translator.builder.traversal().enableCypherExtensions.build()
+//
+//    assertThat(parse("MATCH (a) DELETE a"))
+//      .withFlavor(translator.flavor())
+//      .contains(__.map(CustomFunction.cypherException()))
+//  }
+//
+//  @Test
+//  def disableCypherExtensions(): Unit = {
+//    val translator = Translator.builder.gremlinGroovy().build()
+//
+//    assertThat(parse("MATCH (a) DELETE a"))
+//      .withFlavor(translator.flavor())
+//      .contains(
+//        __.bothE()
+//          .path()
+//          .from("Cannot delete node, because it still has relationships. To delete this node, you must first delete its relationships."))
+//  }
+
 //  @Test
 //  def cosmosDb(): Unit = {
 //    val dslBuilder = createBuilder.build("cosmosdb")

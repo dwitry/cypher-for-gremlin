@@ -113,8 +113,6 @@ project(':translation') {
     sourceSets.test.java.srcDirs = []
 
     dependencies {
-//        compile project(':tinkerpop:cypher-gremlin-extensions')
-
         compile "org.scala-lang:scala-library:${scalaVersion}.${scalaPatchVersion}"
         compile "org.scala-lang.modules:scala-java8-compat_${scalaVersion}:0.8.0"
         compile "com.lihaoyi:fastparse_${scalaVersion}:2.0.4"
@@ -206,7 +204,7 @@ project(':tinkerpop:cypher-gremlin-neo4j-driver') {
 project(':tinkerpop:tinkerpop-bindings') {
     dependencies {
         compile project(':translation')
-        compile project(':tinkerpop:cypher-gremlin-extensions')
+        compile project(':tinkerpop:cypher-gremlin-extensions') //todo extensions?
     }
 }
 

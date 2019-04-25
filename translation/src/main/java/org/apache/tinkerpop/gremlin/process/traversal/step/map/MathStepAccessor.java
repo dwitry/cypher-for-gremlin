@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//todo doc
 public class MathStepAccessor {
     private static final String[] FUNCTIONS = new String[]{
             "abs", "acos", "asin", "atan",

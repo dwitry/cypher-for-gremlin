@@ -36,7 +36,7 @@ object TranslationWriter {
     * Produces query translation.
     *
     * @param ir         intermediate representation of the translation
-    * @param translator instance of [[Translator]]
+    * @param translator instance of [[TheTranslator]]
     * @param parameters Cypher query parameters
     * @tparam T translation target type
     * @tparam P predicate target type

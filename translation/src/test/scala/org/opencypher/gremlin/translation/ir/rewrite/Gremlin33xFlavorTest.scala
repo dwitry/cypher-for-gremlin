@@ -21,7 +21,8 @@ import org.opencypher.gremlin.translation.Tokens.NULL
 import org.opencypher.gremlin.translation.ir.builder.IRGremlinPredicates
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.__
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
-import org.opencypher.gremlin.translation.ir.model.{TraversalOrder, WithOptions}
+import org.opencypher.gremlin.translation.ir.model.TraversalOrder.{decr, incr}
+import org.opencypher.gremlin.translation.ir.model.WithOptions
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
 
 class Gremlin33xFlavorTest {
@@ -50,7 +51,7 @@ class Gremlin33xFlavorTest {
         __.by(
           __.select("n")
             .choose(P.neq(NULL), __.choose(__.values("name"), __.values("name"), __.constant(NULL))),
-          TraversalOrder.incr))
+          incr))
   }
 
   @Test
@@ -62,7 +63,7 @@ class Gremlin33xFlavorTest {
         __.by(
           __.select("n")
             .choose(P.neq(NULL), __.choose(__.values("name"), __.values("name"), __.constant(NULL))),
-          TraversalOrder.decr))
+          decr))
   }
 
 }

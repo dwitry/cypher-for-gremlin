@@ -103,6 +103,7 @@ public class TraversalTokensConverter implements TokensConverter<P, Function<Tra
         };
     }
 
+    //todo improve
     @Override
     public Function<Traverser, Object> convert(CustomFunction function) {
         if (CustomFunction.cypherRound == function) {

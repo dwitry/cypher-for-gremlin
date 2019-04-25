@@ -35,7 +35,7 @@ object WalkerContext {
 /**
   * Context used by AST walkers to share global translation state.
   *
-  * @param dsl             reference to [[Translator]] implementation in use
+  * @param dsl             reference to [[TheTranslator]] implementation in use
   * @param expressionTypes expression Cypher types
   * @param procedures      registered procedure context
   * @param parameters      Cypher query parameters

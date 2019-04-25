@@ -21,6 +21,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.opencypher.gremlin.extension.CypherBinding.binding;
 import static org.opencypher.gremlin.extension.CypherBindingType.ANY;
@@ -40,6 +41,7 @@ import java.util.Map;
 import org.assertj.core.data.MapEntry;
 import org.junit.Test;
 import org.opencypher.gremlin.extension.CypherProcedureDefinition;
+import org.opencypher.gremlin.translation.ir.helpers.TraversalAssertions;
 import org.opencypher.v9_0.util.symbols.AnyType;
 import org.opencypher.v9_0.util.symbols.BooleanType;
 import org.opencypher.v9_0.util.symbols.CypherType;
@@ -187,17 +189,15 @@ public class CypherAstTest {
         ));
     }
 
-// todo
-//    @Test
-//    public void noCypherExtensions() {
-//        CypherAst ast = CypherAst.parse(
-//            "MATCH (n:N) " +
-//                "WITH n.p AS s " +
-//                "RETURN toString(s)"
-//        );
-//        Translator<String, GroovyPredicate> translator = Translator.builder().gremlinGroovy().build();
-//
-//        assertThatThrownBy(() -> ast.buildTranslation(translator))
-//            .hasMessageContaining("cypherToString");
-//    }
+    @Test
+    public void noCypherExtensions() {
+        CypherAst ast = CypherAst.parse(
+            "MATCH (n:N) " +
+                "WITH n.p AS s " +
+                "RETURN toString(s)"
+        );
+
+        assertThatThrownBy(() -> ast.buildTranslation(TraversalAssertions.translator()))
+            .hasMessageContaining("cypherToString");
+    }
 }

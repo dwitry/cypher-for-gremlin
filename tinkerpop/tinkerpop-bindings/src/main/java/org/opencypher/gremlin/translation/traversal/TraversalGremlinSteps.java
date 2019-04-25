@@ -42,7 +42,6 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
         this.g = g;
     }
 
-
     @Override
     public GraphTraversal current() {
         return g.asAdmin().clone();

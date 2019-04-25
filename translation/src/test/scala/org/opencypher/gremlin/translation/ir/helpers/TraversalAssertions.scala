@@ -16,8 +16,10 @@
 package org.opencypher.gremlin.translation.ir.helpers
 
 import org.assertj.core.api.Fail.fail
+import org.opencypher.gremlin.translation.ir.builder.{IRGremlinBindings, IRGremlinPredicates, IRGremlinSteps}
 import org.opencypher.gremlin.translation.ir.helpers.TraversalMatcher.containsSteps
-import org.opencypher.gremlin.translation.ir.model.GremlinStep
+import org.opencypher.gremlin.translation.ir.model.{GremlinPredicate, GremlinStep}
+import org.opencypher.gremlin.translation.translator.{TheTranslator, TranslatorFeature, TranslatorFlavor}
 
 object TraversalAssertions {
 
@@ -38,6 +40,17 @@ object TraversalAssertions {
         print(actual)
       )
   }
+
+  def translator(): TheTranslator[Seq[GremlinStep], GremlinPredicate] = translator(TranslatorFlavor.gremlinServer)
+
+  def translator(flavor: TranslatorFlavor): TheTranslator[Seq[GremlinStep], GremlinPredicate] =
+    new TheTranslator[Seq[GremlinStep], GremlinPredicate](
+      new IRGremlinSteps,
+      new IRGremlinPredicates,
+      new IRGremlinBindings,
+      new java.util.HashSet[TranslatorFeature](),
+      flavor
+    )
 
   def print(traversal: Seq[GremlinStep]): String = {
     "Todo" //todo
