@@ -13,22 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencypher.gremlin.translation;
+package org.opencypher.gremlin.translation.ir.model;
 
-/**
- * todo
- */
-public interface GremlinTokens<S,C> {
-    interface Scope<S> {
-        S local();
-        S global();
-    }
-    Scope<S> scope();
-
-    interface Column<C> {
-        C values();
-        C keys();
-    }
-    Column<C> column();
-
+public interface GremlinToken {
+    String id = "id";
 }
