@@ -21,7 +21,7 @@ import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions.INVALID_RANGE
 import org.opencypher.gremlin.translation.exception.{ArgumentException, SyntaxException}
 import org.opencypher.gremlin.translation.ir.model.Column.keys
-import org.opencypher.gremlin.translation.ir.model.{CustomFunction, Scope, Vertex2}
+import org.opencypher.gremlin.translation.ir.model.{CustomFunction, Pick, Scope}
 import org.opencypher.gremlin.translation.walker.NodeUtils._
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.InputPosition
@@ -210,6 +210,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
       case FunctionInvocation(_, FunctionName(fnName), distinct, args) =>
         lazy val onEntity = isElement(args.head, context)
         lazy val a3 = args.size == 3
+        val DEFAULT_LABEL = "vertex"
 
         val traversals = args.map(walkLocal(_, maybeAlias))
         val traversal = fnName.toLowerCase match {
@@ -221,7 +222,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case "id"               => traversals.head.flatMap(notNull(__.id(), context))
           case "keys" if onEntity => traversals.head.map(__.properties().key().fold())
           case "keys"             => traversals.head.select(keys)
-          case "labels"           => traversals.head.map(__.label().is(p.neq(Vertex2.DEFAULT_LABEL)).fold())
+          case "labels"           => traversals.head.map(__.label().is(p.neq(DEFAULT_LABEL)).fold())
           case "length"           => traversals.head.count(Scope.local).math("(_-1)/2")
           case "last"             => traversals.head.flatMap(emptyToNull(__.tail(Scope.local, 1), context))
           case "nodes"            => traversals.head.flatMap(filterElements(args, includeNodes = true))
@@ -234,7 +235,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case "round"            => traversals.head.map(CustomFunction.cypherRound)
           case "sqrt"             => traversals.head.math("sqrt(_)")
           case "tail"             => traversals.head.flatMap(__.range(Scope.local, 1, -1))
-          case "type"             => traversals.head.flatMap(notNull(__.label().is(p.neq(Vertex2.DEFAULT_LABEL)), context))
+          case "type"             => traversals.head.flatMap(notNull(__.label().is(p.neq(DEFAULT_LABEL)), context))
           case "reverse"          => traversals.head.map(CustomFunction.cypherReverse)
           case "split"            => asList(args(0), args(1)).map(CustomFunction.cypherSplit)
           case "substring" if a3  => asList(args(0), args(1), args(2)).map(CustomFunction.cypherSubstring)
@@ -599,7 +600,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
         )
       }
 
-      choose.option(Vertex2.none, defaultValue)
+      choose.option(Pick.none, defaultValue)
     }
 
     val tokensContainsExpressions =

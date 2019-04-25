@@ -22,6 +22,7 @@ class CustomFunctionFallbackTest {
   private val flavor = TranslatorFlavor.empty //CustomFunctionFallback is applied as first rewriter
   private val P = new IRGremlinPredicates
 
+  //todo
 //  @Test
 //  def enableCypherExtensions(): Unit = {
 //    val translator = TheTranslator.builder.traversal().enableCypherExtensions.build()

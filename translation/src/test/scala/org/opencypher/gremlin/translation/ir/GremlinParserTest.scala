@@ -17,6 +17,7 @@ package org.opencypher.gremlin.translation.ir
 
 class GremlinParserTest {
 
+//todo
 //  @Test
 //  def allSteps(): Unit = {
 //    val allSteps = "V()" +

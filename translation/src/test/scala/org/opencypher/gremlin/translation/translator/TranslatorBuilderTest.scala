@@ -16,6 +16,8 @@
 package org.opencypher.gremlin.translation.translator
 
 class TranslatorBuilderTest {
+
+//todo
 //  @Test
 //  def cosmosDb(): Unit = {
 //    val dslBuilder = createBuilder.build("cosmosdb")

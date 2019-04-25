@@ -24,6 +24,7 @@ import org.opencypher.gremlin.translation.ir.model.Cardinality;
 import org.opencypher.gremlin.translation.ir.model.Column;
 import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 import org.opencypher.gremlin.translation.ir.model.GremlinToken;
+import org.opencypher.gremlin.translation.ir.model.Pick;
 import org.opencypher.gremlin.translation.ir.model.Pop;
 import org.opencypher.gremlin.translation.ir.model.Scope;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
@@ -411,6 +412,12 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     @Override
     public GremlinSteps<String, GroovyPredicate> not(GremlinSteps<String, GroovyPredicate> notTraversal) {
         g.append(chain("not", traversal(notTraversal)));
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<String, GroovyPredicate> option(Pick pickToken, GremlinSteps<String, GroovyPredicate> traversalOption) {
+        g.append(chain("option", pickToken, traversal(traversalOption)));
         return this;
     }
 

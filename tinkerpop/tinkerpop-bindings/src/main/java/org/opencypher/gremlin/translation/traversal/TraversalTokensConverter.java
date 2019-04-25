@@ -21,17 +21,18 @@ import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.Pop;
 import org.apache.tinkerpop.gremlin.process.traversal.Scope;
 import org.apache.tinkerpop.gremlin.process.traversal.Traverser;
+import org.apache.tinkerpop.gremlin.process.traversal.step.TraversalOptionParent;
 import org.apache.tinkerpop.gremlin.process.traversal.step.util.WithOptions;
 import org.apache.tinkerpop.gremlin.structure.Column;
-import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.opencypher.gremlin.translation.TokensConverter;
 import org.opencypher.gremlin.translation.ir.model.Cardinality;
 import org.opencypher.gremlin.translation.ir.model.CustomFunction;
+import org.opencypher.gremlin.translation.ir.model.Pick;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
 import org.opencypher.gremlin.traversal.CustomFunctions;
 
-public class TraversalTokensConverter implements TokensConverter<P, Function<Traverser, Object>, Scope, Column, Order, WithOptions, Pop, VertexProperty.Cardinality, T> {
+public class TraversalTokensConverter implements TokensConverter<P, Function<Traverser, Object>, Scope, Column, Order, WithOptions, Pop, VertexProperty.Cardinality, TraversalOptionParent.Pick> {
     @Override
     public Scope convert(org.opencypher.gremlin.translation.ir.model.Scope scope) {
         if (org.opencypher.gremlin.translation.ir.model.Scope.local == scope) {
@@ -85,6 +86,15 @@ public class TraversalTokensConverter implements TokensConverter<P, Function<Tra
     }
 
     @Override
+    public TraversalOptionParent.Pick convert(Pick pickToken) {
+        if (Pick.any == pickToken) {
+            return TraversalOptionParent.Pick.any;
+        } else {
+            return TraversalOptionParent.Pick.none;
+        }
+    }
+
+    @Override
     public Function<Traverser, Object> convert(CustomFunction function) {
         if (CustomFunction.cypherRound == function) {
             return CustomFunctions.cypherRound();
@@ -132,5 +142,4 @@ public class TraversalTokensConverter implements TokensConverter<P, Function<Tra
             throw new IllegalStateException("Not implemented");
         }
     }
-
 }

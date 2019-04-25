@@ -28,12 +28,15 @@ import org.opencypher.gremlin.translation.ir.model.Cardinality;
 import org.opencypher.gremlin.translation.ir.model.Column;
 import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 import org.opencypher.gremlin.translation.ir.model.GremlinToken;
+import org.opencypher.gremlin.translation.ir.model.Pick;
 import org.opencypher.gremlin.translation.ir.model.Pop;
 import org.opencypher.gremlin.translation.ir.model.Scope;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
+import org.opencypher.gremlin.translation.traversal.TraversalTokensConverter;
 
 @SuppressWarnings("unchecked")
 public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
+    private TraversalTokensConverter converter = new TraversalTokensConverter();
 
     private final Bytecode bytecode;
 
@@ -119,7 +122,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> by(GremlinSteps<Bytecode, P> traversal, TraversalOrder order) {
-        bytecode.addStep(Symbols.by, traversal.current(), order);
+        bytecode.addStep(Symbols.by, traversal.current(), converter.convert(order));
         return this;
     }
 
@@ -185,7 +188,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> count(Scope scope) {
-        bytecode.addStep(Symbols.count, scope);
+        bytecode.addStep(Symbols.count, converter.convert(scope));
         return this;
     }
 
@@ -329,7 +332,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> limit(Scope scope, long limit) {
-        bytecode.addStep(Symbols.limit, scope, limit);
+        bytecode.addStep(Symbols.limit, converter.convert(scope), limit);
         return this;
     }
 
@@ -373,7 +376,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> max(Scope scope) {
-        bytecode.addStep(Symbols.max, scope);
+        bytecode.addStep(Symbols.max, converter.convert(scope));
         return this;
     }
 
@@ -385,7 +388,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> mean(Scope scope) {
-        bytecode.addStep(Symbols.mean, scope);
+        bytecode.addStep(Symbols.mean, converter.convert(scope));
         return this;
     }
 
@@ -397,13 +400,19 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> min(Scope scope) {
-        bytecode.addStep(Symbols.min, scope);
+        bytecode.addStep(Symbols.min, converter.convert(scope));
         return this;
     }
 
     @Override
     public GremlinSteps<Bytecode, P> not(GremlinSteps<Bytecode, P> notTraversal) {
         bytecode.addStep(Symbols.not, notTraversal.current());
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<Bytecode, P> option(Pick pickToken, GremlinSteps<Bytecode, P> traversalOption) {
+        bytecode.addStep(Symbols.option, converter.convert(pickToken), traversalOption.current());
         return this;
     }
 
@@ -475,7 +484,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> property(Cardinality cardinality, String key, Object value) {
-        bytecode.addStep(Symbols.property, cardinality, key, value);
+        bytecode.addStep(Symbols.property, converter.convert(cardinality), key, value);
         return this;
     }
 
@@ -487,7 +496,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> property(Cardinality cardinality, String key, GremlinSteps<Bytecode, P> traversal) {
-        bytecode.addStep(Symbols.property, cardinality, key, traversal.current());
+        bytecode.addStep(Symbols.property, converter.convert(cardinality), key, traversal.current());
         return this;
     }
 
@@ -499,7 +508,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> range(Scope scope, long low, long high) {
-        bytecode.addStep(Symbols.range, scope, low, high);
+        bytecode.addStep(Symbols.range, converter.convert(scope), low, high);
         return this;
     }
 
@@ -511,7 +520,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> select(final Pop pop, String selectKey) {
-        bytecode.addStep(Symbols.select, pop, selectKey);
+        bytecode.addStep(Symbols.select, converter.convert(pop), selectKey);
         return this;
     }
 
@@ -523,7 +532,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> select(Column column) {
-        bytecode.addStep(Symbols.select, column);
+        bytecode.addStep(Symbols.select, converter.convert(column));
         return this;
     }
 
@@ -553,13 +562,13 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> sum(Scope scope) {
-        bytecode.addStep(Symbols.sum, scope);
+        bytecode.addStep(Symbols.sum, converter.convert(scope));
         return this;
     }
 
     @Override
     public GremlinSteps<Bytecode, P> tail(Scope scope, long limit) {
-        bytecode.addStep(Symbols.tail, scope, limit);
+        bytecode.addStep(Symbols.tail, converter.convert(scope), limit);
         return this;
     }
 

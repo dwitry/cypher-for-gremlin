@@ -15,7 +15,6 @@
  */
 package org.opencypher.gremlin.translation.ir.model;
 
-public interface Vertex2 {
-    String DEFAULT_LABEL = "vertex";
-    String none = "none"; //pick
+public enum Pick {
+    any, none
 }

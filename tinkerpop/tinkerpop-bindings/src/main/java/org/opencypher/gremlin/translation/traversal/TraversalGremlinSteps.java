@@ -27,10 +27,12 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.util.empty.EmptyGraph;
 import org.opencypher.gremlin.translation.GremlinSteps;
 import org.opencypher.gremlin.translation.ir.model.CustomFunction;
+import org.opencypher.gremlin.translation.ir.model.Pick;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
 
 @SuppressWarnings("unchecked")
 public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
+    private TraversalTokensConverter converter = new TraversalTokensConverter();
 
     private final GraphTraversal g;
 
@@ -38,7 +40,6 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
         this.g = g;
     }
 
-    TraversalTokensConverter converter = new TraversalTokensConverter();
 
     @Override
     public GraphTraversal current() {
@@ -444,6 +445,12 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
     @Override
     public GremlinSteps<GraphTraversal, P> option(Object pickToken, GremlinSteps<GraphTraversal, P> traversalOption) {
         g.option(pickToken, traversalOption.current());
+        return this;
+    }
+
+    @Override
+    public GremlinSteps<GraphTraversal, P> option(Pick pickToken, GremlinSteps<GraphTraversal, P> traversalOption) {
+        g.option(converter.convert(pickToken), traversalOption.current());
         return this;
     }
 

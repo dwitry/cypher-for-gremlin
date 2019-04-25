@@ -21,7 +21,7 @@ package org.opencypher.gremlin.translation.ir.verify
 //import org.opencypher.gremlin.translation.translator.{Translator, TranslatorFlavor}
 
 class NoCustomFunctionsTest {
-//
+//todo
 //  val flavor = new TranslatorFlavor(
 //    rewriters = Nil,
 //    postConditions = Seq(
