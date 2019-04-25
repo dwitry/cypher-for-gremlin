@@ -26,11 +26,11 @@ import org.apache.tinkerpop.gremlin.util.function.Lambda;
 import org.opencypher.gremlin.translation.GremlinSteps;
 import org.opencypher.gremlin.translation.ir.model.Cardinality;
 import org.opencypher.gremlin.translation.ir.model.Column;
+import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 import org.opencypher.gremlin.translation.ir.model.GremlinToken;
 import org.opencypher.gremlin.translation.ir.model.Pop;
 import org.opencypher.gremlin.translation.ir.model.Scope;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
-import org.opencypher.gremlin.traversal.CustomFunction;
 
 @SuppressWarnings("unchecked")
 public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
@@ -347,7 +347,7 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
 
     @Override
     public GremlinSteps<Bytecode, P> map(CustomFunction function) {
-        String lambdaSource = apply(function.getName()) + ".apply(it)";
+        String lambdaSource = apply(function.name()) + ".apply(it)";
         Function lambda = Lambda.function(lambdaSource, "gremlin-groovy");
         bytecode.addStep(Symbols.map, lambda);
         return this;

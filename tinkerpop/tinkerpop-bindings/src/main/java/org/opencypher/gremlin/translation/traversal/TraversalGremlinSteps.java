@@ -26,8 +26,8 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.util.empty.EmptyGraph;
 import org.opencypher.gremlin.translation.GremlinSteps;
+import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
-import org.opencypher.gremlin.traversal.CustomFunction;
 
 @SuppressWarnings("unchecked")
 public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
@@ -382,7 +382,7 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
 
     @Override
     public GremlinSteps<GraphTraversal, P> map(CustomFunction function) {
-        g.map(function.getImplementation());
+        g.map(converter.convert(function));
         return this;
     }
 

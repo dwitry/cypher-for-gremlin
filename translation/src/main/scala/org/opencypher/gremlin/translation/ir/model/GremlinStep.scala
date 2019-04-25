@@ -15,8 +15,6 @@
  */
 package org.opencypher.gremlin.translation.ir.model
 
-import org.opencypher.gremlin.traversal.CustomFunction
-
 sealed trait GremlinStep {
 
   /**

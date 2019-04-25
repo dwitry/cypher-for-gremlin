@@ -15,20 +15,23 @@
  */
 package org.opencypher.gremlin.translation.traversal;
 
+import java.util.function.Function;
 import org.apache.tinkerpop.gremlin.process.traversal.Order;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.Pop;
 import org.apache.tinkerpop.gremlin.process.traversal.Scope;
+import org.apache.tinkerpop.gremlin.process.traversal.Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.step.util.WithOptions;
 import org.apache.tinkerpop.gremlin.structure.Column;
 import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.opencypher.gremlin.translation.TokensConverter;
 import org.opencypher.gremlin.translation.ir.model.Cardinality;
+import org.opencypher.gremlin.translation.ir.model.CustomFunction;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
-import org.opencypher.gremlin.traversal.CustomFunction;
+import org.opencypher.gremlin.traversal.CustomFunctions;
 
-public class TraversalTokensConverter implements TokensConverter<P, CustomFunction, Scope, Column, Order, WithOptions, Pop, VertexProperty.Cardinality, T> {
+public class TraversalTokensConverter implements TokensConverter<P, Function<Traverser, Object>, Scope, Column, Order, WithOptions, Pop, VertexProperty.Cardinality, T> {
     @Override
     public Scope convert(org.opencypher.gremlin.translation.ir.model.Scope scope) {
         if (org.opencypher.gremlin.translation.ir.model.Scope.local == scope) {
@@ -66,6 +69,7 @@ public class TraversalTokensConverter implements TokensConverter<P, CustomFuncti
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public Order convert(TraversalOrder order) {
         if (TraversalOrder.asc == order) {
             return Order.asc;
@@ -75,6 +79,55 @@ public class TraversalTokensConverter implements TokensConverter<P, CustomFuncti
             return Order.incr;
         } else if (TraversalOrder.decr == order) {
             return Order.decr;
+        } else {
+            throw new IllegalStateException("Not implemented");
+        }
+    }
+
+    @Override
+    public Function<Traverser, Object> convert(CustomFunction function) {
+        if (CustomFunction.cypherRound == function) {
+            return CustomFunctions.cypherRound();
+        } else if (CustomFunction.cypherToString == function) {
+            return CustomFunctions.cypherToString();
+        } else if (CustomFunction.cypherToBoolean == function) {
+            return CustomFunctions.cypherToBoolean();
+        } else if (CustomFunction.cypherToInteger == function) {
+            return CustomFunctions.cypherToInteger();
+        } else if (CustomFunction.cypherToFloat == function) {
+            return CustomFunctions.cypherToFloat();
+        } else if (CustomFunction.cypherProperties == function) {
+            return CustomFunctions.cypherProperties();
+        } else if (CustomFunction.cypherContainerIndex == function) {
+            return CustomFunctions.cypherContainerIndex();
+        } else if (CustomFunction.cypherListSlice == function) {
+            return CustomFunctions.cypherListSlice();
+        } else if (CustomFunction.cypherPercentileCont == function) {
+            return CustomFunctions.cypherPercentileCont();
+        } else if (CustomFunction.cypherPercentileDisc == function) {
+            return CustomFunctions.cypherPercentileDisc();
+        } else if (CustomFunction.cypherSize == function) {
+            return CustomFunctions.cypherSize();
+        } else if (CustomFunction.cypherPlus == function) {
+            return CustomFunctions.cypherPlus();
+        } else if (CustomFunction.cypherException == function) {
+            return CustomFunctions.cypherException();
+        } else if (CustomFunction.cypherSplit == function) {
+            return CustomFunctions.cypherSplit();
+        } else if (CustomFunction.cypherReverse == function) {
+            return CustomFunctions.cypherReverse();
+        } else if (CustomFunction.cypherSubstring == function) {
+            return CustomFunctions.cypherSubstring();
+        } else if (CustomFunction.cypherTrim == function) {
+            return CustomFunctions.cypherTrim();
+        } else if (CustomFunction.cypherToLower == function) {
+            return CustomFunctions.cypherToLower();
+        } else if (CustomFunction.cypherToUpper == function) {
+            return CustomFunctions.cypherToUpper();
+        } else if (CustomFunction.cypherReplace == function) {
+            return CustomFunctions.cypherReplace();
+        } else if (CustomFunction.cypherCopyProperties == function) {
+            return CustomFunctions.cypherCopyProperties();
         } else {
             throw new IllegalStateException("Not implemented");
         }

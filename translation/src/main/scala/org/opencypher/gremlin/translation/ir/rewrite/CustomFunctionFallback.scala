@@ -20,7 +20,6 @@ import org.opencypher.gremlin.translation.exception.CypherExceptions
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model.Scope.local
 import org.opencypher.gremlin.translation.ir.model._
-import org.opencypher.gremlin.traversal.CustomFunction.{cypherException, cypherPlus, cypherProperties, cypherSize}
 
 /**
   * Replaces Custom Functions with "The Best We Could Do" Gremlin native alternatives
@@ -33,17 +32,17 @@ object CustomFunctionFallback extends GremlinRewriter {
   override def apply(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
 
     mapTraversals(replace({
-      case Constant(typ) :: MapF(function) :: rest if function.getName == cypherException().getName =>
+      case Constant(typ) :: MapF(CustomFunction.cypherException) :: rest =>
         val text = CypherExceptions.messageByName(typ)
         Path :: From(text) :: rest
 
-      case SelectC(values) :: MapF(function) :: rest if function.getName == cypherPlus().getName =>
+      case SelectC(values) :: MapF(CustomFunction.cypherPlus) :: rest =>
         SelectC(values) :: Local(Unfold :: ChooseP2(Neq(NULL), Sum :: Nil) :: Nil) :: rest
 
-      case MapF(function) :: rest if function.getName == cypherSize().getName =>
+      case MapF(CustomFunction.cypherSize) :: rest =>
         CountS(local) :: rest
 
-      case MapF(function) :: rest if function.getName == cypherProperties().getName =>
+      case MapF(CustomFunction.cypherProperties) :: rest =>
         Local(Properties() :: Group :: By(Key :: Nil, None) :: By(MapT(Value :: Nil) :: Nil, None) :: Nil) :: rest
 
       case SelectK(pathName) :: FlatMapT(MapT(Unfold :: Is(IsNode()) :: Fold :: Nil) :: Nil) :: rest =>

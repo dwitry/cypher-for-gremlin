@@ -16,8 +16,7 @@
 package org.opencypher.gremlin.translation.ir.builder
 
 import org.opencypher.gremlin.translation.GremlinSteps
-import org.opencypher.gremlin.translation.ir.model._
-import org.opencypher.gremlin.traversal.CustomFunction
+import org.opencypher.gremlin.translation.ir.model.{CustomFunction, _}
 
 import scala.collection.mutable
 

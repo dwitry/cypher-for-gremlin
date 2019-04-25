@@ -21,9 +21,8 @@ import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions.INVALID_RANGE
 import org.opencypher.gremlin.translation.exception.{ArgumentException, SyntaxException}
 import org.opencypher.gremlin.translation.ir.model.Column.keys
-import org.opencypher.gremlin.translation.ir.model.{Scope, Vertex2}
+import org.opencypher.gremlin.translation.ir.model.{CustomFunction, Scope, Vertex2}
 import org.opencypher.gremlin.translation.walker.NodeUtils._
-import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.InputPosition
 import org.opencypher.v9_0.util.symbols._
@@ -86,7 +85,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
             .flatMap(notNull(emptyToNull(extractStep(keyName), context), context))
         }.getOrElse {
           val key = StringLiteral(keyName)(InputPosition.NONE)
-          asList(expr, key).map(CustomFunction.cypherContainerIndex())
+          asList(expr, key).map(CustomFunction.cypherContainerIndex)
         }
 
       case HasLabels(expr, List(LabelName(label))) =>
@@ -170,7 +169,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case (_: IntegerType, _: IntegerType) =>
             math(lhs, rhs, "+")
           case _ =>
-            asList(lhs, rhs).map(CustomFunction.cypherPlus())
+            asList(lhs, rhs).map(CustomFunction.cypherPlus)
         }
 
       case Subtract(lhs, rhs) => math(lhs, rhs, "-")
@@ -188,7 +187,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
                 context
               ))
           case _ =>
-            asList(expr, idx).map(CustomFunction.cypherContainerIndex())
+            asList(expr, idx).map(CustomFunction.cypherContainerIndex)
         }
 
       case ListSlice(expr, maybeFrom, maybeTo) =>
@@ -206,7 +205,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
             walkLocal(expr, maybeAlias)
               .flatMap(emptyToNull(rangeT, context))
           case _ =>
-            asList(expr, fromIdx, toIdx).map(CustomFunction.cypherListSlice())
+            asList(expr, fromIdx, toIdx).map(CustomFunction.cypherListSlice)
         }
 
       case FunctionInvocation(_, FunctionName(fnName), distinct, args) =>
@@ -230,24 +229,24 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
           case "properties"       => traversals.head.flatMap(properties(args))
           case "range"            => range(args)
           case "relationships"    => traversals.head.flatMap(filterElements(args, includeNodes = false))
-          case "replace"          => asList(args(0), args(1), args(2)).map(CustomFunction.cypherReplace())
+          case "replace"          => asList(args(0), args(1), args(2)).map(CustomFunction.cypherReplace)
           case "size"             => traversals.head.flatMap(size(args))
           case "startnode"        => traversals.head.flatMap(notNull(__.outV(), context))
-          case "round"            => traversals.head.map(CustomFunction.cypherRound())
+          case "round"            => traversals.head.map(CustomFunction.cypherRound)
           case "sqrt"             => traversals.head.math("sqrt(_)")
           case "tail"             => traversals.head.flatMap(__.range(Scope.local, 1, -1))
           case "type"             => traversals.head.flatMap(notNull(__.label().is(p.neq(Vertex2.DEFAULT_LABEL)), context))
-          case "reverse"          => traversals.head.map(CustomFunction.cypherReverse())
-          case "split"            => asList(args(0), args(1)).map(CustomFunction.cypherSplit())
-          case "substring" if a3  => asList(args(0), args(1), args(2)).map(CustomFunction.cypherSubstring())
-          case "substring"        => asList(args(0), args(1)).map(CustomFunction.cypherSubstring())
-          case "trim"             => traversals.head.map(CustomFunction.cypherTrim())
-          case "toupper"          => traversals.head.map(CustomFunction.cypherToUpper())
-          case "tolower"          => traversals.head.map(CustomFunction.cypherToLower())
-          case "toboolean"        => traversals.head.map(CustomFunction.cypherToBoolean())
-          case "tofloat"          => traversals.head.map(CustomFunction.cypherToFloat())
-          case "tointeger"        => traversals.head.map(CustomFunction.cypherToInteger())
-          case "tostring"         => traversals.head.map(CustomFunction.cypherToString())
+          case "reverse"          => traversals.head.map(CustomFunction.cypherReverse)
+          case "split"            => asList(args(0), args(1)).map(CustomFunction.cypherSplit)
+          case "substring" if a3  => asList(args(0), args(1), args(2)).map(CustomFunction.cypherSubstring)
+          case "substring"        => asList(args(0), args(1)).map(CustomFunction.cypherSubstring)
+          case "trim"             => traversals.head.map(CustomFunction.cypherTrim)
+          case "toupper"          => traversals.head.map(CustomFunction.cypherToUpper)
+          case "tolower"          => traversals.head.map(CustomFunction.cypherToLower)
+          case "toboolean"        => traversals.head.map(CustomFunction.cypherToBoolean)
+          case "tofloat"          => traversals.head.map(CustomFunction.cypherToFloat)
+          case "tointeger"        => traversals.head.map(CustomFunction.cypherToInteger)
+          case "tostring"         => traversals.head.map(CustomFunction.cypherToString)
           case _ =>
             throw new SyntaxException(s"Unknown function '$fnName'")
         }
@@ -480,7 +479,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
       case _: NodeType         => elementT
       case _: RelationshipType => elementT
       case _: MapType          => __.identity()
-      case _                   => __.map(CustomFunction.cypherProperties())
+      case _                   => __.map(CustomFunction.cypherProperties)
     }
   }
 
@@ -572,7 +571,7 @@ private class ExpressionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
     typ match {
       case ListType(_: PathType) => __.count()
       case _: ListType           => __.count(Scope.local)
-      case _                     => __.map(CustomFunction.cypherSize())
+      case _                     => __.map(CustomFunction.cypherSize)
     }
   }
 

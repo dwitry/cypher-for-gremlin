@@ -15,11 +15,31 @@
  */
 package org.apache.tinkerpop.gremlin.process.traversal.step.map;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MathStepAccessor {
-    public static Set<String> getVariables(String equation) {
-        return null;
-        //return MathStep.getVariables(equation); todo
+    private static final String[] FUNCTIONS = new String[]{
+            "abs", "acos", "asin", "atan",
+            "cbrt", "ceil", "cos", "cosh",
+            "exp",
+            "floor",
+            "log", "log10", "log2",
+            "signum", "sin", "sinh", "sqrt",
+            "tan", "tanh"
+    };
+
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\b(?!" +
+            String.join("|", FUNCTIONS) + "|([0-9]+))([a-zA-Z_][a-zA-Z0-9_]*)\\b");
+
+    public static final Set<String> getVariables(final String equation) {
+        final Matcher matcher = VARIABLE_PATTERN.matcher(equation);
+        final Set<String> variables = new LinkedHashSet<>();
+        while (matcher.find()) {
+            variables.add(matcher.group());
+        }
+        return variables;
     }
 }

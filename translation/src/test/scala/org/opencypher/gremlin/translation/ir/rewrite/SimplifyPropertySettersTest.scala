@@ -17,13 +17,13 @@ package org.opencypher.gremlin.translation.ir.rewrite
 
 import java.util.Collections.{emptyList, emptyMap}
 
-import org.apache.tinkerpop.gremlin.structure.Column
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality.single
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
 import org.opencypher.gremlin.translation.Tokens.NULL
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.{P, __}
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
+import org.opencypher.gremlin.translation.ir.model.Cardinality.single
+import org.opencypher.gremlin.translation.ir.model.Column
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
 
 class SimplifyPropertySettersTest {

@@ -18,9 +18,8 @@ package org.opencypher.gremlin.translation.walker
 import org.opencypher.gremlin.translation.Tokens.NULL
 import org.opencypher.gremlin.translation._
 import org.opencypher.gremlin.translation.context.WalkerContext
-import org.opencypher.gremlin.translation.ir.model.{Column, Scope}
+import org.opencypher.gremlin.translation.ir.model.{Column, CustomFunction, Scope}
 import org.opencypher.gremlin.translation.walker.NodeUtils._
-import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.ast._
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.InputPosition
@@ -101,7 +100,7 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
           walkExpression(expr).flatMap(extractStep(keyName))
         }.getOrElse {
           val key = StringLiteral(keyName)(InputPosition.NONE)
-          asList(expr, key).map(CustomFunction.cypherContainerIndex()).is(p.neq(NULL))
+          asList(expr, key).map(CustomFunction.cypherContainerIndex).is(p.neq(NULL))
         }
 
       case ContainerIndex(expr, idx) =>
@@ -110,7 +109,7 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
           case (_: ListType, l: IntegerLiteral) if l.value >= 0 =>
             walkExpression(expr).range(Scope.local, l.value, l.value + 1)
           case _ =>
-            asList(expr, idx).map(CustomFunction.cypherContainerIndex()).is(p.neq(NULL))
+            asList(expr, idx).map(CustomFunction.cypherContainerIndex).is(p.neq(NULL))
         }
 
       case HasLabels(expr, labels) =>
