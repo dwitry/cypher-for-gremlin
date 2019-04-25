@@ -49,8 +49,8 @@ import org.opencypher.gremlin.translation.ir.TranslationWriter;
 import org.opencypher.gremlin.translation.ir.model.GremlinStep;
 import org.opencypher.gremlin.translation.translator.Translator;
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor;
+import org.opencypher.gremlin.traversal.GremlinProcedureContext;
 import org.opencypher.gremlin.traversal.ParameterNormalizer;
-import org.opencypher.gremlin.traversal.ProcedureContext;
 import org.opencypher.gremlin.traversal.ReturnNormalizer;
 import org.slf4j.Logger;
 import scala.collection.Seq;
@@ -97,7 +97,7 @@ public class CypherOpProcessor extends AbstractEvalOpProcessor {
         GraphTraversalSource gts = traversal(context);
         DefaultGraphTraversal g = new DefaultGraphTraversal(gts.clone());
         Map<String, Object> parameters = ParameterNormalizer.normalize(getParameters(args));
-        ProcedureContext procedureContext = ProcedureContext.global();
+        GremlinProcedureContext procedureContext = GremlinProcedureContext.global();
         CypherAst ast = CypherAst.parse(cypher, parameters, procedureContext.getSignatures());
 
         TranslatorFlavor flavor = TranslatorFlavor.gremlinServer();

@@ -45,7 +45,7 @@ public final class PredefinedProcedureRegistry {
         List<CypherBinding> arguments = matchArguments(signatureMatcher.group("arguments"));
         List<CypherBinding> results = matchArguments(signatureMatcher.group("results"));
 
-        ProcedureContext.global().unsafeRegister(
+        GremlinProcedureContext.global().unsafeRegister(
             name,
             arguments,
             results,
@@ -61,7 +61,7 @@ public final class PredefinedProcedureRegistry {
     }
 
     public static void clear() {
-        ProcedureContext.global().unsafeClear();
+        GremlinProcedureContext.global().unsafeClear();
     }
 
     private static List<CypherBinding> matchArguments(String input) {

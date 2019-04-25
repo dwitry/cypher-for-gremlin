@@ -18,6 +18,8 @@ package org.opencypher.gremlin.translation.groovy;
 import static org.opencypher.gremlin.translation.groovy.StringTranslationUtils.apply;
 import static org.opencypher.gremlin.translation.groovy.StringTranslationUtils.chain;
 
+import java.util.Collection;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import org.opencypher.gremlin.translation.GremlinSteps;
 import org.opencypher.gremlin.translation.ir.model.Cardinality;
@@ -350,6 +352,11 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     public GremlinSteps<String, GroovyPredicate> loops() {
         g.append(chain("loops"));
         return this;
+    }
+
+    @Override
+    public GremlinSteps<String, GroovyPredicate> map(Function<Collection<?>, Object> function) {
+        throw new IllegalArgumentException("Functions are not supported");
     }
 
     @Override

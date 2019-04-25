@@ -17,6 +17,7 @@ package org.opencypher.gremlin.translation.bytecode;
 
 import static org.opencypher.gremlin.translation.groovy.StringTranslationUtils.apply;
 
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.tinkerpop.gremlin.process.traversal.Bytecode;
@@ -346,6 +347,11 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
     public GremlinSteps<Bytecode, P> loops() {
         bytecode.addStep(Symbols.loops);
         return this;
+    }
+
+    @Override
+    public GremlinSteps<Bytecode, P> map(Function<Collection<?>, Object> function) {
+        throw new IllegalArgumentException("Functions are not supported");
     }
 
     @Override

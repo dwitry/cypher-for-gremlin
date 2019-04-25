@@ -15,6 +15,7 @@
  */
 package org.opencypher.gremlin.translation.traversal;
 
+import java.util.Collection;
 import java.util.function.Function;
 import org.apache.tinkerpop.gremlin.process.traversal.Order;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
@@ -95,6 +96,14 @@ public class TraversalTokensConverter implements TokensConverter<P, Function<Tra
     }
 
     @Override
+    public Function<Traverser, Object> convert(Function<Collection<?>, Object> function) {
+        return traverser -> {
+            Collection<?> arguments = (Collection<?>) traverser.get();
+            return function.apply(arguments);
+        };
+    }
+
+    @Override
     public Function<Traverser, Object> convert(CustomFunction function) {
         if (CustomFunction.cypherRound == function) {
             return CustomFunctions.cypherRound();
@@ -139,7 +148,7 @@ public class TraversalTokensConverter implements TokensConverter<P, Function<Tra
         } else if (CustomFunction.cypherCopyProperties == function) {
             return CustomFunctions.cypherCopyProperties();
         } else {
-            throw new IllegalStateException("Not implemented");
+            throw new IllegalStateException("Not implemented" + function);
         }
     }
 }

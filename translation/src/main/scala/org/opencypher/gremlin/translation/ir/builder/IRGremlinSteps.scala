@@ -15,6 +15,9 @@
  */
 package org.opencypher.gremlin.translation.ir.builder
 
+import java.util
+import java.util.function.Function
+
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.ir.model.{CustomFunction, _}
 
@@ -291,8 +294,13 @@ class IRGremlinSteps extends GremlinSteps[Seq[GremlinStep], GremlinPredicate] {
     this
   }
 
-  override def map(function: CustomFunction): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
+  override def map(function: Function[util.Collection[_], AnyRef]): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
     buf += MapF(function)
+    this
+  }
+
+  override def map(function: CustomFunction): GremlinSteps[Seq[GremlinStep], GremlinPredicate] = {
+    buf += MapC(function)
     this
   }
 
