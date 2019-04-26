@@ -15,12 +15,10 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.process.traversal.step.map.MathStepAccessor
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
-
-import scala.collection.JavaConverters._
+import org.opencypher.gremlin.translation.walker.NodeUtils
 
 /**
   * This rule replaces multiple sequential step aliases with single one, and updates traversal accordingly
@@ -119,8 +117,5 @@ object RemoveMultipleAliases extends GremlinRewriter {
   }
 
   private def replaceMath(expression: String, alias: String => String): String =
-    MathStepAccessor
-      .getVariables(expression)
-      .asScala
-      .foldLeft(expression)((s, v) => s.replaceAll(v, alias(v)))
+    NodeUtils.variables(expression).foldLeft(expression)((s, v) => s.replaceAll(v, alias(v)))
 }

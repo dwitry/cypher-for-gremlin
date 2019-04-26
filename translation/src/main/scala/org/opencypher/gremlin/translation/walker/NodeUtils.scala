@@ -260,4 +260,15 @@ object NodeUtils {
       case _         => Seq(AnyType.instance)
     }
   }
+
+  private val STRINGS = "\\b[a-zA-Z_][a-zA-Z0-9_]*".r
+  private val FUNCTIONS = "abs" :: "acos" :: "asin" :: "atan" :: "cbrt" :: "ceil" :: "cos" :: "cosh" ::
+    "exp" :: "floor" :: "log" :: "log10" :: "log2" :: "signum" :: "sin" :: "sinh" :: "sqrt" :: "tan" :: "tanh" :: Nil
+
+  def variables(expression: String): Seq[String] =
+    STRINGS
+      .findAllIn(expression)
+      .filterNot(FUNCTIONS.contains)
+      .toSet
+      .toSeq
 }

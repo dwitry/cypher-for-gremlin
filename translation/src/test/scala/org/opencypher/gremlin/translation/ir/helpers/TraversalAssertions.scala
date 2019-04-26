@@ -19,7 +19,7 @@ import org.assertj.core.api.Fail.fail
 import org.opencypher.gremlin.translation.ir.builder.{IRGremlinBindings, IRGremlinPredicates, IRGremlinSteps}
 import org.opencypher.gremlin.translation.ir.helpers.TraversalMatcher.containsSteps
 import org.opencypher.gremlin.translation.ir.model.{GremlinPredicate, GremlinStep}
-import org.opencypher.gremlin.translation.translator.{TheTranslator, TranslatorFeature, TranslatorFlavor}
+import org.opencypher.gremlin.translation.translator.{TranslatorDefinition, TranslatorFeature, TranslatorFlavor}
 
 object TraversalAssertions {
 
@@ -41,10 +41,11 @@ object TraversalAssertions {
       )
   }
 
-  def translator(): TheTranslator[Seq[GremlinStep], GremlinPredicate] = translator(TranslatorFlavor.gremlinServer)
+  def translator(): TranslatorDefinition[Seq[GremlinStep], GremlinPredicate] =
+    translator(TranslatorFlavor.gremlinServer)
 
-  def translator(flavor: TranslatorFlavor): TheTranslator[Seq[GremlinStep], GremlinPredicate] =
-    new TheTranslator[Seq[GremlinStep], GremlinPredicate](
+  def translator(flavor: TranslatorFlavor): TranslatorDefinition[Seq[GremlinStep], GremlinPredicate] =
+    new TranslatorDefinition[Seq[GremlinStep], GremlinPredicate](
       new IRGremlinSteps,
       new IRGremlinPredicates,
       new IRGremlinBindings,
@@ -53,15 +54,6 @@ object TraversalAssertions {
     )
 
   def print(traversal: Seq[GremlinStep]): String = {
-    "Todo" //todo
-//    val translator = TheTranslator
-//      .builder()
-//      .gremlinGroovy()
-//      .enableCypherExtensions()
-//      .enableMultipleLabels()
-//      .build()
-//    TranslationWriter
-//      .write(traversal, translator, Map.empty[String, Any])
-//      .replace("'", "\"")
+    traversal.toString()
   }
 }

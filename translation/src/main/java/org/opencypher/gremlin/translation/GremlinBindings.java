@@ -20,7 +20,7 @@ package org.opencypher.gremlin.translation;
  * For some context, see
  * <a href="https://tinkerpop.apache.org/docs/current/reference/#_bindings">Gremlin-Python Bindings</a>.
  *
- * @see org.opencypher.gremlin.translation.translator.Translator
+ * @see org.opencypher.gremlin.translation.translator.TranslatorDefinition
  */
 public interface GremlinBindings {
     Object bind(String name, Object value);

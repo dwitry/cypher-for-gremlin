@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package org.opencypher.gremlin.translation.context
-
-import org.opencypher.gremlin.translation.translator.TheTranslator
+import org.opencypher.gremlin.translation.translator.TranslatorDefinition
 import org.opencypher.gremlin.traversal.ProcedureContext
 import org.opencypher.v9_0.expressions.Expression
 import org.opencypher.v9_0.util.symbols.CypherType
@@ -24,7 +23,7 @@ import scala.collection.mutable
 
 object WalkerContext {
   def apply[T, P](
-      dsl: TheTranslator[T, P],
+      dsl: TranslatorDefinition[T, P],
       expressionTypes: Map[Expression, CypherType],
       procedures: ProcedureContext,
       parameters: Map[String, Any]): WalkerContext[T, P] = {
@@ -35,13 +34,13 @@ object WalkerContext {
 /**
   * Context used by AST walkers to share global translation state.
   *
-  * @param dsl             reference to [[TheTranslator]] implementation in use
+  * @param dsl             reference to [[TranslatorDefinition]] implementation in use
   * @param expressionTypes expression Cypher types
   * @param procedures      registered procedure context
   * @param parameters      Cypher query parameters
   */
 sealed class WalkerContext[T, P](
-    val dsl: TheTranslator[T, P],
+    val dsl: TranslatorDefinition[T, P],
     val expressionTypes: Map[Expression, CypherType],
     val procedures: ProcedureContext,
     private val parameters: Map[String, Any]) {

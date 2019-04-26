@@ -22,7 +22,7 @@ import org.opencypher.gremlin.translation.exception.SyntaxException
 import org.opencypher.gremlin.translation.ir.model._
 import org.opencypher.gremlin.translation.ir.verify._
 import org.opencypher.gremlin.translation.translator.TranslatorFeature._
-import org.opencypher.gremlin.translation.translator.{TheTranslator, TranslatorFeature}
+import org.opencypher.gremlin.translation.translator.{TranslatorDefinition, TranslatorFeature}
 
 import scala.collection.JavaConverters._
 
@@ -36,13 +36,16 @@ object TranslationWriter {
     * Produces query translation.
     *
     * @param ir         intermediate representation of the translation
-    * @param translator instance of [[TheTranslator]]
+    * @param translator instance of [[TranslatorDefinition]]
     * @param parameters Cypher query parameters
     * @tparam T translation target type
     * @tparam P predicate target type
     * @return to-Gremlin translation
     */
-  def write[T, P](ir: Seq[GremlinStep], translator: TheTranslator[T, P], parameters: util.Map[String, Any]): T = {
+  def write[T, P](
+      ir: Seq[GremlinStep],
+      translator: TranslatorDefinition[T, P],
+      parameters: util.Map[String, Any]): T = {
     write(ir, translator, parameters.asScala.toMap)
   }
 
@@ -51,7 +54,7 @@ object TranslationWriter {
     MULTIPLE_LABELS -> NoMultipleLabels
   )
 
-  def write[T, P](ir: Seq[GremlinStep], translator: TheTranslator[T, P], parameters: Map[String, Any]): T = {
+  def write[T, P](ir: Seq[GremlinStep], translator: TranslatorDefinition[T, P], parameters: Map[String, Any]): T = {
     for ((feature, postCondition) <- postConditions if !translator.isEnabled(feature);
          msg <- postCondition(ir)) throw new SyntaxException(msg)
 
@@ -63,7 +66,7 @@ object TranslationWriter {
   def writeTo[T, P](
       ir: Seq[GremlinStep],
       to: GremlinSteps[T, P],
-      translator: TheTranslator[T, P],
+      translator: TranslatorDefinition[T, P],
       parameters: Map[String, Any]): T = {
     val generator = new TranslationWriter(translator, parameters)
     generator.writeSteps(ir, to)
@@ -71,7 +74,7 @@ object TranslationWriter {
   }
 }
 
-sealed class TranslationWriter[T, P] private (translator: TheTranslator[T, P], parameters: Map[String, Any]) {
+sealed class TranslationWriter[T, P] private (translator: TranslatorDefinition[T, P], parameters: Map[String, Any]) {
   private val g = translator.steps()
   private val p = translator.predicates()
   private val b = translator.bindings()

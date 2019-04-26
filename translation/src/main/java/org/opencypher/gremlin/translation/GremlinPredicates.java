@@ -16,14 +16,16 @@
 package org.opencypher.gremlin.translation;
 
 
+import org.opencypher.gremlin.translation.translator.TranslatorDefinition;
+
 /**
- * Gremlin {@link org.apache.tinkerpop.gremlin.process.traversal.P} predicate abstraction.
+ * Gremlin {@code org.apache.tinkerpop.gremlin.process.traversal.P} predicate abstraction.
  * For DSL details, see
  * <a href="https://tinkerpop.apache.org/docs/current/reference/#a-note-on-predicates">A Note on Predicates</a>.
  *
  * @param <P> translation predicate type
- * @see CustomPredicate
- * @see Translator
+ * @see GremlinPredicates
+ * @see TranslatorDefinition
  */
 public interface GremlinPredicates<P> {
     P isEq(Object value); // Named like this to satisfy Scala compiler

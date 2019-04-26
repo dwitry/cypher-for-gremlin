@@ -15,11 +15,10 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.process.traversal.step.map.MathStepAccessor
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
+import org.opencypher.gremlin.translation.walker.NodeUtils
 
-import scala.collection.JavaConverters._
 import scala.collection.SortedMap
 
 /**
@@ -43,7 +42,7 @@ object RemoveUnusedAliases extends GremlinRewriter {
         case SelectK(selectKeys @ _*) :: _ => increment(selectKeys: _*)
         case Dedup(dedupLabels @ _*) :: _  => increment(dedupLabels: _*)
         case WhereP(predicate) :: _        => increment(predicateAliases(predicate): _*)
-        case Math(expression) :: _         => increment(MathStepAccessor.getVariables(expression).asScala.toSeq: _*)
+        case Math(expression) :: _         => increment(NodeUtils.variables(expression): _*)
       })(localSteps).flatten
     })(steps)
 

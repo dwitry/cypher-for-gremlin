@@ -19,8 +19,7 @@ package org.opencypher.gremlin.translation.translator;
 
 /**
  * Translator features are additional behaviors that can be allowed in translation.
- * These need to be enabled individually when creating a {@link TheTranslator}.
- * todo fix JavaDoc references
+ * These need to be enabled individually when creating a {@link TranslatorDefinition}.
  */
 public enum TranslatorFeature {
     /**
@@ -36,7 +35,7 @@ public enum TranslatorFeature {
     MULTIPLE_LABELS,
 
     /**
-     * Return Gremlin graph elements (e.g {@link Vertex}, {@link Edge}) instead of normalizing elements to a map of
+     * Return Gremlin graph elements (e.g {@code org.apache.tinkerpop.gremlin.structure.Vertex}, {@code org.apache.tinkerpop.gremlin.structure.Edge}) instead of normalizing elements to a map of
      * tokens and properties (as by default).
      */
     RETURN_GREMLIN_ELEMENTS,

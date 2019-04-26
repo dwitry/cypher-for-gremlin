@@ -35,7 +35,7 @@ import org.opencypher.gremlin.translation.traversal.TraversalGremlinBindings;
 import org.opencypher.gremlin.translation.traversal.TraversalGremlinPredicates;
 import org.opencypher.gremlin.translation.traversal.TraversalGremlinSteps;
 
-public class Translator<T, P> extends TheTranslator<T, P> {
+public class Translator<T, P> extends TranslatorDefinition<T, P> {
     public Translator(GremlinSteps<T, P> steps, GremlinPredicates<P> predicates, GremlinBindings bindings, Set<TranslatorFeature> features, TranslatorFlavor flavor) {
         super(steps, predicates, bindings, features, flavor);
     }
@@ -220,7 +220,13 @@ public class Translator<T, P> extends TheTranslator<T, P> {
         public Translator<T, P> build(String translatorType) {
             TranslatorFlavor flavor;
 
-            if (translatorType.startsWith("cosmosdb")) {
+            if (translatorType == null
+                || translatorType.equals("gremlin")
+                || translatorType.startsWith("gremlin+")
+                || translatorType.startsWith("vanilla")
+                || translatorType.isEmpty()) {
+                flavor = TranslatorFlavor.gremlinServer();
+            } else if (translatorType.startsWith("cosmosdb")) {
                 flavor = TranslatorFlavor.cosmosDb();
             } else if (translatorType.startsWith("neptune")) {
                 flavor = TranslatorFlavor.neptune();
@@ -228,19 +234,15 @@ public class Translator<T, P> extends TheTranslator<T, P> {
                 enableMultipleLabels();
             } else if (translatorType.startsWith("gremlin33x")) {
                 flavor = TranslatorFlavor.gremlinServer33x();
-            } else if (translatorType.startsWith("gremlin")
-                || translatorType.startsWith("vanilla")
-                || translatorType.isEmpty()) {
-                flavor = TranslatorFlavor.gremlinServer();
             } else {
                 throw new IllegalArgumentException("Unknown translator type: " + translatorType);
             }
 
-            if (translatorType.contains("+cfog_server_extensions")) {
+            if (translatorType != null && translatorType.contains("+cfog_server_extensions")) {
                 enableCypherExtensions();
             }
 
-            if (translatorType.contains("+experimental_gremlin_function")) {
+            if (translatorType != null && translatorType.contains("+experimental_gremlin_function")) {
                 features.add(TranslatorFeature.EXPERIMENTAL_GREMLIN_FUNCTION);
             }
 

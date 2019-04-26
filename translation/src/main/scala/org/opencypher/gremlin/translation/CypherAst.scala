@@ -28,7 +28,7 @@ import org.opencypher.gremlin.translation.ir.builder.{IRGremlinBindings, IRGreml
 import org.opencypher.gremlin.translation.ir.model.{GremlinPredicate, GremlinStep}
 import org.opencypher.gremlin.translation.preparser._
 import org.opencypher.gremlin.translation.translator.TranslatorFeature.{CYPHER_EXTENSIONS, MULTIPLE_LABELS}
-import org.opencypher.gremlin.translation.translator.{TheTranslator, TranslatorFeature, TranslatorFlavor}
+import org.opencypher.gremlin.translation.translator.{TranslatorDefinition, TranslatorFeature, TranslatorFlavor}
 import org.opencypher.gremlin.translation.walker.StatementWalker
 import org.opencypher.gremlin.traversal.ProcedureContext
 import org.opencypher.v9_0.ast._
@@ -77,7 +77,7 @@ class CypherAst private (
       features: Seq[TranslatorFeature],
       procedures: ProcedureContext): Seq[GremlinStep] = {
 
-    val dsl = new TheTranslator[Seq[GremlinStep], GremlinPredicate](
+    val dsl = new TranslatorDefinition[Seq[GremlinStep], GremlinPredicate](
       new IRGremlinSteps,
       new IRGremlinPredicates,
       new IRGremlinBindings,
@@ -101,12 +101,12 @@ class CypherAst private (
   /**
     * Creates a translation to Gremlin.
     *
-    * @param dsl instance of [[TheTranslator]]
+    * @param dsl instance of [[TranslatorDefinition]]
     * @tparam T translation target type
     * @tparam P predicate target type
     * @return to-Gremlin translation
     */
-  def buildTranslation[T, P](dsl: TheTranslator[T, P]): T = {
+  def buildTranslation[T, P](dsl: TranslatorDefinition[T, P]): T = {
     val ir = translate(dsl.flavor(), dsl.features().asScala.toSeq, ProcedureContext.empty())
     TranslationWriter.write(ir, dsl, parameters)
   }

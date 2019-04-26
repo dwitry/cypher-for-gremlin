@@ -25,20 +25,21 @@ import org.opencypher.gremlin.translation.ir.model.Pick;
 import org.opencypher.gremlin.translation.ir.model.Pop;
 import org.opencypher.gremlin.translation.ir.model.Scope;
 import org.opencypher.gremlin.translation.ir.model.TraversalOrder;
+import org.opencypher.gremlin.translation.translator.TranslatorDefinition;
 
 /**
- * Gremlin {@link org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal} DSL wrapper.
+ * Gremlin {@code org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal} DSL wrapper.
  * For DSL details, see
  * <a href="https://tinkerpop.apache.org/docs/current/reference/#graph-traversal-steps">Graph Traversal Steps</a>.
  * <p>
  * Implementations define a translation target that can be built with
- * {@link org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal} steps.
+ * {@code org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal} steps.
  * <p>
  * Note: steps are expected to be side-effecting, thus, unsuitable for use in immutable contexts.
  *
  * @param <T> translation target type
  * @param <P> predicate target type
- * @see Translator
+ * @see TranslatorDefinition
  */
 public interface GremlinSteps<T, P> {
     /**
