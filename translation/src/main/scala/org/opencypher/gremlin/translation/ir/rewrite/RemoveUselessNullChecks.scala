@@ -15,7 +15,7 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.opencypher.gremlin.translation.Tokens._
+import org.opencypher.gremlin.translation.CypherTokens._
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
 

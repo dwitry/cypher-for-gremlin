@@ -15,8 +15,8 @@
  */
 package org.opencypher.gremlin.translation.walker
 
+import org.opencypher.gremlin.translation.CypherTokens._
 import org.opencypher.gremlin.translation.GremlinSteps
-import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions.INVALID_RANGE
 import org.opencypher.gremlin.translation.exception.{ArgumentException, SyntaxException}

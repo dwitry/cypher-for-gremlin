@@ -17,12 +17,12 @@ package org.opencypher.gremlin.translation.walker
 
 import java.util
 
-import org.opencypher.gremlin.translation.Tokens._
+import org.opencypher.gremlin.translation.CypherTokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions
 import org.opencypher.gremlin.translation.ir.model.Cardinality.single
 import org.opencypher.gremlin.translation.ir.model.{Column, CustomFunction}
-import org.opencypher.gremlin.translation.{GremlinSteps, Tokens}
+import org.opencypher.gremlin.translation.{CypherTokens, GremlinSteps}
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.symbols.{AnyType, CypherType, ListType, NodeType, RelationshipType}
 import org.opencypher.v9_0.util.{ASTNode, InputPosition}
@@ -60,7 +60,7 @@ object NodeUtils {
       case Parameter(name, _) =>
         Some(parameterHandler(name))
       case Null() =>
-        Some(Tokens.NULL)
+        Some(CypherTokens.NULL)
       case ListComprehension(_, Parameter(name, _)) =>
         Some(parameterHandler(name))
       case l: Literal =>
@@ -169,7 +169,7 @@ object NodeUtils {
 
   def ensureFirstStatement[T, P](traversal: GremlinSteps[T, P], context: WalkerContext[T, P]): Unit = {
     if (context.isFirstStatement) {
-      traversal.inject(Tokens.START)
+      traversal.inject(CypherTokens.START)
       context.markFirstStatement()
     }
   }

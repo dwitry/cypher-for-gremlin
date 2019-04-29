@@ -42,13 +42,13 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.opencypher.gremlin.client.CypherGremlinClient;
 import org.opencypher.gremlin.client.CypherResultSet;
-import org.opencypher.gremlin.client.CypherTraversalSource;
 import org.opencypher.gremlin.client.GremlinClientFactory;
 import org.opencypher.gremlin.rules.GremlinServerExternalResource;
 import org.opencypher.gremlin.test.TestCommons;
 import org.opencypher.gremlin.translation.translator.Translator;
 import org.opencypher.gremlin.translation.translator.TranslatorFeature;
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor;
+import org.opencypher.gremlin.traversal.CypherTraversalSource;
 
 public class CypherGremlinServerClientSnippets {
 

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package org.opencypher.gremlin.translation.ir.rewrite
-
-import org.opencypher.gremlin.translation.Tokens
+import org.opencypher.gremlin.translation.CypherTokens
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
 
@@ -87,7 +86,7 @@ object CosmosDbFlavor extends GremlinRewriter {
     replace({
       case Repeat(SideEffect(aggregation) :: Nil) :: Until(untilTraversal) :: SelectK(_) :: rest =>
         range(aggregation, untilTraversal, rest)
-      case Inject(Tokens.START) :: Repeat(SideEffect(aggregation) :: Nil) :: Until(untilTraversal) :: SelectK(_) :: rest =>
+      case Inject(CypherTokens.START) :: Repeat(SideEffect(aggregation) :: Nil) :: Until(untilTraversal) :: SelectK(_) :: rest =>
         range(aggregation, untilTraversal, rest)
     })(steps)
   }

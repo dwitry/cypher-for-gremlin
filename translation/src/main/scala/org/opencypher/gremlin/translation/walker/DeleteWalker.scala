@@ -15,11 +15,11 @@
  */
 package org.opencypher.gremlin.translation.walker
 
-import org.opencypher.gremlin.translation.Tokens._
+import org.opencypher.gremlin.translation.CypherTokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions.DELETE_CONNECTED_NODE
 import org.opencypher.gremlin.translation.walker.NodeUtils.runtimeValidation
-import org.opencypher.gremlin.translation.{GremlinSteps, Tokens}
+import org.opencypher.gremlin.translation.{CypherTokens, GremlinSteps}
 import org.opencypher.v9_0.ast._
 import org.opencypher.v9_0.expressions.{Expression, Variable}
 import org.opencypher.v9_0.util.symbols.{AnyType, NodeType, PathType, RelationshipType}
@@ -82,14 +82,14 @@ class DeleteWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P]) {
       .cap(DETACH_DELETE)
       .unfold()
       .dedup()
-      .is(p.neq(Tokens.NULL))
+      .is(p.neq(CypherTokens.NULL))
       .drop()
 
     delete
       .cap(DELETE)
       .unfold()
       .dedup()
-      .is(p.neq(Tokens.NULL))
+      .is(p.neq(CypherTokens.NULL))
       .flatMap(runtimeValidation(__.bothE(), DELETE_CONNECTED_NODE, context))
       .drop()
 

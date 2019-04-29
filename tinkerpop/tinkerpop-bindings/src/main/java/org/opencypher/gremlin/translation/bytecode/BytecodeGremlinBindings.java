@@ -15,8 +15,8 @@
  */
 package org.opencypher.gremlin.translation.bytecode;
 
+import static org.opencypher.gremlin.translation.CypherTokens.NULL;
 import static org.opencypher.gremlin.translation.GroovyIdentifiers.isValidIdentifier;
-import static org.opencypher.gremlin.translation.Tokens.NULL;
 
 import java.util.Optional;
 import org.apache.tinkerpop.gremlin.process.traversal.Bytecode.Binding;

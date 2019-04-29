@@ -15,8 +15,8 @@
  */
 package org.opencypher.gremlin.translation;
 
-public final class Tokens {
-    private Tokens() {
+public final class CypherTokens {
+    private CypherTokens() {
     }
 
     public static final String START = "  cypher.start";

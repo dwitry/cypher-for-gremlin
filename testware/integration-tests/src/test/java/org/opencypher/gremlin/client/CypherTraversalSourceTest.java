@@ -32,7 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opencypher.gremlin.rules.GremlinServerExternalResource;
 import org.opencypher.gremlin.test.TestCommons;
-import org.opencypher.gremlin.translation.Tokens;
+import org.opencypher.gremlin.translation.CypherTokens;
+import org.opencypher.gremlin.traversal.CypherTraversalSource;
 
 
 public class CypherTraversalSourceTest {
@@ -53,7 +54,7 @@ public class CypherTraversalSourceTest {
         List<Object> results = traversal.toList();
 
         assertThat(results)
-            .containsExactlyInAnyOrder(Tokens.NULL, Tokens.NULL);
+            .containsExactlyInAnyOrder(CypherTokens.NULL, CypherTokens.NULL);
     }
 
     @Test
@@ -67,9 +68,9 @@ public class CypherTraversalSourceTest {
             .containsExactlyInAnyOrder(
                 ImmutableMap.of("age", 29),
                 ImmutableMap.of("age", 27),
-                ImmutableMap.of("age", Tokens.NULL),
+                ImmutableMap.of("age", CypherTokens.NULL),
                 ImmutableMap.of("age", 32),
-                ImmutableMap.of("age", Tokens.NULL),
+                ImmutableMap.of("age", CypherTokens.NULL),
                 ImmutableMap.of("age", 35)
             );
     }
@@ -94,7 +95,7 @@ public class CypherTraversalSourceTest {
         GraphTraversal<Map<String, Object>, Object> traversal = g
             .cypher("MATCH (n) RETURN n.age as age")
             .select("age")
-            .is(P.neq(Tokens.NULL))
+            .is(P.neq(CypherTokens.NULL))
             .is(P.gt(0))
             .fold()
             .unfold();

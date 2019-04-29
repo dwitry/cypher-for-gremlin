@@ -15,7 +15,7 @@
  */
 package org.opencypher.gremlin.translation.context
 
-import org.opencypher.gremlin.translation.Tokens.GENERATED
+import org.opencypher.gremlin.translation.CypherTokens.GENERATED
 
 class NameGenerator() {
   private var counter: Int = 0

@@ -17,8 +17,7 @@ package org.opencypher.gremlin.translation.ir.rewrite
 
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
-import org.opencypher.gremlin.translation.Tokens
-import org.opencypher.gremlin.translation.Tokens.{GENERATED, NULL, UNNAMED}
+import org.opencypher.gremlin.translation.CypherTokens
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.{P, __}
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
 import org.opencypher.gremlin.translation.ir.model.Cardinality.single
@@ -92,7 +91,7 @@ class GroupStepFiltersTest {
       .withFlavor(flavor)
       .rewritingWith(GroupStepFilters)
       .removes(
-        __.where(__.select("n").choose(P.neq(Tokens.NULL), __.id()).is(P.neq(Tokens.NULL)).is(P.isEq(1)))
+        __.where(__.select("n").choose(P.neq(CypherTokens.NULL), __.id()).is(P.neq(CypherTokens.NULL)).is(P.isEq(1)))
       )
       .adds(
         __.has(GremlinToken.id, P.isEq(1))

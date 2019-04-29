@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.opencypher.gremlin.translation.Tokens;
+import org.opencypher.gremlin.translation.CypherTokens;
 
 public final class ParameterNormalizer {
     private ParameterNormalizer() {
@@ -40,7 +40,7 @@ public final class ParameterNormalizer {
         } else if (value instanceof BigDecimal) {
             return ((BigDecimal) value).doubleValue();
         } else if (value == null) {
-            return Tokens.NULL;
+            return CypherTokens.NULL;
         }
         return value;
     }

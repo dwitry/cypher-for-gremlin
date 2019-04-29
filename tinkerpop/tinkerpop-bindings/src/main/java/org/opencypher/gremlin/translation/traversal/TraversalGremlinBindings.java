@@ -15,14 +15,14 @@
  */
 package org.opencypher.gremlin.translation.traversal;
 
+import org.opencypher.gremlin.translation.CypherTokens;
 import org.opencypher.gremlin.translation.GremlinBindings;
-import org.opencypher.gremlin.translation.Tokens;
 
 public class TraversalGremlinBindings implements GremlinBindings {
     @Override
     public Object bind(String name, Object value) {
         if (value == null) {
-            return Tokens.NULL;
+            return CypherTokens.NULL;
         }
         return value;
     }

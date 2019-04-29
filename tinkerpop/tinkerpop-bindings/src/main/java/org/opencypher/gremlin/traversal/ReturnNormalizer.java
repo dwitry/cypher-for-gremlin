@@ -15,6 +15,11 @@
  */
 package org.opencypher.gremlin.traversal;
 
+import static org.opencypher.gremlin.translation.CypherTokens.PROJECTION_ELEMENT;
+import static org.opencypher.gremlin.translation.CypherTokens.PROJECTION_ID;
+import static org.opencypher.gremlin.translation.CypherTokens.PROJECTION_INV;
+import static org.opencypher.gremlin.translation.CypherTokens.PROJECTION_OUTV;
+import static org.opencypher.gremlin.translation.CypherTokens.PROJECTION_RELATIONSHIP;
 import static org.opencypher.gremlin.translation.ReturnProperties.ID;
 import static org.opencypher.gremlin.translation.ReturnProperties.INV;
 import static org.opencypher.gremlin.translation.ReturnProperties.LABEL;
@@ -22,11 +27,6 @@ import static org.opencypher.gremlin.translation.ReturnProperties.NODE_TYPE;
 import static org.opencypher.gremlin.translation.ReturnProperties.OUTV;
 import static org.opencypher.gremlin.translation.ReturnProperties.RELATIONSHIP_TYPE;
 import static org.opencypher.gremlin.translation.ReturnProperties.TYPE;
-import static org.opencypher.gremlin.translation.Tokens.PROJECTION_ELEMENT;
-import static org.opencypher.gremlin.translation.Tokens.PROJECTION_ID;
-import static org.opencypher.gremlin.translation.Tokens.PROJECTION_INV;
-import static org.opencypher.gremlin.translation.Tokens.PROJECTION_OUTV;
-import static org.opencypher.gremlin.translation.Tokens.PROJECTION_RELATIONSHIP;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.util.detached.DetachedVertexProperty;
-import org.opencypher.gremlin.translation.Tokens;
+import org.opencypher.gremlin.translation.CypherTokens;
 import org.opencypher.v9_0.util.symbols.CypherType;
 import org.opencypher.v9_0.util.symbols.IntegerType;
 import org.opencypher.v9_0.util.symbols.ListType;
@@ -83,7 +83,7 @@ public final class ReturnNormalizer {
             return ((Integer) value).longValue();
         } else if (value instanceof BigDecimal) {
             return ((BigDecimal) value).doubleValue();
-        } else if (Tokens.NULL.equals(value)) {
+        } else if (CypherTokens.NULL.equals(value)) {
             return null;
         } else if (value instanceof Double && Double.isNaN((double) value)) {
             return null;
@@ -95,7 +95,7 @@ public final class ReturnNormalizer {
 
     @SuppressWarnings("unchecked")
     private Object normalizeValue(CypherType type, Object value) {
-        if (Tokens.NULL.equals(value)) {
+        if (CypherTokens.NULL.equals(value)) {
             return null;
         } else if (type instanceof NodeType) {
             return normalizeElement((Map<?, ?>) value, NODE_TYPE);

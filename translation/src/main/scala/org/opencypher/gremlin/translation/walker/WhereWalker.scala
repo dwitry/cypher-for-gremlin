@@ -15,7 +15,7 @@
  */
 package org.opencypher.gremlin.translation.walker
 
-import org.opencypher.gremlin.translation.Tokens.NULL
+import org.opencypher.gremlin.translation.CypherTokens.NULL
 import org.opencypher.gremlin.translation._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.ir.model.{Column, CustomFunction, Scope}

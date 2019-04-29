@@ -15,7 +15,7 @@
  */
 package org.opencypher.gremlin.translation.walker
 
-import org.opencypher.gremlin.translation.Tokens._
+import org.opencypher.gremlin.translation.CypherTokens._
 import org.opencypher.gremlin.translation._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.ir.model.Pop
@@ -71,7 +71,7 @@ private class MatchWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
         PatternWalker.walk(context, g, patternElement)
       case NamedPatternPart(Variable(pathName), EveryPath(patternElement)) =>
         PatternWalker.walk(context, g, patternElement, Some(pathName))
-        g.as(MATCH_END + pathName).path().from(Tokens.MATCH_START + pathName).as(pathName)
+        g.as(MATCH_END + pathName).path().from(CypherTokens.MATCH_START + pathName).as(pathName)
       case n =>
         context.unsupported("match pattern", n)
     }

@@ -33,7 +33,7 @@ import java.util.function.Function;
 import org.apache.tinkerpop.gremlin.process.traversal.Traverser;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Property;
-import org.opencypher.gremlin.translation.Tokens;
+import org.opencypher.gremlin.translation.CypherTokens;
 import org.opencypher.gremlin.translation.exception.ConstraintException;
 import org.opencypher.gremlin.translation.exception.CypherExceptions;
 import org.opencypher.gremlin.translation.exception.TypeException;
@@ -57,7 +57,7 @@ public final class CustomFunctions {
 
             return Optional.ofNullable(arg)
                 .map(String::valueOf)
-                .orElse(Tokens.NULL);
+                .orElse(CypherTokens.NULL);
         };
     }
 
@@ -81,10 +81,10 @@ public final class CustomFunctions {
                         case "false":
                             return false;
                         default:
-                            return Tokens.NULL;
+                            return CypherTokens.NULL;
                     }
                 })
-                .orElse(Tokens.NULL);
+                .orElse(CypherTokens.NULL);
         };
     }
 
@@ -150,8 +150,8 @@ public final class CustomFunctions {
         return traverser -> {
             Object argument = traverser.get();
 
-            if (argument == Tokens.NULL) {
-                return Tokens.NULL;
+            if (argument == CypherTokens.NULL) {
+                return CypherTokens.NULL;
             }
 
             if (argument instanceof Map) {
@@ -173,8 +173,8 @@ public final class CustomFunctions {
             Object container = args.get(0);
             Object index = args.get(1);
 
-            if (container == Tokens.NULL || index == Tokens.NULL) {
-                return Tokens.NULL;
+            if (container == CypherTokens.NULL || index == CypherTokens.NULL) {
+                return CypherTokens.NULL;
             }
 
             if (container instanceof List) {
@@ -182,7 +182,7 @@ public final class CustomFunctions {
                 int size = list.size();
                 int i = normalizeContainerIndex(index, size);
                 if (i < 0 || i > size) {
-                    return Tokens.NULL;
+                    return CypherTokens.NULL;
                 }
                 return list.get(i);
             }
@@ -194,7 +194,7 @@ public final class CustomFunctions {
                 }
                 Map map = (Map) container;
                 String key = (String) index;
-                return map.getOrDefault(key, Tokens.NULL);
+                return map.getOrDefault(key, CypherTokens.NULL);
             }
 
             if (container instanceof Element) {
@@ -204,7 +204,7 @@ public final class CustomFunctions {
                 }
                 Element element = (Element) container;
                 String key = (String) index;
-                return element.property(key).orElse(Tokens.NULL);
+                return element.property(key).orElse(CypherTokens.NULL);
             }
 
             String containerClass = container.getClass().getName();
@@ -222,8 +222,8 @@ public final class CustomFunctions {
             Object from = args.get(1);
             Object to = args.get(2);
 
-            if (container == Tokens.NULL || from == Tokens.NULL || to == Tokens.NULL) {
-                return Tokens.NULL;
+            if (container == CypherTokens.NULL || from == CypherTokens.NULL || to == CypherTokens.NULL) {
+                return CypherTokens.NULL;
             }
 
             if (container instanceof List) {
@@ -311,7 +311,7 @@ public final class CustomFunctions {
 
             int size = data.size();
             if (size == 0) {
-                return Tokens.NULL;
+                return CypherTokens.NULL;
             } else if (size == 1) {
                 return data.get(0);
             }
@@ -341,8 +341,8 @@ public final class CustomFunctions {
             Object a = args.get(0);
             Object b = args.get(1);
 
-            if (a == Tokens.NULL || b == Tokens.NULL) {
-                return Tokens.NULL;
+            if (a == CypherTokens.NULL || b == CypherTokens.NULL) {
+                return CypherTokens.NULL;
             }
 
             if (a instanceof List || b instanceof List) {
@@ -381,8 +381,8 @@ public final class CustomFunctions {
     public static Function<Traverser, Object> cypherReverse() {
         return traverser -> {
             Object o = traverser.get();
-            if (o == Tokens.NULL) {
-                return Tokens.NULL;
+            if (o == CypherTokens.NULL) {
+                return CypherTokens.NULL;
             } else if (o instanceof Collection) {
                 ArrayList result = new ArrayList((Collection) o);
                 Collections.reverse(result);
@@ -402,8 +402,8 @@ public final class CustomFunctions {
             Object a = args.get(0);
             Object b = args.get(1);
 
-            if (a == Tokens.NULL) {
-                return Tokens.NULL;
+            if (a == CypherTokens.NULL) {
+                return CypherTokens.NULL;
             } else if (!(a instanceof String) || (!(b instanceof Number))) {
                 throw new TypeException(format("Expected substring(String, Integer, [Integer]), but got: (%s, %s)",
                     a, b));
@@ -426,8 +426,8 @@ public final class CustomFunctions {
             List args = traverser.get() instanceof List ? ((List) traverser.get()) : asList(traverser.get());
 
             for (int i = 0; i < clazzes.length; i++) {
-                if (args.get(i) == Tokens.NULL) {
-                    return Tokens.NULL;
+                if (args.get(i) == CypherTokens.NULL) {
+                    return CypherTokens.NULL;
                 }
 
                 if (!clazzes[i].isInstance(args.get(i))) {
@@ -467,8 +467,8 @@ public final class CustomFunctions {
     public static Function<Traverser, Object> cypherCopyProperties() {
         return traverser -> {
             List args = cast(traverser.get(), List.class);
-            if (args.get(0) == Tokens.NULL) {
-                return Tokens.NULL;
+            if (args.get(0) == CypherTokens.NULL) {
+                return CypherTokens.NULL;
             }
 
             Element to = cast(args.get(0), Element.class);
@@ -486,11 +486,11 @@ public final class CustomFunctions {
     }
 
     private static Object tokenToNull(Object maybeNull) {
-        return Tokens.NULL.equals(maybeNull) ? null : maybeNull;
+        return CypherTokens.NULL.equals(maybeNull) ? null : maybeNull;
     }
 
     private static Object nullToToken(Object maybeNull) {
-        return maybeNull == null ? Tokens.NULL : maybeNull;
+        return maybeNull == null ? CypherTokens.NULL : maybeNull;
     }
 
     private static <T> T cast(Object o, Class<T> clazz) {

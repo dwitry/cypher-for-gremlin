@@ -47,7 +47,7 @@ import org.apache.tinkerpop.gremlin.jsr223.AbstractGremlinPlugin;
 import org.apache.tinkerpop.gremlin.jsr223.DefaultImportCustomizer;
 import org.apache.tinkerpop.gremlin.jsr223.ImportCustomizer;
 import org.apache.tinkerpop.gremlin.jsr223.console.ConsoleCustomizer;
-import org.opencypher.gremlin.client.CypherTraversalSource;
+import org.opencypher.gremlin.traversal.CypherTraversalSource;
 
 /**
  * Gremlin Console Plugin that allows to send Cypher queries from Gremlin Console to Gremlin Server.

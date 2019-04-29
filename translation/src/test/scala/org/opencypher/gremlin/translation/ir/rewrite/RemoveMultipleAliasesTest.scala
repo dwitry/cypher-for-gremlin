@@ -17,8 +17,7 @@ package org.opencypher.gremlin.translation.ir.rewrite
 
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
-import org.opencypher.gremlin.translation.Tokens
-import org.opencypher.gremlin.translation.Tokens._
+import org.opencypher.gremlin.translation.CypherTokens
 import org.opencypher.gremlin.translation.ir.builder.IRGremlinPredicates
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.__
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
@@ -195,13 +194,13 @@ class RemoveMultipleAliasesTest {
   def pickUserDefined(): Unit = {
     val steps = __
       .V()
-      .as(Tokens.PATH_START)
-      .as(Tokens.MATCH_START)
+      .as(CypherTokens.PATH_START)
+      .as(CypherTokens.MATCH_START)
       .as("  GENERATED1")
       .as("n")
       .as("  GENERATED2")
-      .select(Tokens.PATH_START)
-      .select(Tokens.MATCH_START)
+      .select(CypherTokens.PATH_START)
+      .select(CypherTokens.MATCH_START)
       .select("n")
       .select("  GENERATED1")
       .select("  GENERATED2")

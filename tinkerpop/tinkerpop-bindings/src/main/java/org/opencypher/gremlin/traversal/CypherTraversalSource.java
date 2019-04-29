@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencypher.gremlin.client;
+package org.opencypher.gremlin.traversal;
 
 import static org.opencypher.gremlin.translation.translator.TranslatorFeature.RETURN_GREMLIN_ELEMENTS;
 
@@ -30,7 +30,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.opencypher.gremlin.translation.CypherAst;
 import org.opencypher.gremlin.translation.translator.Translator;
-import org.opencypher.gremlin.traversal.ParameterNormalizer;
 
 /**
  * A {@link TraversalSource} implementation that spawns {@link CypherTraversalSource} instances.
