@@ -28,8 +28,4 @@ public enum CypherExceptions {
     public String getMessage() {
         return message;
     }
-
-    public static String messageByName(Object name) {
-        return valueOf(String.valueOf(name)).getMessage();
-    }
 }

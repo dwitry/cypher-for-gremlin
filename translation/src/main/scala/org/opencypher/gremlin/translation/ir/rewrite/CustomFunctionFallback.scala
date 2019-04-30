@@ -16,7 +16,6 @@
 package org.opencypher.gremlin.translation.ir.rewrite
 
 import org.opencypher.gremlin.translation.CypherTokens._
-import org.opencypher.gremlin.translation.exception.CypherExceptions
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model.Scope.local
 import org.opencypher.gremlin.translation.ir.model._
@@ -32,8 +31,7 @@ object CustomFunctionFallback extends GremlinRewriter {
   override def apply(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
 
     mapTraversals(replace({
-      case Constant(typ) :: MapC(CustomFunction.cypherException) :: rest =>
-        val text = CypherExceptions.messageByName(typ)
+      case Constant(text: String) :: MapC(CustomFunction.cypherException) :: rest =>
         Path :: From(text) :: rest
 
       case SelectC(values) :: MapC(CustomFunction.cypherPlus) :: rest =>

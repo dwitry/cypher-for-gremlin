@@ -235,7 +235,7 @@ object NodeUtils {
       .start()
       .sideEffect(
         throwIfTrue
-          .constant(exception.toString)
+          .constant(exception.getMessage)
           .map(CustomFunction.cypherException)
       )
 

@@ -18,6 +18,7 @@ package org.opencypher.gremlin.translation.ir.rewrite
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
 import org.opencypher.gremlin.translation.CypherTokens
+import org.opencypher.gremlin.translation.CypherTokens._
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert.{P, __}
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor

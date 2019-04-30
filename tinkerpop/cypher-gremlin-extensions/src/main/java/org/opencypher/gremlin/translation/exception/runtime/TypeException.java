@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencypher.gremlin.translation.exception;
+package org.opencypher.gremlin.translation.exception.runtime;
 
 /**
  * Thrown when an unsupported or invalid traversal type is encountered.

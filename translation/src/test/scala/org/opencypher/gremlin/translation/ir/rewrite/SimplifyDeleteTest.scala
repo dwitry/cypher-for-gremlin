@@ -17,7 +17,7 @@ package org.opencypher.gremlin.translation.ir.rewrite
 
 import org.junit.Test
 import org.opencypher.gremlin.translation.CypherAst.parse
-import org.opencypher.gremlin.translation.CypherTokens
+import org.opencypher.gremlin.translation.CypherTokens._
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssert._
 import org.opencypher.gremlin.translation.ir.helpers.CypherAstAssertions.assertThat
 import org.opencypher.gremlin.translation.translator.TranslatorFlavor
@@ -47,14 +47,14 @@ class SimplifyDeleteTest {
         __.cap(DETACH_DELETE)
           .unfold()
           .dedup()
-          .is(P.neq(CypherTokens.NULL))
+          .is(P.neq(NULL))
           .drop()
       )
       .keeps(
         __.cap(DELETE)
           .unfold()
           .dedup()
-          .is(P.neq(CypherTokens.NULL))
+          .is(P.neq(NULL))
       )
   }
 
@@ -80,13 +80,13 @@ class SimplifyDeleteTest {
         __.cap(DELETE)
           .unfold()
           .dedup()
-          .is(P.neq(CypherTokens.NULL))
+          .is(P.neq(NULL))
       )
       .keeps(
         __.cap(DETACH_DELETE)
           .unfold()
           .dedup()
-          .is(P.neq(CypherTokens.NULL))
+          .is(P.neq(NULL))
           .drop()
       )
   }

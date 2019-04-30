@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.opencypher.gremlin.translation.ir.rewrite
-import org.opencypher.gremlin.translation.CypherTokens
+import org.opencypher.gremlin.translation.CypherTokens._
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
 
@@ -37,11 +37,9 @@ object SimplifyDelete extends GremlinRewriter {
             SideEffect(SelectK(n2) :: Aggregate(DETACH_DELETE) :: Nil) ::
             SideEffect(Limit(0) :: Aggregate(DELETE_ONCE) :: Nil) ::
             Barrier ::
-            SideEffect(
-            Coalesce(
-              Cap(DELETE_ONCE) :: Unfold :: Nil,
-              Constant(true) :: Aggregate(DELETE_ONCE) :: Cap(DETACH_DELETE) :: Unfold :: Dedup() :: Is(
-                Neq(CypherTokens.NULL)) :: Drop :: Nil) :: Nil) ::
+            SideEffect(Coalesce(
+            Cap(DELETE_ONCE) :: Unfold :: Nil,
+            Constant(true) :: Aggregate(DELETE_ONCE) :: Cap(DETACH_DELETE) :: Unfold :: Dedup() :: Is(Neq(NULL)) :: Drop :: Nil) :: Nil) ::
             Barrier :: Limit(0) :: Nil =>
         Vertex :: Drop :: Nil
       case _ => steps

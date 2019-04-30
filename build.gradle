@@ -204,7 +204,7 @@ project(':tinkerpop:cypher-gremlin-neo4j-driver') {
 project(':tinkerpop:tinkerpop-bindings') {
     dependencies {
         compile project(':translation')
-        compile project(':tinkerpop:cypher-gremlin-extensions') //todo extensions?
+        compile project(':tinkerpop:cypher-gremlin-extensions')
     }
 }
 
