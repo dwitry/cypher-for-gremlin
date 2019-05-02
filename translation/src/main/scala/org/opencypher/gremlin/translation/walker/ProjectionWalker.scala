@@ -15,14 +15,12 @@
  */
 package org.opencypher.gremlin.translation.walker
 
-import org.apache.tinkerpop.gremlin.process.traversal.Order
-import org.apache.tinkerpop.gremlin.process.traversal.Scope.local
-import org.apache.tinkerpop.gremlin.process.traversal.step.util.WithOptions
-import org.apache.tinkerpop.gremlin.structure.Column
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.SyntaxException
+import org.opencypher.gremlin.translation.ir.model.Scope.local
+import org.opencypher.gremlin.translation.ir.model.{Column, TraversalOrder, WithOptions}
 import org.opencypher.gremlin.translation.translator.TranslatorFeature.RETURN_GREMLIN_ELEMENTS
 import org.opencypher.gremlin.translation.walker.NodeUtils._
 import org.opencypher.gremlin.traversal.CustomFunction
@@ -62,7 +60,7 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
   case object Expression extends ReturnFunctionType
   case object Pivot extends ReturnFunctionType
 
-  private val p = context.dsl.predicates()
+  private val p = context.dsl.tokens()
 
   def walk(
       distinct: Boolean,
@@ -391,9 +389,9 @@ private class ProjectionWalker[T, P](context: WalkerContext[T, P], g: GremlinSte
     for (sortItem <- sortItems) {
       val order = sortItem match {
         case _: AscSortItem =>
-          Order.asc
+          TraversalOrder.asc
         case _: DescSortItem =>
-          Order.desc
+          TraversalOrder.desc
       }
       val sortExpression = walkLocal(sortItem.expression, None)
       g.by(sortExpression, order)

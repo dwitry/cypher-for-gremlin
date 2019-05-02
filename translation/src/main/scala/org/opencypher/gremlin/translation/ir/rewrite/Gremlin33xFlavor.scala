@@ -15,13 +15,11 @@
  */
 package org.opencypher.gremlin.translation.ir.rewrite
 
-import org.apache.tinkerpop.gremlin.process.traversal.step.util.WithOptions
 import org.opencypher.gremlin.translation.ir.TraversalHelper._
 import org.opencypher.gremlin.translation.ir.model._
-import org.opencypher.gremlin.translation.traversal.DeprecatedOrderAccessor
 
 /**
-  * This is a set of rewrites to adapt the translation to TinkerPop 3.3.x.
+
   */
 object Gremlin33xFlavor extends GremlinRewriter {
   override def apply(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
@@ -35,10 +33,10 @@ object Gremlin33xFlavor extends GremlinRewriter {
 
   private def rewriteOrder(steps: Seq[GremlinStep]): Seq[GremlinStep] = {
     replace({
-      case By(traversal, Some(org.apache.tinkerpop.gremlin.process.traversal.Order.asc)) :: rest =>
-        By(traversal, Some(DeprecatedOrderAccessor.incr)) :: rest
-      case By(traversal, Some(org.apache.tinkerpop.gremlin.process.traversal.Order.desc)) :: rest =>
-        By(traversal, Some(DeprecatedOrderAccessor.decr)) :: rest
+      case By(traversal, Some(TraversalOrder.asc)) :: rest =>
+        By(traversal, Some(TraversalOrder.incr)) :: rest
+      case By(traversal, Some(TraversalOrder.desc)) :: rest =>
+        By(traversal, Some(TraversalOrder.decr)) :: rest
     })(steps)
   }
 

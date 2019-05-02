@@ -29,7 +29,7 @@ object NoCustomFunctions extends GremlinPostCondition {
     })(steps).sorted.distinct
 
     if (all.nonEmpty) {
-      Some(s"Custom functions and predicates are not supported: ${all.mkString(", ")}")
+      Some(s"Custom functions and tokens are not supported: ${all.mkString(", ")}")
     } else {
       None
     }

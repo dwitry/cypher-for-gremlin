@@ -17,13 +17,12 @@ package org.opencypher.gremlin.translation.ir
 
 import java.util
 
-import org.apache.tinkerpop.gremlin.process.traversal.Scope
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.exception.SyntaxException
 import org.opencypher.gremlin.translation.ir.model._
 import org.opencypher.gremlin.translation.ir.verify._
 import org.opencypher.gremlin.translation.translator.TranslatorFeature._
-import org.opencypher.gremlin.translation.translator.{Translator, TranslatorFeature}
+import org.opencypher.gremlin.translation.translator.{TheTranslator, TranslatorFeature}
 
 import scala.collection.JavaConverters._
 
@@ -37,13 +36,13 @@ object TranslationWriter {
     * Produces query translation.
     *
     * @param ir         intermediate representation of the translation
-    * @param translator instance of [[Translator]]
+    * @param translator instance of [[TheTranslator]]
     * @param parameters Cypher query parameters
     * @tparam T translation target type
     * @tparam P predicate target type
     * @return to-Gremlin translation
     */
-  def write[T, P](ir: Seq[GremlinStep], translator: Translator[T, P], parameters: util.Map[String, Any]): T = {
+  def write[T, P](ir: Seq[GremlinStep], translator: TheTranslator[T, P], parameters: util.Map[String, Any]): T = {
     write(ir, translator, parameters.asScala.toMap)
   }
 
@@ -52,7 +51,7 @@ object TranslationWriter {
     MULTIPLE_LABELS -> NoMultipleLabels
   )
 
-  def write[T, P](ir: Seq[GremlinStep], translator: Translator[T, P], parameters: Map[String, Any]): T = {
+  def write[T, P](ir: Seq[GremlinStep], translator: TheTranslator[T, P], parameters: Map[String, Any]): T = {
     for ((feature, postCondition) <- postConditions if !translator.isEnabled(feature);
          msg <- postCondition(ir)) throw new SyntaxException(msg)
 
@@ -64,7 +63,7 @@ object TranslationWriter {
   def writeTo[T, P](
       ir: Seq[GremlinStep],
       to: GremlinSteps[T, P],
-      translator: Translator[T, P],
+      translator: TheTranslator[T, P],
       parameters: Map[String, Any]): T = {
     val generator = new TranslationWriter(translator, parameters)
     generator.writeSteps(ir, to)
@@ -72,9 +71,10 @@ object TranslationWriter {
   }
 }
 
-sealed class TranslationWriter[T, P] private (translator: Translator[T, P], parameters: Map[String, Any]) {
+sealed class TranslationWriter[T, P] private (translator: TheTranslator[T, P], parameters: Map[String, Any]) {
   private val g = translator.steps()
-  private val p = translator.predicates()
+  private val t = translator.tokens()
+  private val p = t.predicates()
   private val b = translator.bindings()
 
   private def writeSteps(ir: Seq[GremlinStep], g: GremlinSteps[T, P]): GremlinSteps[T, P] = {
@@ -102,7 +102,7 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
           g.bothE(edgeLabels: _*)
         case By(traversal, order) =>
           order
-            .map(g.by(writeLocalSteps(traversal), _))
+            .map(o => g.by(writeLocalSteps(traversal), writeToken(o)))
             .getOrElse(g.by(writeLocalSteps(traversal)))
         case Cap(sideEffectKey) =>
           g.cap(sideEffectKey)
@@ -123,7 +123,7 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
         case Count =>
           g.count()
         case CountS(scope) =>
-          g.count(scope)
+          g.count(writeToken(scope))
         case Dedup(dedupLabels @ _*) =>
           g.dedup(dedupLabels: _*)
         case Drop =>
@@ -171,7 +171,7 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
         case Limit(limit) =>
           g.limit(limit)
         case LimitS(scope, limit) =>
-          g.limit(scope, limit)
+          g.limit(writeToken(scope), limit)
         case Local(traversal) =>
           g.local(writeLocalSteps(traversal))
         case Loops =>
@@ -185,15 +185,15 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
         case Max =>
           g.max()
         case MaxS(scope) =>
-          g.max(scope)
+          g.max(writeToken(scope))
         case Mean =>
           g.mean()
         case MeanS(scope) =>
-          g.mean(scope)
+          g.mean(writeToken(scope))
         case Min =>
           g.min()
         case MinS(scope) =>
-          g.min(scope)
+          g.min(writeToken(scope))
         case Not(notTraversal) =>
           g.not(writeLocalSteps(notTraversal))
         case OptionT(pickToken, optionalTraversal) =>
@@ -215,27 +215,27 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
         case Properties(propertyKeys @ _*) =>
           g.properties(propertyKeys: _*)
         case PropertyG(token, value) =>
-          g.property(token, writeValue(value))
+          g.property(writeToken(token), writeValue(value))
         case PropertyV(key, value) =>
           g.property(key, writeValue(value))
         case PropertyVC(cardinality, key, value) =>
-          g.property(cardinality, key, writeValue(value))
+          g.property(writeToken(cardinality), key, writeValue(value))
         case PropertyT(key, traversal) =>
           g.property(key, writeLocalSteps(traversal))
         case PropertyTC(cardinality, key, traversal) =>
-          g.property(cardinality, key, writeLocalSteps(traversal))
+          g.property(writeToken(cardinality), key, writeLocalSteps(traversal))
         case Project(keys @ _*) =>
           g.project(keys: _*)
         case Range(scope: Scope, low: Long, high: Long) =>
-          g.range(scope, low, high)
+          g.range(writeToken(scope), low, high)
         case Repeat(repeatTraversal) =>
           g.repeat(writeLocalSteps(repeatTraversal))
         case SelectP(pop, selectKey) =>
-          g.select(pop, selectKey)
+          g.select(writeToken(pop), selectKey)
         case SelectK(selectKeys @ _*) =>
           g.select(selectKeys: _*)
         case SelectC(column) =>
-          g.select(column)
+          g.select(writeToken(column))
         case SideEffect(sideEffectTraversal) =>
           g.sideEffect(writeLocalSteps(sideEffectTraversal))
         case SimplePath =>
@@ -245,9 +245,9 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
         case Sum =>
           g.sum()
         case SumS(scope) =>
-          g.sum(scope)
+          g.sum(writeToken(scope))
         case Tail(scope, limit) =>
-          g.tail(scope, limit)
+          g.tail(writeToken(scope), limit)
         case Times(maxLoops) =>
           g.times(maxLoops)
         case To(toStepLabel) =>
@@ -283,23 +283,29 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
     writeSteps(ir, g.start())
   }
 
+  def writeToken(token: GremlinToken): P = token match {
+    case Scope.global => t.global.asInstanceOf[P]
+    case _            => throw new IllegalStateException("test")
+  }
+
   def writePredicate(predicate: GremlinPredicate): P = {
     predicate match {
-      case Eq(value)              => p.isEq(writeValue(value))
-      case Gt(value)              => p.gt(writeValue(value))
-      case Gte(value)             => p.gte(writeValue(value))
-      case Lt(value)              => p.lt(writeValue(value))
-      case Lte(value)             => p.lte(writeValue(value))
-      case Neq(value)             => p.neq(writeValue(value))
-      case Between(first, second) => p.between(writeValue(first), writeValue(second))
-      case Within(values @ _*)    => p.within(values.map(writeValue): _*)
-      case Without(values @ _*)   => p.without(values.map(writeValue): _*)
-      case StartsWith(value)      => p.startsWith(writeValue(value))
-      case EndsWith(value)        => p.endsWith(writeValue(value))
-      case Contains(value)        => p.contains(writeValue(value))
-      case IsNode()               => p.isNode
-      case IsRelationship()       => p.isRelationship
-      case IsString()             => p.isString
+//      case Eq(value)              => t.predicate(p.isEq(writeValue(value)))
+//      case Gt(value)              => t.predicate(p.gt(writeValue(value)))
+//      case Gte(value)             => t.predicate(p.gte(writeValue(value)))
+//      case Lt(value)              => t.predicate(p.lt(writeValue(value)))
+//      case Lte(value)             => t.predicate(p.lte(writeValue(value)))
+//      case Neq(value)             => t.predicate(p.neq(writeValue(value)))
+//      case Between(first, second) => t.predicate(p.between(writeValue(first), writeValue(second))).asInstanceOf[P]
+//      case Within(values @ _*)    => t.predicate(p.within(values.map(writeValue): _*)).asInstanceOf[P]
+//      case Without(values @ _*)   => t.predicate(p.without(values.map(writeValue): _*)).asInstanceOf[P]
+//      case StartsWith(value)      => t.predicate(p.startsWith(writeValue(value))).asInstanceOf[P]
+//      case EndsWith(value)        => t.predicate(p.endsWith(writeValue(value))).asInstanceOf[P]
+//      case Contains(value)        => t.predicate(p.contains(writeValue(value))).asInstanceOf[P]
+//      case IsNode()               => t.predicate(p.isNode).asInstanceOf[P]
+//      case IsRelationship()       => t.predicate(p.isRelationship).asInstanceOf[P]
+//      case IsString()             => t.predicate(p.isString).asInstanceOf[P]
+      case _ => throw new IllegalArgumentException("fd")
     }
   }
 

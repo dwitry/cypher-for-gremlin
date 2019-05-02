@@ -15,10 +15,10 @@
  */
 package org.opencypher.gremlin.translation.walker
 
-import org.apache.tinkerpop.gremlin.process.traversal.Scope
 import org.opencypher.gremlin.translation.GremlinSteps
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
+import org.opencypher.gremlin.translation.ir.model.Scope
 import org.opencypher.gremlin.translation.walker.NodeUtils._
 import org.opencypher.v9_0.expressions.SemanticDirection._
 import org.opencypher.v9_0.expressions.{UnsignedDecimalIntegerLiteral => UDIL, _}
@@ -113,7 +113,7 @@ class PatternWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P]) {
     g.as(pathStart)
     def pathLengthT = g.start().path().from(pathStart).count(Scope.local)
 
-    val p = context.dsl.predicates()
+    val p = context.dsl.tokens()
     length match {
       case None =>
         // -[]->

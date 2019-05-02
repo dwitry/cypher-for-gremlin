@@ -15,11 +15,10 @@
  */
 package org.opencypher.gremlin.translation.walker
 
-import org.apache.tinkerpop.gremlin.process.traversal.Scope
-import org.apache.tinkerpop.gremlin.structure.Column
 import org.opencypher.gremlin.translation.Tokens.NULL
 import org.opencypher.gremlin.translation._
 import org.opencypher.gremlin.translation.context.WalkerContext
+import org.opencypher.gremlin.translation.ir.model.{Column, Scope}
 import org.opencypher.gremlin.translation.walker.NodeUtils._
 import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.ast._
@@ -69,7 +68,7 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
   }
 
   private def walkBooleanExpression(node: Expression): GremlinSteps[T, P] = {
-    val p = context.dsl.predicates()
+    val p = context.dsl.tokens()
     node match {
       case _: BooleanLiteral | _: Parameter | _: FunctionInvocation =>
         walkExpression(node).is(p.isEq(true))
@@ -81,7 +80,7 @@ private class WhereWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T,
   private def __ = g.start()
 
   private def walkExpression(node: Expression): GremlinSteps[T, P] = {
-    val p = context.dsl.predicates()
+    val p = context.dsl.tokens()
     node match {
       case AllIterablePredicate(FilterScope(Variable(freshId), Some(expr)), Variable(varName)) =>
         freshIds(freshId) = varName

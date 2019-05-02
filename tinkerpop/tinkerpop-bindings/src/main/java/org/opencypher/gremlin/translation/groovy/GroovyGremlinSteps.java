@@ -19,15 +19,11 @@ import static org.opencypher.gremlin.translation.groovy.StringTranslationUtils.a
 import static org.opencypher.gremlin.translation.groovy.StringTranslationUtils.chain;
 
 import java.util.stream.Stream;
-import org.apache.tinkerpop.gremlin.process.traversal.Order;
-import org.apache.tinkerpop.gremlin.process.traversal.Pop;
-import org.apache.tinkerpop.gremlin.process.traversal.Scope;
-import org.apache.tinkerpop.gremlin.structure.Column;
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality;
 import org.opencypher.gremlin.translation.GremlinSteps;
+import org.opencypher.gremlin.translation.traversal.TraversalGremlinTokens;
 import org.opencypher.gremlin.traversal.CustomFunction;
 
-public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate> {
+public class GroovyGremlinSteps implements GremlinSteps<String, TraversalGremlinTokens> {
 
     private final StringBuilder g;
 
@@ -50,309 +46,308 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> start() {
+    public GremlinSteps<String, TraversalGremlinTokens> start() {
         return new GroovyGremlinSteps("__");
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> V() {
+    public GremlinSteps<String, TraversalGremlinTokens> V() {
         g.append(chain("V"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> E() {
+    public GremlinSteps<String, TraversalGremlinTokens> E() {
         g.append(chain("E"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> addE(String edgeLabel) {
+    public GremlinSteps<String, TraversalGremlinTokens> addE(String edgeLabel) {
         g.append(chain("addE", edgeLabel));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> addV() {
+    public GremlinSteps<String, TraversalGremlinTokens> addV() {
         g.append(chain("addV"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> addV(String vertexLabel) {
+    public GremlinSteps<String, TraversalGremlinTokens> addV(String vertexLabel) {
         g.append(chain("addV", vertexLabel));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> aggregate(String sideEffectKey) {
+    public GremlinSteps<String, TraversalGremlinTokens> aggregate(String sideEffectKey) {
         g.append(chain("aggregate", sideEffectKey));
         return this;
     }
 
     @SafeVarargs
     @Override
-    public final GremlinSteps<String, GroovyPredicate> and(GremlinSteps<String, GroovyPredicate>... andTraversals) {
+    public final GremlinSteps<String, TraversalGremlinTokens> and(GremlinSteps<String, TraversalGremlinTokens>... andTraversals) {
         g.append(chain("and", traversals(andTraversals)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> as(String stepLabel) {
+    public GremlinSteps<String, TraversalGremlinTokens> as(String stepLabel) {
         g.append(chain("as", stepLabel));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> barrier() {
+    public GremlinSteps<String, TraversalGremlinTokens> barrier() {
         g.append(chain("barrier"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> bothE(String... edgeLabels) {
+    public GremlinSteps<String, TraversalGremlinTokens> bothE(String... edgeLabels) {
         g.append(chain("bothE", (Object[]) edgeLabels));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> by(GremlinSteps<String, GroovyPredicate> traversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> by(GremlinSteps<String, TraversalGremlinTokens> traversal) {
         g.append(chain("by", traversal(traversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> by(GremlinSteps<String, GroovyPredicate> traversal,
-                                                    Order order) {
+    public GremlinSteps<String, TraversalGremlinTokens> by(GremlinSteps<String, TraversalGremlinTokens> traversal, TraversalGremlinTokens order) {
         g.append(chain("by", traversal(traversal), order));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> cap(String sideEffectKey) {
+    public GremlinSteps<String, TraversalGremlinTokens> cap(String sideEffectKey) {
         g.append(chain("cap", sideEffectKey));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> choose(GremlinSteps<String, GroovyPredicate> choiceTraversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> choose(GremlinSteps<String, TraversalGremlinTokens> choiceTraversal) {
         g.append(chain("choose", traversal(choiceTraversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> choose(GremlinSteps<String, GroovyPredicate> predicate,
-                                                        GremlinSteps<String, GroovyPredicate> trueChoice) {
+    public GremlinSteps<String, TraversalGremlinTokens> choose(GremlinSteps<String, TraversalGremlinTokens> predicate,
+                                                        GremlinSteps<String, TraversalGremlinTokens> trueChoice) {
         g.append(chain("choose", traversal(predicate), traversal(trueChoice)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> choose(GremlinSteps<String, GroovyPredicate> predicate,
-                                                        GremlinSteps<String, GroovyPredicate> trueChoice,
-                                                        GremlinSteps<String, GroovyPredicate> falseChoice) {
+    public GremlinSteps<String, TraversalGremlinTokens> choose(GremlinSteps<String, TraversalGremlinTokens> predicate,
+                                                        GremlinSteps<String, TraversalGremlinTokens> trueChoice,
+                                                        GremlinSteps<String, TraversalGremlinTokens> falseChoice) {
         g.append(chain("choose", traversal(predicate), traversal(trueChoice), traversal(falseChoice)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> choose(GroovyPredicate predicate,
-                                                        GremlinSteps<String, GroovyPredicate> trueChoice,
-                                                        GremlinSteps<String, GroovyPredicate> falseChoice) {
+    public GremlinSteps<String, TraversalGremlinTokens> choose(TraversalGremlinTokens predicate,
+                                                        GremlinSteps<String, TraversalGremlinTokens> trueChoice,
+                                                        GremlinSteps<String, TraversalGremlinTokens> falseChoice) {
         g.append(chain("choose", predicate, traversal(trueChoice), traversal(falseChoice)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> choose(GroovyPredicate predicate,
-                                                        GremlinSteps<String, GroovyPredicate> trueChoice) {
+    public GremlinSteps<String, TraversalGremlinTokens> choose(TraversalGremlinTokens predicate,
+                                                        GremlinSteps<String, TraversalGremlinTokens> trueChoice) {
         g.append(chain("choose", predicate, traversal(trueChoice)));
         return this;
     }
 
     @SafeVarargs
     @Override
-    public final GremlinSteps<String, GroovyPredicate> coalesce(GremlinSteps<String, GroovyPredicate>... coalesceTraversals) {
+    public final GremlinSteps<String, TraversalGremlinTokens> coalesce(GremlinSteps<String, TraversalGremlinTokens>... coalesceTraversals) {
         g.append(chain("coalesce", traversals(coalesceTraversals)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> constant(Object e) {
+    public GremlinSteps<String, TraversalGremlinTokens> constant(Object e) {
         g.append(chain("constant", e));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> count() {
+    public GremlinSteps<String, TraversalGremlinTokens> count() {
         g.append(chain("count"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> count(Scope scope) {
+    public GremlinSteps<String, TraversalGremlinTokens> count(TraversalGremlinTokens scope) {
         g.append(chain("count", scope));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> dedup(String... dedupLabels) {
+    public GremlinSteps<String, TraversalGremlinTokens> dedup(String... dedupLabels) {
         g.append(chain("dedup", (Object[]) dedupLabels));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> drop() {
+    public GremlinSteps<String, TraversalGremlinTokens> drop() {
         g.append(chain("drop"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> emit() {
+    public GremlinSteps<String, TraversalGremlinTokens> emit() {
         g.append(chain("emit"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> emit(GremlinSteps<String, GroovyPredicate> traversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> emit(GremlinSteps<String, TraversalGremlinTokens> traversal) {
         g.append(chain("emit", traversal(traversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> flatMap(GremlinSteps<String, GroovyPredicate> traversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> flatMap(GremlinSteps<String, TraversalGremlinTokens> traversal) {
         g.append(chain("flatMap", traversal(traversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> fold() {
+    public GremlinSteps<String, TraversalGremlinTokens> fold() {
         g.append(chain("fold"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> from(String fromStepLabel) {
+    public GremlinSteps<String, TraversalGremlinTokens> from(String fromStepLabel) {
         g.append(chain("from", fromStepLabel));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> group() {
+    public GremlinSteps<String, TraversalGremlinTokens> group() {
         g.append(chain("group"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> has(String propertyKey) {
+    public GremlinSteps<String, TraversalGremlinTokens> has(String propertyKey) {
         g.append(chain("has", propertyKey));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> has(String propertyKey, GroovyPredicate predicate) {
+    public GremlinSteps<String, TraversalGremlinTokens> has(String propertyKey, TraversalGremlinTokens predicate) {
         g.append(chain("has", propertyKey, predicate));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> hasKey(String... labels) {
+    public GremlinSteps<String, TraversalGremlinTokens> hasKey(String... labels) {
         g.append(chain("hasKey", (Object[]) labels));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> hasLabel(String... labels) {
+    public GremlinSteps<String, TraversalGremlinTokens> hasLabel(String... labels) {
         g.append(chain("hasLabel", (Object[]) labels));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> hasNot(String propertyKey) {
+    public GremlinSteps<String, TraversalGremlinTokens> hasNot(String propertyKey) {
         g.append(chain("hasNot", propertyKey));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> id() {
+    public GremlinSteps<String, TraversalGremlinTokens> id() {
         g.append(chain("id"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> identity() {
+    public GremlinSteps<String, TraversalGremlinTokens> identity() {
         g.append(chain("identity"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> inE(String... edgeLabels) {
+    public GremlinSteps<String, TraversalGremlinTokens> inE(String... edgeLabels) {
         g.append(chain("inE", (Object[]) edgeLabels));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> index() {
+    public GremlinSteps<String, TraversalGremlinTokens> index() {
         g.append(chain("index"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> inV() {
+    public GremlinSteps<String, TraversalGremlinTokens> inV() {
         g.append(chain("inV"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> inject(Object... injections) {
+    public GremlinSteps<String, TraversalGremlinTokens> inject(Object... injections) {
         g.append(chain("inject", injections));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> is(GroovyPredicate predicate) {
+    public GremlinSteps<String, TraversalGremlinTokens> is(TraversalGremlinTokens predicate) {
         g.append(chain("is", predicate));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> key() {
+    public GremlinSteps<String, TraversalGremlinTokens> key() {
         g.append(chain("key"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> label() {
+    public GremlinSteps<String, TraversalGremlinTokens> label() {
         g.append(chain("label"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> limit(long limit) {
+    public GremlinSteps<String, TraversalGremlinTokens> limit(long limit) {
         g.append(chain("limit", limit));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> limit(Scope scope, long limit) {
+    public GremlinSteps<String, TraversalGremlinTokens> limit(TraversalGremlinTokens scope, long limit) {
         g.append(chain("limit", scope, limit));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> local(GremlinSteps<String, GroovyPredicate> localTraversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> local(GremlinSteps<String, TraversalGremlinTokens> localTraversal) {
         g.append(chain("local", traversal(localTraversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> loops() {
+    public GremlinSteps<String, TraversalGremlinTokens> loops() {
         g.append(chain("loops"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> map(CustomFunction function) {
+    public GremlinSteps<String, TraversalGremlinTokens> map(CustomFunction function) {
         g.append(chain(
             "map",
             Verbatim.of(apply(function.getName()))
@@ -361,300 +356,300 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> map(GremlinSteps<String, GroovyPredicate> traversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> map(GremlinSteps<String, TraversalGremlinTokens> traversal) {
         g.append(chain("map", traversal(traversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> math(String expression) {
+    public GremlinSteps<String, TraversalGremlinTokens> math(String expression) {
         g.append(chain("math", expression));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> max() {
+    public GremlinSteps<String, TraversalGremlinTokens> max() {
         g.append(chain("max"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> max(Scope scope) {
+    public GremlinSteps<String, TraversalGremlinTokens> max(TraversalGremlinTokens scope) {
         g.append(chain("max", scope));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> mean() {
+    public GremlinSteps<String, TraversalGremlinTokens> mean() {
         g.append(chain("mean"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> mean(Scope scope) {
+    public GremlinSteps<String, TraversalGremlinTokens> mean(TraversalGremlinTokens scope) {
         g.append(chain("mean", scope));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> min() {
+    public GremlinSteps<String, TraversalGremlinTokens> min() {
         g.append(chain("min"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> min(Scope scope) {
+    public GremlinSteps<String, TraversalGremlinTokens> min(TraversalGremlinTokens scope) {
         g.append(chain("min", scope));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> not(GremlinSteps<String, GroovyPredicate> notTraversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> not(GremlinSteps<String, TraversalGremlinTokens> notTraversal) {
         g.append(chain("not", traversal(notTraversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> option(Object pickToken, GremlinSteps<String, GroovyPredicate> traversalOption) {
+    public GremlinSteps<String, TraversalGremlinTokens> option(Object pickToken, GremlinSteps<String, TraversalGremlinTokens> traversalOption) {
         g.append(chain("option", pickToken, traversal(traversalOption)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> optional(GremlinSteps<String, GroovyPredicate> optionalTraversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> optional(GremlinSteps<String, TraversalGremlinTokens> optionalTraversal) {
         g.append(chain("optional", traversal(optionalTraversal)));
         return this;
     }
 
     @SafeVarargs
     @Override
-    public final GremlinSteps<String, GroovyPredicate> or(GremlinSteps<String, GroovyPredicate>... orTraversals) {
+    public final GremlinSteps<String, TraversalGremlinTokens> or(GremlinSteps<String, TraversalGremlinTokens>... orTraversals) {
         g.append(chain("or", traversals(orTraversals)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> order() {
+    public GremlinSteps<String, TraversalGremlinTokens> order() {
         g.append(chain("order"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> otherV() {
+    public GremlinSteps<String, TraversalGremlinTokens> otherV() {
         g.append(chain("otherV"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> outE(String... edgeLabels) {
+    public GremlinSteps<String, TraversalGremlinTokens> outE(String... edgeLabels) {
         g.append(chain("outE", (Object[]) edgeLabels));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> outV() {
+    public GremlinSteps<String, TraversalGremlinTokens> outV() {
         g.append(chain("outV"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> path() {
+    public GremlinSteps<String, TraversalGremlinTokens> path() {
         g.append(chain("path"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> properties(String... propertyKeys) {
+    public GremlinSteps<String, TraversalGremlinTokens> properties(String... propertyKeys) {
         g.append(chain("properties", (Object[]) propertyKeys));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> property(org.apache.tinkerpop.gremlin.structure.T token, Object value) {
+    public GremlinSteps<String, TraversalGremlinTokens> property(TraversalGremlinTokens token, Object value) {
         g.append(chain("property", token, value));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> property(String key, Object value) {
+    public GremlinSteps<String, TraversalGremlinTokens> property(String key, Object value) {
         g.append(chain("property", key, value));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> property(Cardinality cardinality, String key, Object value) {
+    public GremlinSteps<String, TraversalGremlinTokens> property(TraversalGremlinTokens cardinality, String key, Object value) {
         g.append(chain("property", cardinality, key, value));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> property(String key, GremlinSteps<String, GroovyPredicate> traversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> property(String key, GremlinSteps<String, TraversalGremlinTokens> traversal) {
         g.append(chain("property", key, traversal(traversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> property(Cardinality cardinality, String key, GremlinSteps<String, GroovyPredicate> traversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> property(TraversalGremlinTokens cardinality, String key, GremlinSteps<String, TraversalGremlinTokens> traversal) {
         g.append(chain("property", cardinality, key, traversal(traversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> project(String... keys) {
+    public GremlinSteps<String, TraversalGremlinTokens> project(String... keys) {
         g.append(chain("project", (Object[]) keys));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> range(Scope scope, long low, long high) {
+    public GremlinSteps<String, TraversalGremlinTokens> range(TraversalGremlinTokens scope, long low, long high) {
         g.append(chain("range", scope, low, high));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> repeat(GremlinSteps<String, GroovyPredicate> repeatTraversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> repeat(GremlinSteps<String, TraversalGremlinTokens> repeatTraversal) {
         g.append(chain("repeat", traversal(repeatTraversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> select(final Pop pop, String selectKey) {
+    public GremlinSteps<String, TraversalGremlinTokens> select(final TraversalGremlinTokens pop, String selectKey) {
         g.append(chain("select", pop, selectKey));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> select(String... selectKeys) {
+    public GremlinSteps<String, TraversalGremlinTokens> select(String... selectKeys) {
         g.append(chain("select", (Object[]) selectKeys));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> select(Column column) {
+    public GremlinSteps<String, TraversalGremlinTokens> select(TraversalGremlinTokens column) {
         g.append(chain("select", column));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> sideEffect(GremlinSteps<String, GroovyPredicate> sideEffectTraversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> sideEffect(GremlinSteps<String, TraversalGremlinTokens> sideEffectTraversal) {
         g.append(chain("sideEffect", traversal(sideEffectTraversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> simplePath() {
+    public GremlinSteps<String, TraversalGremlinTokens> simplePath() {
         g.append(chain("simplePath"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> skip(long skip) {
+    public GremlinSteps<String, TraversalGremlinTokens> skip(long skip) {
         g.append(chain("skip", skip));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> sum() {
+    public GremlinSteps<String, TraversalGremlinTokens> sum() {
         g.append(chain("sum"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> sum(Scope scope) {
+    public GremlinSteps<String, TraversalGremlinTokens> sum(TraversalGremlinTokens scope) {
         g.append(chain("sum", scope));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> tail(Scope scope, long limit) {
+    public GremlinSteps<String, TraversalGremlinTokens> tail(TraversalGremlinTokens scope, long limit) {
         g.append(chain("tail", scope, limit));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> times(int maxLoops) {
+    public GremlinSteps<String, TraversalGremlinTokens> times(int maxLoops) {
         g.append(chain("times", maxLoops));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> to(String toStepLabel) {
+    public GremlinSteps<String, TraversalGremlinTokens> to(String toStepLabel) {
         g.append(chain("to", toStepLabel));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> unfold() {
+    public GremlinSteps<String, TraversalGremlinTokens> unfold() {
         g.append(chain("unfold"));
         return this;
     }
 
     @SafeVarargs
     @Override
-    public final GremlinSteps<String, GroovyPredicate> union(GremlinSteps<String, GroovyPredicate>... unionTraversals) {
+    public final GremlinSteps<String, TraversalGremlinTokens> union(GremlinSteps<String, TraversalGremlinTokens>... unionTraversals) {
         g.append(chain("union", traversals(unionTraversals)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> until(GremlinSteps<String, GroovyPredicate> untilTraversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> until(GremlinSteps<String, TraversalGremlinTokens> untilTraversal) {
         g.append(chain("until", traversal(untilTraversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> value() {
+    public GremlinSteps<String, TraversalGremlinTokens> value() {
         g.append(chain("value"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> valueMap() {
+    public GremlinSteps<String, TraversalGremlinTokens> valueMap() {
         g.append(chain("valueMap"));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> valueMap(boolean includeTokens) {
+    public GremlinSteps<String, TraversalGremlinTokens> valueMap(boolean includeTokens) {
         g.append(chain("valueMap", includeTokens));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> values(String... propertyKeys) {
+    public GremlinSteps<String, TraversalGremlinTokens> values(String... propertyKeys) {
         g.append(chain("values", (Object[]) propertyKeys));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> where(GremlinSteps<String, GroovyPredicate> whereTraversal) {
+    public GremlinSteps<String, TraversalGremlinTokens> where(GremlinSteps<String, TraversalGremlinTokens> whereTraversal) {
         g.append(chain("where", traversal(whereTraversal)));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> where(GroovyPredicate predicate) {
+    public GremlinSteps<String, TraversalGremlinTokens> where(TraversalGremlinTokens predicate) {
         g.append(chain("where", predicate));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> with(String key) {
+    public GremlinSteps<String, TraversalGremlinTokens> with(String key) {
         g.append(chain("with", key));
         return this;
     }
 
     @Override
-    public GremlinSteps<String, GroovyPredicate> with(String name, Object value) {
+    public GremlinSteps<String, TraversalGremlinTokens> with(String name, Object value) {
         g.append(chain("with", name, value));
         return this;
     }
 
-    private static Object traversal(GremlinSteps<String, GroovyPredicate> gremlinStep) {
+    private static Object traversal(GremlinSteps<String, TraversalGremlinTokens> gremlinStep) {
         return Verbatim.of(gremlinStep.current());
     }
 
-    private static Object[] traversals(GremlinSteps<String, GroovyPredicate>[] gremlinSteps) {
+    private static Object[] traversals(GremlinSteps<String, TraversalGremlinTokens>[] gremlinSteps) {
         return Stream.of(gremlinSteps)
             .map(GroovyGremlinSteps::traversal)
             .toArray(Object[]::new);

@@ -52,7 +52,7 @@ private class SetWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P
   }
 
   private def walkSetClause(items: Seq[SetItem]): Unit = {
-    val p = context.dsl.predicates()
+    val p = context.dsl.tokens()
     items.foreach {
       case SetPropertyItem(Property(v @ Variable(variable), PropertyKeyName(key)), expression: Expression) =>
         setProperty(typeOf(v), variable, key, expression)

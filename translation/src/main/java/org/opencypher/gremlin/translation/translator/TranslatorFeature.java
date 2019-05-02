@@ -16,8 +16,6 @@
 package org.opencypher.gremlin.translation.translator;
 
 
-import org.apache.tinkerpop.gremlin.structure.Edge;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 /**
  * Translator features are additional behaviors that can be allowed in translation.
@@ -25,7 +23,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
  */
 public enum TranslatorFeature {
     /**
-     * Support for custom functions and predicates
+     * Support for custom functions and tokens
      * provided by the CfoG Gremlin Server plugin.
      */
     CYPHER_EXTENSIONS,

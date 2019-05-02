@@ -15,12 +15,6 @@
  */
 package org.opencypher.gremlin.translation;
 
-import org.apache.tinkerpop.gremlin.process.traversal.Order;
-import org.apache.tinkerpop.gremlin.process.traversal.Pop;
-import org.apache.tinkerpop.gremlin.process.traversal.Scope;
-import org.apache.tinkerpop.gremlin.structure.Column;
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality;
-import org.opencypher.gremlin.translation.translator.Translator;
 import org.opencypher.gremlin.traversal.CustomFunction;
 
 /**
@@ -37,7 +31,7 @@ import org.opencypher.gremlin.traversal.CustomFunction;
  * @param <P> predicate target type
  * @see Translator
  */
-public interface GremlinSteps<T, P> {
+public interface GremlinSteps<T, P extends GremlinTokens> {
     /**
      * Returns a copy of current translation.
      *
@@ -75,7 +69,7 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> by(GremlinSteps<T, P> traversal);
 
-    GremlinSteps<T, P> by(GremlinSteps<T, P> traversal, Order order);
+    GremlinSteps<T, P> by(GremlinSteps<T, P> traversal, P order);
 
     GremlinSteps<T, P> cap(String sideEffectKey);
 
@@ -99,7 +93,7 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> count();
 
-    GremlinSteps<T, P> count(Scope scope);
+    GremlinSteps<T, P> count(P scope);
 
     GremlinSteps<T, P> dedup(String... dedupLabels);
 
@@ -147,7 +141,7 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> limit(long limit);
 
-    GremlinSteps<T, P> limit(Scope scope, long limit);
+    GremlinSteps<T, P> limit(P scope, long limit);
 
     GremlinSteps<T, P> local(GremlinSteps<T, P> localTraversal);
 
@@ -161,15 +155,15 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> max();
 
-    GremlinSteps<T, P> max(Scope scope);
+    GremlinSteps<T, P> max(P scope);
 
     GremlinSteps<T, P> mean();
 
-    GremlinSteps<T, P> mean(Scope scope);
+    GremlinSteps<T, P> mean(P scope);
 
     GremlinSteps<T, P> min();
 
-    GremlinSteps<T, P> min(Scope scope);
+    GremlinSteps<T, P> min(P scope);
 
     GremlinSteps<T, P> not(GremlinSteps<T, P> notTraversal);
 
@@ -192,27 +186,27 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> properties(String... propertyKeys);
 
-    GremlinSteps<T, P> property(org.apache.tinkerpop.gremlin.structure.T token, Object value);
+    GremlinSteps<T, P> property(P token, Object value);
 
     GremlinSteps<T, P> property(String key, Object value);
 
-    GremlinSteps<T, P> property(Cardinality cardinality, String key, Object value);
+    GremlinSteps<T, P> property(P cardinality, String key, Object value);
 
     GremlinSteps<T, P> property(String key, GremlinSteps<T, P> traversal);
 
-    GremlinSteps<T, P> property(Cardinality cardinality, String key, GremlinSteps<T, P> traversal);
+    GremlinSteps<T, P> property(P cardinality, String key, GremlinSteps<T, P> traversal);
 
     GremlinSteps<T, P> project(String... keys);
 
-    GremlinSteps<T, P> range(Scope scope, long low, long high);
+    GremlinSteps<T, P> range(P scope, long low, long high);
 
     GremlinSteps<T, P> repeat(GremlinSteps<T, P> repeatTraversal);
 
-    GremlinSteps<T, P> select(Pop pop, String selectKey);
+    GremlinSteps<T, P> select(P pop, String selectKey);
 
     GremlinSteps<T, P> select(String... selectKeys);
 
-    GremlinSteps<T, P> select(Column column);
+    GremlinSteps<T, P> select(P column);
 
     GremlinSteps<T, P> sideEffect(GremlinSteps<T, P> sideEffectTraversal);
 
@@ -222,9 +216,9 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> sum();
 
-    GremlinSteps<T, P> sum(Scope scope);
+    GremlinSteps<T, P> sum(P scope);
 
-    GremlinSteps<T, P> tail(Scope scope, long limit);
+    GremlinSteps<T, P> tail(P scope, long limit);
 
     GremlinSteps<T, P> times(int maxLoops);
 

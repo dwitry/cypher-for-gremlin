@@ -24,7 +24,6 @@ import org.opencypher.gremlin.translation.ir.helpers.JavaHelpers.assertThatThrow
 import org.opencypher.gremlin.translation.ir.helpers.TraversalAssertions
 import org.opencypher.gremlin.translation.ir.model.{GremlinPredicate, GremlinStep}
 import org.opencypher.gremlin.translation.ir.rewrite.{CosmosDbFlavor, CustomFunctionFallback, NeptuneFlavor}
-import org.opencypher.gremlin.translation.traversal.DeprecatedOrderAccessor
 import org.opencypher.gremlin.traversal.CustomFunction
 
 import scala.collection.JavaConverters._
@@ -38,7 +37,7 @@ class TranslatorBuilderTest {
       () =>
         parse("RETURN toupper('test')")
           .buildTranslation(dslBuilder))
-      .hasMessageContaining("Custom functions and predicates are not supported: cypherToUpper")
+      .hasMessageContaining("Custom functions and tokens are not supported: cypherToUpper")
 
     val steps = parse("MATCH (n) RETURN n.name")
       .buildTranslation(dslBuilder)
@@ -77,7 +76,7 @@ class TranslatorBuilderTest {
       () =>
         parse("RETURN toupper('test')")
           .buildTranslation(dslBuilder))
-      .hasMessageContaining("Custom functions and predicates are not supported: cypherToUpper")
+      .hasMessageContaining("Custom functions and tokens are not supported: cypherToUpper")
 
     val steps = parse("MATCH (n) WHERE n.age=$age RETURN count(n)", Map("age" -> 25).asJava)
       .buildTranslation(dslBuilder)
@@ -115,7 +114,7 @@ class TranslatorBuilderTest {
       () =>
         parse("RETURN toupper('test')")
           .buildTranslation(dslBuilder))
-      .hasMessageContaining("Custom functions and predicates are not supported: cypherToUpper")
+      .hasMessageContaining("Custom functions and tokens are not supported: cypherToUpper")
 
     assertThatThrownBy(
       () =>
@@ -140,7 +139,7 @@ class TranslatorBuilderTest {
       () =>
         parse("RETURN toupper('test')")
           .buildTranslation(dslBuilder))
-      .hasMessageContaining("Custom functions and predicates are not supported: cypherToUpper")
+      .hasMessageContaining("Custom functions and tokens are not supported: cypherToUpper")
 
     val steps = parse("MATCH (n) RETURN n.name ORDER BY n.name")
       .buildTranslation(dslBuilder)
@@ -160,7 +159,7 @@ class TranslatorBuilderTest {
       () =>
         parse("RETURN toupper('test')")
           .buildTranslation(dslBuilder))
-      .hasMessageContaining("Custom functions and predicates are not supported: cypherToUpper")
+      .hasMessageContaining("Custom functions and tokens are not supported: cypherToUpper")
 
     val steps = parse("MATCH (n) RETURN n.name")
       .buildTranslation(dslBuilder)
@@ -179,7 +178,7 @@ class TranslatorBuilderTest {
       () =>
         parse("RETURN toupper('test')")
           .buildTranslation(dslBuilder))
-      .hasMessageContaining("Custom functions and predicates are not supported: cypherToUpper")
+      .hasMessageContaining("Custom functions and tokens are not supported: cypherToUpper")
 
     val steps = parse("MATCH (n) RETURN n.name")
       .buildTranslation(dslBuilder)
@@ -198,7 +197,7 @@ class TranslatorBuilderTest {
       () =>
         parse("RETURN toupper('test')")
           .buildTranslation(dslBuilder))
-      .hasMessageContaining("Custom functions and predicates are not supported: cypherToUpper")
+      .hasMessageContaining("Custom functions and tokens are not supported: cypherToUpper")
 
     val steps = parse("MATCH (n) RETURN n.name")
       .buildTranslation(dslBuilder)

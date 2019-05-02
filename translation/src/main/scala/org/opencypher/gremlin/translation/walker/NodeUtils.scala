@@ -17,11 +17,11 @@ package org.opencypher.gremlin.translation.walker
 
 import java.util
 
-import org.apache.tinkerpop.gremlin.structure.Column
-import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality.single
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions
+import org.opencypher.gremlin.translation.ir.model.Cardinality.single
+import org.opencypher.gremlin.translation.ir.model.Column
 import org.opencypher.gremlin.translation.{GremlinSteps, Tokens}
 import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.expressions._
@@ -122,7 +122,7 @@ object NodeUtils {
   }
 
   def asUniqueName[T, P](name: String, g: GremlinSteps[T, P], context: WalkerContext[T, P]): GremlinSteps[T, P] = {
-    val p = context.dsl.predicates()
+    val p = context.dsl.tokens()
     context.alias(name) match {
       case Some(generated) =>
         g.as(generated).where(g.start().select(generated).where(p.isEq(name)))
@@ -133,7 +133,7 @@ object NodeUtils {
 
   def notNull[T, P](traversal: GremlinSteps[T, P], context: WalkerContext[T, P]): GremlinSteps[T, P] = {
     val g = context.dsl.steps()
-    val p = context.dsl.predicates()
+    val p = context.dsl.tokens()
     g.start().choose(p.neq(NULL), traversal)
   }
 

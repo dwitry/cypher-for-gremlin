@@ -15,7 +15,7 @@ You are very welcome to [suggest](https://github.com/opencypher/cypher-for-greml
   
 ## Extensions to Gremlin to enable full support for Cypher functionality
 
-Some functionality is exclusive to Gremlin Servers with Gremlin Extensions for Cypher Support, commonly provided by the [Cypher Gremlin Server plugin](https://github.com/opencypher/cypher-for-gremlin/tree/master/tinkerpop/cypher-gremlin-server-plugin). For example, [functions](https://github.com/opencypher/cypher-for-gremlin/blob/master/tinkerpop/cypher-gremlin-extensions/src/main/java/org/opencypher/gremlin/traversal/CustomFunctions.java#L42) and [predicates](https://github.com/opencypher/cypher-for-gremlin/blob/master/tinkerpop/cypher-gremlin-extensions/src/main/java/org/opencypher/gremlin/traversal/CustomPredicate.java#L24) that are not available in Gremlin. Note that with or without extensions, translation does not use lambdas, as it is [considered bad practice](http://tinkerpop.apache.org/docs/current/reference/#a-note-on-lambdas).
+Some functionality is exclusive to Gremlin Servers with Gremlin Extensions for Cypher Support, commonly provided by the [Cypher Gremlin Server plugin](https://github.com/opencypher/cypher-for-gremlin/tree/master/tinkerpop/cypher-gremlin-server-plugin). For example, [functions](https://github.com/opencypher/cypher-for-gremlin/blob/master/tinkerpop/cypher-gremlin-extensions/src/main/java/org/opencypher/gremlin/traversal/CustomFunctions.java#L42) and [tokens](https://github.com/opencypher/cypher-for-gremlin/blob/master/tinkerpop/cypher-gremlin-extensions/src/main/java/org/opencypher/gremlin/traversal/CustomPredicate.java#L24) that are not available in Gremlin. Note that with or without extensions, translation does not use lambdas, as it is [considered bad practice](http://tinkerpop.apache.org/docs/current/reference/#a-note-on-lambdas).
 
 For examples, search for [tests](https://github.com/opencypher/cypher-for-gremlin/tree/master/testware/integration-tests/src/test/java/org/opencypher/gremlin/queries) with category `org.opencypher.gremlin.groups.SkipExtensions`.
 
@@ -55,7 +55,7 @@ Functions that are present in Cypher but not in Gremlin:
 
 ### Queries that require type information
 
-There are no functions or predicates to get the type of object in Gremlin. However, depending on the type of object, Gremlin steps required to achieve certain functionality might be different. For example, when accessing an element by index:
+There are no functions or tokens to get the type of object in Gremlin. However, depending on the type of object, Gremlin steps required to achieve certain functionality might be different. For example, when accessing an element by index:
 
 ```cypher
 WITH $p AS unknown
@@ -219,7 +219,7 @@ There is no common support of Temporal Types in Gremlin, so each [implementation
 * Property access
 * Arithmetics
 * Comparison
-  - Custom predicates for all comparisons to account Temporal Types
+  - Custom tokens for all comparisons to account Temporal Types
 * Additional functions like `truncate`
 
 ### Filtering elements

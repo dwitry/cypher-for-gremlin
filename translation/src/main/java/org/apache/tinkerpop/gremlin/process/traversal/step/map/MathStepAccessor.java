@@ -19,6 +19,7 @@ import java.util.Set;
 
 public class MathStepAccessor {
     public static Set<String> getVariables(String equation) {
-        return MathStep.getVariables(equation);
+        return null;
+        //return MathStep.getVariables(equation); todo
     }
 }

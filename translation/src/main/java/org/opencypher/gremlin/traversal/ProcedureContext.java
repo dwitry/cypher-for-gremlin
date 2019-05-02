@@ -15,7 +15,6 @@
  */
 package org.opencypher.gremlin.traversal;
 
-import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
 import static org.opencypher.gremlin.extension.CypherBindingType.FLOAT;
 import static org.opencypher.gremlin.extension.CypherBindingType.INTEGER;
@@ -38,7 +37,7 @@ public final class ProcedureContext {
 
     private final Map<String, CypherProcedureSignature> signatures = new HashMap<>();
     private final Map<String, CypherProcedure> implementations = new HashMap<>();
-    private final ReturnNormalizer returnNormalizer = ReturnNormalizer.create(emptyMap());
+    //private final ReturnNormalizer returnNormalizer = ReturnNormalizer.create(emptyMap());
 
     private static final class LazyHolder {
         private static final ProcedureContext GLOBAL = empty();
@@ -99,15 +98,17 @@ public final class ProcedureContext {
         return new CustomFunction(
             "procedureCall",
             traverser -> {
-                Collection<?> arguments = (Collection<?>) traverser.get();
-                return call(name, arguments);
+                //Collection<?> arguments = (Collection<?>) traverser.get();
+                //return call(name, arguments);
+                return  null;
             }
         );
     }
 
     private Object call(String name, Collection<?> arguments) {
         CypherProcedureSignature signature = findOrThrow(name);
-        Object[] args = returnNormalizer.normalizeCollection(arguments).toArray();
+        //Object[] args = returnNormalizer.normalizeCollection(arguments).toArray();
+        Object[] args = new Object[0];
         List<CypherBinding> defArgs = signature.getArguments();
         List<Object> callArgs = Arrays.asList(args);
 
@@ -161,7 +162,7 @@ public final class ProcedureContext {
                 Object resValue = numericCast(row.get(resName), resType);
                 orderedRow.put(resName, resValue);
             }
-            results.add(returnNormalizer.normalize(orderedRow));
+            //results.add(returnNormalizer.normalize(orderedRow)); todo
         }
         return results;
     }

@@ -49,7 +49,7 @@ class DeleteWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P]) {
       subTraversal: GremlinSteps[T, P],
       expr: Expression,
       detach: Boolean): GremlinSteps[T, P] = {
-    val p = context.dsl.predicates()
+    val p = context.dsl.tokens().predicates()
     val expressionTraversal = ExpressionWalker.walkLocal(context, g, expr)
     val typ = context.expressionTypes.get(expr)
 
@@ -76,7 +76,7 @@ class DeleteWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P]) {
   }
 
   def dropAggregated(): Unit = {
-    val p = context.dsl.predicates()
+    val p = context.dsl.tokens()
 
     val delete = __
       .cap(DETACH_DELETE)
