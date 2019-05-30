@@ -22,6 +22,7 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality.single
 import org.opencypher.gremlin.translation.Tokens._
 import org.opencypher.gremlin.translation.context.WalkerContext
 import org.opencypher.gremlin.translation.exception.CypherExceptions
+import org.opencypher.gremlin.translation.walker.ArrayUtils.hasSameType
 import org.opencypher.gremlin.translation.{GremlinSteps, Tokens}
 import org.opencypher.gremlin.traversal.CustomFunction
 import org.opencypher.v9_0.expressions._
@@ -159,13 +160,16 @@ object NodeUtils {
 
   def asList[T, P](expressions: Seq[Expression], context: WalkerContext[T, P]): GremlinSteps[T, P] = {
     val g = context.dsl.steps()
-    if (expressions.isEmpty) {
-      return g.start().constant(new util.ArrayList())
+    val values = expressions.map(traversalValueOption(_, context, context.parameter))
+
+    values.forall(_.isDefined) && hasSameType(values.map(_.get).asJava) match {
+      case true => g.start().constant(ArrayUtils.asArrayOfPrimitives(values.map(_.get).asJava));
+      case false =>
+        val keys = expressions.map(_ => context.generateName())
+        val traversal = g.start().project(keys: _*)
+        expressions.map(ExpressionWalker.walkLocal(context, g, _)).foreach(traversal.by)
+        traversal.select(Column.values)
     }
-    val keys = expressions.map(_ => context.generateName())
-    val traversal = g.start().project(keys: _*)
-    expressions.map(ExpressionWalker.walkLocal(context, g, _)).foreach(traversal.by)
-    traversal.select(Column.values)
   }
 
   def ensureFirstStatement[T, P](traversal: GremlinSteps[T, P], context: WalkerContext[T, P]): Unit = {

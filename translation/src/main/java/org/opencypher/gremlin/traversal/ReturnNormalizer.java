@@ -27,6 +27,7 @@ import static org.opencypher.gremlin.translation.Tokens.PROJECTION_ID;
 import static org.opencypher.gremlin.translation.Tokens.PROJECTION_INV;
 import static org.opencypher.gremlin.translation.Tokens.PROJECTION_OUTV;
 import static org.opencypher.gremlin.translation.Tokens.PROJECTION_RELATIONSHIP;
+import static org.opencypher.gremlin.translation.walker.ArrayUtils.asListOfObjects;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -75,6 +76,8 @@ public final class ReturnNormalizer {
     private Object normalizeValue(Object value) {
         if (value instanceof Map) {
             return normalizeMap((Map<?, ?>) value);
+        } if (value.getClass().isArray()) {
+            return normalizeValue(asListOfObjects(value));
         } else if (value instanceof Collection) {
             return normalizeCollection((Collection<?>) value);
         } else if (value instanceof DetachedVertexProperty) {

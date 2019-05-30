@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.opencypher.gremlin.translation.walker.ArrayUtils;
 
 public final class StringTranslationUtils {
     private StringTranslationUtils() {
@@ -55,6 +56,9 @@ public final class StringTranslationUtils {
                     return key + ": " + value;
                 })
                 .collect(Collectors.joining(", ", "[", "]"));
+        }
+        if (argument.getClass().isArray()) {
+            return ArrayUtils.asListOfObjects(argument).toString();
         }
         if (argument instanceof Double || argument instanceof Float) {
             return argument.toString() + "d";

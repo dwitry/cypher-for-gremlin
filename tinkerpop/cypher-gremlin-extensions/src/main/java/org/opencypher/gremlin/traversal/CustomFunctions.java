@@ -19,6 +19,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -185,6 +186,15 @@ public final class CustomFunctions {
                     return Tokens.NULL;
                 }
                 return list.get(i);
+            }
+
+            if (container.getClass().isArray()) {
+                int size = Array.getLength(container);
+                int i = normalizeContainerIndex(index, size);
+                if (i < 0 || i > size) {
+                    return Tokens.NULL;
+                }
+                return Array.get(container, i);
             }
 
             if (container instanceof Map) {
