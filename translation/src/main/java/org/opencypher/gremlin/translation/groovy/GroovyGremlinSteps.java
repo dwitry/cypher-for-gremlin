@@ -196,6 +196,12 @@ public class GroovyGremlinSteps implements GremlinSteps<String, GroovyPredicate>
     }
 
     @Override
+    public GremlinSteps<String, GroovyPredicate> cyclicPath() {
+        g.append(chain("cyclicPath"));
+        return this;
+    }
+
+    @Override
     public GremlinSteps<String, GroovyPredicate> dedup(String... dedupLabels) {
         g.append(chain("dedup", (Object[]) dedupLabels));
         return this;

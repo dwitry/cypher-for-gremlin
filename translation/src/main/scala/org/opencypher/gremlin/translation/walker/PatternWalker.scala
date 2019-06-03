@@ -40,6 +40,8 @@ object PatternWalker {
 }
 
 class PatternWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P]) {
+  val p = context.dsl.predicates()
+
   private def __ = g.start()
 
   def walk(node: PatternElement, pathName: Option[String], startNewTraversal: Boolean): Unit = {
@@ -102,6 +104,7 @@ class PatternWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P]) {
         asUniqueName(name, directionT, context)
         properties.map(hasProperties(variable, _)).foreach(directionT.flatMap)
     }
+
     pathName.foreach(name => directionT.aggregate(PATH_EDGE + name))
     direction match {
       case BOTH     => directionT.otherV()
@@ -112,7 +115,6 @@ class PatternWalker[T, P](context: WalkerContext[T, P], g: GremlinSteps[T, P]) {
     val pathStart = PATH_START + pathName.getOrElse(context.generateName().trim())
     g.as(pathStart)
 
-    val p = context.dsl.predicates()
     length match {
       case None =>
         // -[]->

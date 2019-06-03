@@ -101,6 +101,8 @@ public interface GremlinSteps<T, P> {
 
     GremlinSteps<T, P> count(Scope scope);
 
+    GremlinSteps<T, P> cyclicPath();
+
     GremlinSteps<T, P> dedup(String... dedupLabels);
 
     GremlinSteps<T, P> drop();

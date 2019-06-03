@@ -124,6 +124,8 @@ sealed class TranslationWriter[T, P] private (translator: Translator[T, P], para
           g.count()
         case CountS(scope) =>
           g.count(scope)
+        case CyclicPath =>
+          g.cyclicPath()
         case Dedup(dedupLabels @ _*) =>
           g.dedup(dedupLabels: _*)
         case Drop =>

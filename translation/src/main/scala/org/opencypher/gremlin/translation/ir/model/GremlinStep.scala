@@ -149,6 +149,8 @@ case object Count extends GremlinStep
 
 case class CountS(scope: Scope) extends GremlinStep
 
+case object CyclicPath extends GremlinStep
+
 case class Dedup(dedupLabels: String*) extends GremlinStep
 
 case object Drop extends GremlinStep

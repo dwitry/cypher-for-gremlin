@@ -189,6 +189,12 @@ public class BytecodeGremlinSteps implements GremlinSteps<Bytecode, P> {
     }
 
     @Override
+    public GremlinSteps<Bytecode, P> cyclicPath() {
+        bytecode.addStep(Symbols.cyclicPath);
+        return this;
+    }
+
+    @Override
     public GremlinSteps<Bytecode, P> dedup(String... dedupLabels) {
         bytecode.addStep(Symbols.dedup, (Object[]) dedupLabels);
         return this;

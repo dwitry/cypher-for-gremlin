@@ -222,6 +222,14 @@ public class TraversalGremlinSteps implements GremlinSteps<GraphTraversal, P> {
         return this;
     }
 
+
+    @Override
+    public GremlinSteps<GraphTraversal, P> cyclicPath() {
+        g.cyclicPath();
+        return this;
+    }
+
+
     @Override
     public GremlinSteps<GraphTraversal, P> dedup(String... dedupLabels) {
         g.dedup(dedupLabels);

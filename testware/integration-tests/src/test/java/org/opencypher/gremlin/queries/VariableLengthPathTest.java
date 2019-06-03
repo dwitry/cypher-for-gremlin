@@ -248,11 +248,11 @@ public class VariableLengthPathTest {
     @SuppressWarnings("unchecked")
     public void multipleVarLengthPathInLoops() throws Exception {
         submitAndGet(TestCommons.DELETE_ALL);
-        submitAndGet("CREATE (a:a)-[:knows]->(b:b)" +
+        submitAndGet("CREATE (a:a {prop: 'a'})-[:knows]->(b:b {prop: 'b'})" +
             "CREATE (b)-[:knows]->(b)");
 
         List<Map<String, Object>> results = submitAndGet(
-            "MATCH p = (a:a)-[:knows*1..2]->(b) RETURN p");
+            "MATCH p = (a:a)-[:knows*1..10]->(b) RETURN p");
 
         assertThat(results)
             .extracting("p")
@@ -264,6 +264,31 @@ public class VariableLengthPathTest {
             .containsExactlyInAnyOrder(
                 newArrayList("a", "knows", "b"),
                 newArrayList("a", "knows", "b", "knows", "b")
+            );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void multipleVarLengthPathInLoops2() throws Exception {
+        submitAndGet(TestCommons.DELETE_ALL);
+        submitAndGet("CREATE (a:a {prop: 'a'})-[:r]->(b:b {prop: 'b'})-[:r]->(c:c {prop: 'c'})" +
+            "CREATE (a)-[:r]->(x:x {prop: 'x'})-[:r]->(c)" +
+            "CREATE (x)-[:r]->(x)");
+
+        List<Map<String, Object>> results = submitAndGet(
+            "MATCH p = (:a)-[:r*1..10]->(:c) RETURN p");
+
+        assertThat(results)
+            .extracting("p")
+            .extracting(list ->
+                ((List<Map>) list).stream()
+                    .map(e -> e.get(ReturnProperties.LABEL))
+                    .collect(Collectors.toList())
+            )
+            .containsExactlyInAnyOrder(
+                newArrayList("a", "r", "b", "r", "c"),
+                newArrayList("a", "r", "x", "r", "c"),
+                newArrayList("a", "r", "x", "r", "x", "r", "c")
             );
     }
 }
