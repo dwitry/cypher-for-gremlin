@@ -46,8 +46,9 @@ object TinkerGraphServerEmbeddedGraph extends Graph with ProcedureSupport {
   override def cypher(query: String, params: Map[String, CypherValue], queryType: QueryType): Result = {
     queryType match {
       case SideEffectQuery if cypherToGremlinQueries.isDefinedAt(query) =>
-        val resultSet = tinkerGraphServerEmbedded.gremlinClient().submit(cypherToGremlinQueries(query))
-        toCypherValueRecords(query, ResultTransformer.resultSetAsMaps(resultSet))
+        val (keys, gremlin) = cypherToGremlinQueries(query)
+        val resultSet = tinkerGraphServerEmbedded.gremlinClient().submit(gremlin)
+        toCypherValueRecords(query, keys.asJava, ResultTransformer.resultSetAsMaps(resultSet))
 
       case ExecQuery | InitQuery | SideEffectQuery =>
         try {
@@ -56,8 +57,8 @@ object TinkerGraphServerEmbeddedGraph extends Graph with ProcedureSupport {
             .cypherGremlinClient()
             .submitAsync(query, paramsJava)
             .get(TIME_OUT_SECONDS, SECONDS)
-            .all()
-          toCypherValueRecords(query, results)
+
+          toCypherValueRecords(query, results.keys(), results.all())
         } catch {
           case e: Exception => toExecutionFailed(e)
         }

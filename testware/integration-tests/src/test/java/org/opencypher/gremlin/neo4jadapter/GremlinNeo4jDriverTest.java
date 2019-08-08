@@ -225,4 +225,16 @@ public class GremlinNeo4jDriverTest {
                 .hasMessageContaining("Entity id should be numeric");
         }
     }
+
+    @Test
+    public void emptyResult() throws Exception {
+        Driver driver = GremlinDatabase.driver("//localhost:" + server.getPort(), Config.defaultConfig());
+
+        try (Session session = driver.session()) {
+            StatementResult result = session.run("MATCH (n:notExisting) RETURN n, count(n)");
+
+            assertThat(result.keys()).containsExactly("n", "count(n)");
+            assertThat(result.list()).isEmpty();
+        }
+    }
 }

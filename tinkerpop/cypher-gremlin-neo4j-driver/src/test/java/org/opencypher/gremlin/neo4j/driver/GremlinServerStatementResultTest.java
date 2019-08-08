@@ -44,7 +44,7 @@ public class GremlinServerStatementResultTest {
             getRow(3)
         );
 
-        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, results.iterator(), converter);
+        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, keys, results.iterator(), converter);
 
         assertThat(statementResult.keys()).containsExactly(KEY1, KEY2);
         assertThat(statementResult.peek().get(KEY1).asInt()).isEqualTo(1);
@@ -68,7 +68,7 @@ public class GremlinServerStatementResultTest {
             getRow(2)
         );
 
-        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, results.iterator(), converter);
+        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, keys, results.iterator(), converter);
 
         assertThat(statementResult.hasNext()).isTrue();
         assertThat(statementResult.consume().server()).isEqualTo(serverInfo);
@@ -82,7 +82,7 @@ public class GremlinServerStatementResultTest {
             getRow(2)
         );
 
-        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, results.iterator(), converter);
+        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, keys, results.iterator(), converter);
 
         assertThat(statementResult.list(r -> r.get(KEY2).asString()))
             .containsExactly("value1", "value2");
@@ -91,7 +91,7 @@ public class GremlinServerStatementResultTest {
     @Test
     public void single() {
         List<Map<String, Object>> results = singletonList(getRow(1));
-        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, results.iterator(), converter);
+        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, keys, results.iterator(), converter);
 
         assertThat(statementResult.single().get(KEY1).asInt()).isEqualTo(1);
     }
@@ -99,7 +99,7 @@ public class GremlinServerStatementResultTest {
     @Test(expected = NoSuchRecordException.class)
     public void singleMore() {
         List<Map<String, Object>> results = asList(getRow(1), getRow(2));
-        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, results.iterator(), converter);
+        StatementResult statementResult = new GremlinServerStatementResult(serverInfo, statement, keys, results.iterator(), converter);
 
         statementResult.single();
     }
@@ -107,7 +107,7 @@ public class GremlinServerStatementResultTest {
     @Test(expected = NoSuchRecordException.class)
     public void singleZero() {
         StatementResult statementResult = new GremlinServerStatementResult(serverInfo,
-            statement, new ArrayList<Map<String, Object>>().iterator(), converter);
+            statement, new ArrayList<>(), new ArrayList<Map<String, Object>>().iterator(), converter);
 
         statementResult.single();
     }

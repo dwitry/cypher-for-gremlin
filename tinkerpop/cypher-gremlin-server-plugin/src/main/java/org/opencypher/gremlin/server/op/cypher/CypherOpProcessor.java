@@ -41,6 +41,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.server.Context;
 import org.apache.tinkerpop.gremlin.server.GraphManager;
 import org.apache.tinkerpop.gremlin.server.OpProcessor;
+import org.apache.tinkerpop.gremlin.server.Settings;
 import org.apache.tinkerpop.gremlin.server.op.AbstractEvalOpProcessor;
 import org.apache.tinkerpop.gremlin.server.op.OpProcessorException;
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -68,6 +69,8 @@ import scala.collection.Seq;
  * </pre>
  */
 public class CypherOpProcessor extends AbstractEvalOpProcessor {
+    public static final String RETURN_COLUMNS = "cypherReturnColumns";
+
     private static final String DEFAULT_TRANSLATOR_DEFINITION = "gremlin+cfog_server_extensions+inline_parameters";
 
     private static final Logger logger = getLogger(CypherOpProcessor.class);
@@ -124,7 +127,7 @@ public class CypherOpProcessor extends AbstractEvalOpProcessor {
 
         GraphTraversal<?, ?> traversal = TranslationWriter.write(ir, traversalTranslator, parameters);
         ReturnNormalizer returnNormalizer = ReturnNormalizer.create(ast.getReturnTypes());
-        Iterator normalizedTraversal = returnNormalizer.normalize(traversal);
+        Iterator normalizedTraversal = returnNormalizer.normalize(traversal, ast.getReturnColumns());
         inTransaction(gts, () -> handleIterator(context, normalizedTraversal));
     }
 
@@ -245,4 +248,17 @@ public class CypherOpProcessor extends AbstractEvalOpProcessor {
             config.getOrDefault("translatorFeatures", "");
     }
 
+
+    @Override
+    protected Map<String, Object> generateStatusAttributes(ChannelHandlerContext ctx, RequestMessage msg, ResponseStatusCode code, Iterator itty, Settings settings) {
+        if (itty instanceof ReturnNormalizer.NormalizingIterator) {
+            ReturnNormalizer.NormalizingIterator normalizingIterator = (ReturnNormalizer.NormalizingIterator) itty;
+            Map<String, Object> statusAttributes = new HashMap<>(super.generateStatusAttributes(ctx, msg, code, itty, settings));
+            statusAttributes.put(RETURN_COLUMNS, normalizingIterator.keys());
+
+            return statusAttributes;
+        } else {
+            return super.generateStatusAttributes(ctx, msg, code, itty, settings);
+        }
+    }
 }

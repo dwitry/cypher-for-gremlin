@@ -69,6 +69,8 @@ final class InMemoryCypherGremlinClient implements CypherGremlinClient {
             .map(returnNormalizer::normalize)
             .map(Result::new)
             .collect(toList());
-        return completedFuture(new CypherResultSet(results.iterator()));
+
+        return completedFuture(
+            new CypherResultSet(ast.getReturnColumns(), results.iterator()));
     }
 }

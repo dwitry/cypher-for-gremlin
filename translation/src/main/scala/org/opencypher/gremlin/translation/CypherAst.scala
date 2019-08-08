@@ -144,6 +144,13 @@ class CypherAst private (
   }
 
   /**
+    * Retrieve the keys of the records this result contains.
+    *
+    * @return all keys
+    */
+  def getReturnColumns: util.List[String] = statement.returnColumns.asJava
+
+  /**
     * Pretty-prints the Cypher AST.
     *
     * @return string representation

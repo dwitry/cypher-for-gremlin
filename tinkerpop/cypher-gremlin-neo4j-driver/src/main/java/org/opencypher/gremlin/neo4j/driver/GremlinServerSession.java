@@ -17,6 +17,7 @@ package org.opencypher.gremlin.neo4j.driver;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
@@ -28,6 +29,7 @@ import org.neo4j.driver.v1.Value;
 import org.neo4j.driver.v1.summary.ServerInfo;
 import org.neo4j.driver.v1.types.TypeSystem;
 import org.opencypher.gremlin.client.CypherGremlinClient;
+import org.opencypher.gremlin.client.CypherResultSet;
 
 class GremlinServerSession implements Session {
     private final ServerInfo serverInfo;
@@ -107,8 +109,10 @@ class GremlinServerSession implements Session {
     @Override
     public StatementResult run(Statement statement) {
         HashMap<String, Object> serializableMap = new HashMap<>(statement.parameters().asMap());
-        Iterator<Map<String, Object>> iterator = client.submit(statement.text(), serializableMap).iterator();
-        return new GremlinServerStatementResult(serverInfo, statement, iterator, converter);
+        CypherResultSet result = client.submit(statement.text(), serializableMap);
+        List<String> keys = result.keys();
+        Iterator<Map<String, Object>> iterator = result.iterator();
+        return new GremlinServerStatementResult(serverInfo, statement, keys, iterator, converter);
     }
 
     @Override

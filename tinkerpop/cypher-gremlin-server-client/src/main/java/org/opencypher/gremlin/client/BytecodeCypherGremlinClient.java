@@ -74,6 +74,7 @@ final class BytecodeCypherGremlinClient implements CypherGremlinClient {
         return resultSetFuture
             .thenApply(ResultSet::iterator)
             .thenApply(resultIterator -> new CypherResultSet(
+                ast.getReturnColumns(),
                 new TraverserIterator(resultIterator),
                 returnNormalizer::normalize
             ));

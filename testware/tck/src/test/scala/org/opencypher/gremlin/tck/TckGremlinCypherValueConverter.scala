@@ -19,9 +19,7 @@ import java.{lang, util}
 
 import org.apache.tinkerpop.gremlin.driver.exception.ResponseException
 import org.apache.tinkerpop.gremlin.structure.Vertex
-import org.opencypher.gremlin.translation.CypherAst
 import org.opencypher.gremlin.translation.ReturnProperties._
-import org.opencypher.gremlin.traversal.ProcedureContext
 import org.opencypher.tools.tck.ListAccessor.unorderedList
 import org.opencypher.tools.tck.api.{CypherValueRecords, ExecutionFailed}
 import org.opencypher.tools.tck.constants.TCKErrorPhases.RUNTIME
@@ -72,28 +70,20 @@ object TckGremlinCypherValueConverter {
     }.mapValues(_.asInstanceOf[Object]).asJava)
   }
 
-  def toCypherValueRecords(query: String, results: util.List[util.Map[String, AnyRef]]): CypherValueRecords = {
+  def toCypherValueRecords(
+      query: String,
+      keys: util.List[String],
+      results: util.List[util.Map[String, AnyRef]]): CypherValueRecords = {
     val rows = results.asScala
       .map(
         javaMap => javaMap.asScala.mapValues((v) => toCypherValue(v)).toMap
       )
       .toList
 
-    val header =
-      if (results.isEmpty) List.empty[String]
-      else results.get(0).keySet().asScala.toList
-
-    emptyHeaderWorkaround(query, header, rows)
-  }
-
-  private def emptyHeaderWorkaround(query: String, header: List[String], rows: List[Map[String, CypherValue]]) = {
     if (rows.isEmpty) {
-      val procedures = ProcedureContext.global().getSignatures
-      val ast = CypherAst.parse(query, new util.HashMap[String, Any], procedures)
-      val columns = ast.statement.returnColumns
-      CypherValueRecords.emptyWithHeader(columns)
+      CypherValueRecords.emptyWithHeader(keys.asScala.toList)
     } else {
-      CypherValueRecords(header, rows)
+      CypherValueRecords(keys.asScala.toList, rows)
     }
   }
 

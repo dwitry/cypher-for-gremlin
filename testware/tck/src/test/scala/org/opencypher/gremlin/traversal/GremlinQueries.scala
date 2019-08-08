@@ -50,9 +50,9 @@ object GremlinQueries {
       .by(__.start().value())
       .toString
 
-  val cypherToGremlinQueries: Map[String, String] = Map(
-    TCKQueries.NODE_PROPS_QUERY -> getNodeProperties,
-    TCKQueries.REL_PROPS_QUERY -> getRelProperties
+  val cypherToGremlinQueries: Map[String, (List[String], String)] = Map(
+    TCKQueries.NODE_PROPS_QUERY -> ("nodeId" :: "key" :: "value" :: Nil, getNodeProperties),
+    TCKQueries.REL_PROPS_QUERY -> ("nodeId" :: "key" :: "value" :: Nil, getRelProperties)
   )
 
   def registerProcedure(signature: String, rowsJson: String, headerJson: String) =

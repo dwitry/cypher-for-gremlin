@@ -30,6 +30,7 @@ import org.neo4j.driver.v1.summary.ServerInfo;
 import org.neo4j.driver.v1.util.Function;
 
 class GremlinServerStatementResult implements StatementResult {
+    private final List<String> keys;
     private final PeekingIterator<Map<String, Object>> iterator;
     private final ServerInfo serverInfo;
     private final Statement statement;
@@ -37,8 +38,10 @@ class GremlinServerStatementResult implements StatementResult {
 
     GremlinServerStatementResult(ServerInfo serverInfo,
                                  Statement statement,
+                                 List<String> keys,
                                  Iterator<Map<String, Object>> iterator,
                                  GremlinCypherValueConverter converter) {
+        this.keys = keys;
         this.iterator = new PeekingIterator<>(iterator);
         this.serverInfo = serverInfo;
         this.statement = statement;
@@ -48,7 +51,7 @@ class GremlinServerStatementResult implements StatementResult {
 
     @Override
     public List<String> keys() {
-        return peek().keys();
+        return keys;
     }
 
     @Override

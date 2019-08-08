@@ -15,6 +15,8 @@
  */
 package org.opencypher.gremlin.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import org.apache.tinkerpop.gremlin.driver.Client;
@@ -25,6 +27,7 @@ import org.apache.tinkerpop.gremlin.driver.message.RequestMessage;
 final class OpProcessorCypherGremlinClient implements CypherGremlinClient {
 
     private static final String CYPHER_OP_PROCESSOR_NAME = "cypher";
+    private static final String RETURN_COLUMNS = "cypherReturnColumns";
 
     private final Client client;
 
@@ -43,8 +46,13 @@ final class OpProcessorCypherGremlinClient implements CypherGremlinClient {
         CompletableFuture<ResultSet> resultSetFuture = client.submitAsync(requestMessage);
 
         return resultSetFuture
-            .thenApply(ResultSet::iterator)
-            .thenApply(CypherResultSet::new);
+            .thenApply(e -> {
+                CompletableFuture<List<String>> keysFuture = e.statusAttributes()
+                    .thenApply(m -> m.getOrDefault(RETURN_COLUMNS, new ArrayList()))
+                    .<List<String>>thenApply(List.class::cast);
+
+                return new CypherResultSet(keysFuture, e.iterator());
+            });
     }
 
     private static RequestMessage.Builder buildRequest(String query, Map<String, ?> parameters) {

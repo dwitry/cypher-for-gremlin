@@ -18,12 +18,15 @@ package org.opencypher.gremlin.client;
 import static java.util.Spliterator.IMMUTABLE;
 import static java.util.Spliterator.NONNULL;
 import static java.util.Spliterators.spliteratorUnknownSize;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Spliterator;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -39,15 +42,24 @@ import org.apache.tinkerpop.gremlin.driver.Result;
  * @see CypherGremlinClient
  */
 public final class CypherResultSet implements Iterable<Map<String, Object>> {
-
     private final Iterator<Result> resultIterator;
-    private Function<Object, Map<String, Object>> returnNormalizer;
+    private final Function<Object, Map<String, Object>> returnNormalizer;
+    private final Future<List<String>> keys;
 
-    CypherResultSet(Iterator<Result> resultIterator) {
-        this(resultIterator, CypherResultSet::castToMap);
+    CypherResultSet(List<String> keys, Iterator<Result> resultIterator) {
+        this(completedFuture(keys), resultIterator, CypherResultSet::castToMap);
     }
 
-    CypherResultSet(Iterator<Result> resultIterator, Function<Object, Map<String, Object>> returnNormalizer) {
+    CypherResultSet(Future<List<String>> keys, Iterator<Result> resultIterator) {
+        this(keys, resultIterator, CypherResultSet::castToMap);
+    }
+
+    CypherResultSet(List<String> keys, Iterator<Result> resultIterator, Function<Object, Map<String, Object>> returnNormalizer) {
+        this(completedFuture(keys), resultIterator, returnNormalizer);
+    }
+
+    CypherResultSet(Future<List<String>> keys, Iterator<Result> resultIterator, Function<Object, Map<String, Object>> returnNormalizer) {
+        this.keys = keys;
         this.resultIterator = resultIterator;
         this.returnNormalizer = returnNormalizer;
     }
@@ -100,6 +112,21 @@ public final class CypherResultSet implements Iterable<Map<String, Object>> {
                 return returnNormalizer.apply(row);
             }
         };
+    }
+
+    /**
+     * Retrieve the keys of the records this result contains if keys are available
+     *
+     * todo blocking
+     *
+     * @return all keys
+     */
+    public List<String> keys() {
+        try {
+            return keys.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -68,7 +68,11 @@ final class SyncGroovyCypherGremlinClient implements CypherGremlinClient {
 
         try {
             List<Result> resultSet = client.submit(gremlin, normalizedParameters).all().get();
-            return new CypherResultSet(resultSet.iterator(), returnNormalizer::normalize);
+
+            return new CypherResultSet(
+                ast.getReturnColumns(),
+                resultSet.iterator(),
+                returnNormalizer::normalize);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }

@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.tinkerpop.gremlin.process.traversal.Traverser;
 import org.apache.tinkerpop.gremlin.structure.Element;
@@ -72,18 +73,34 @@ public final class ReturnNormalizer {
         return (Map<String, Object>) normalizeValue(row);
     }
 
-    public Iterator normalize(Iterator source) {
-        return new Iterator() {
-            @Override
-            public boolean hasNext() {
-                return source.hasNext();
-            }
+    public Iterator normalize(Iterator source, List<String> keys) {
+        return new NormalizingIterator(source, keys, this::normalize);
+    }
 
-            @Override
-            public Object next() {
-                return normalize(source.next());
-            }
-        };
+    public static class NormalizingIterator implements Iterator {
+        private final Iterator source;
+        private final List<String> keys;
+        private final Function<Object, Object> normalize;
+
+        private NormalizingIterator(Iterator source, List<String> keys, Function<Object, Object> normalize) {
+            this.source = source;
+            this.keys = keys;
+            this.normalize = normalize;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return source.hasNext();
+        }
+
+        @Override
+        public Object next() {
+            return normalize.apply(source.next());
+        }
+
+        public List<String> keys() {
+            return keys;
+        }
     }
 
     private Object normalizeValue(Object value) {
